@@ -19,6 +19,7 @@ import {
   IconButton,
   Paper,
   Drawer,
+  Link as RouterLink,
 } from "@mui/material";
 import Image from "next/image";
 import Link from "next/link";
@@ -40,6 +41,7 @@ import HotelIcon from "@mui/icons-material/Hotel";
 import RateReviewIcon from "@mui/icons-material/RateReview";
 const navlinks = [
   { icon: <Home />, title: "Home", url: "/" },
+  { icon: <TuneIcon />, title: "About Us", url: "#about" },
   { icon: <TuneIcon />, title: "Amenities", url: "/#amenities" },
   { icon: <HotelIcon />, title: "Rooms", url: "/#rooms" },
   { icon: <RateReviewIcon />, title: "Reviews", url: "/#reviews" },
@@ -59,7 +61,7 @@ function Navbar() {
     email: "",
     password: "",
   });
-
+  const isActive = (url: string) => location.pathname === url;
   // Load saved user info
   useEffect(() => {
     const savedEmail = localStorage.getItem("email");
@@ -107,7 +109,8 @@ function Navbar() {
       toast.success("Sign In Successful!");
       setOpenModal(false);
     } catch (err) {
-      toast.error("Error Submiting Form");
+      console.log(err);
+      toast.error("Error Submitting Form");
     }
   };
 
@@ -115,12 +118,15 @@ function Navbar() {
     <Box
       component="nav"
       sx={{
+        position: "fixed",
         display: "flex",
         bgcolor: "#FBFBFB",
         justifyContent: "space-between",
         alignItems: "center",
         py: 2,
         px: { xs: 2, md: 4 },
+        zIndex: 1000,
+        width: "100%",
       }}
     >
       <Container
@@ -138,19 +144,74 @@ function Navbar() {
         </Link>
         {/* Desktop Menu */}
         <Box sx={{ display: { xs: "none", md: "flex" }, gap: 3 }}>
-          {navlinks.map((item, index) => (
-            <Link
-              key={index}
-              href={item.url}
-              style={{
-                textDecoration: "none",
-                color: "#3D444B",
-                fontWeight: 500,
-              }}
-            >
-              {item.title}
-            </Link>
-          ))}
+          {navlinks.map((item) => {
+            const active = isActive(item.url);
+            return (
+              <Box
+                key={item.url}
+                sx={{
+                  color: "#3D444B",
+                  borderRadius: 1,
+                  transition: "all 0.3s ease-in-out",
+                  "&:hover": {
+                    bgcolor: "primary.contrastText",
+                    color: "#7B2E2E",
+                    transform: "translateY(-5px)",
+                  },
+                }}
+              >
+                <RouterLink
+                  component={Link}
+                  href={item.url}
+                  underline="none"
+                  color="inherit"
+                  sx={{
+                    position: "relative",
+                    display: "block",
+                    width: "100%",
+                    fontSize: "1.2rem",
+                    px: 1.5,
+                    py: 1,
+                    borderRadius: "inherit",
+                    transition: "transform 0.1s ease",
+                    "&:focus-visible": {
+                      outline: "2px solid #7B2E2E",
+                      outlineOffset: 2,
+                      bgcolor: "primary.contrastText",
+                    },
+                    "&:active": {
+                      transform: "translateY(1px)",
+                    },
+                    "&::after": {
+                      content: '""',
+                      position: "absolute",
+                      bottom: -6,
+                      left: "15%",
+                      width: active ? "70%" : "0%",
+                      height: "2px",
+                      backgroundColor: "#7B2E2E",
+                      borderRadius: "2px",
+                      transition: "width 0.25s ease",
+                    },
+                    "&:hover::after": { width: "70%" },
+                  }}
+                  aria-current={active ? "page" : undefined}
+                >
+                  <Box
+                    sx={{
+                      display: "flex",
+                      gap: 2,
+                      alignItems: "center",
+                    }}
+                  >
+                    <Typography component="span" sx={{ fontWeight: 700 }}>
+                      {item.title}
+                    </Typography>
+                  </Box>
+                </RouterLink>
+              </Box>
+            );
+          })}
         </Box>
 
         {/* Desktop Buttons */}
@@ -242,31 +303,53 @@ function Navbar() {
             <Box
               key={index}
               sx={{
+                color: "#3D444B", // base color (children inherit this)
+                borderRadius: 1,
+                transition: "background-color 0.2s ease, color 0.2s ease",
                 "&:hover": {
                   bgcolor: "primary.contrastText",
-                  color: "#7B2E2E",
+                  color: "#7B2E2E", // hover color now applies
                 },
               }}
             >
-              <Link
+              <RouterLink
+                component={Link}
                 href={item.url}
                 style={{
                   textDecoration: "none",
-                  color: "#3D444B",
+                  color: "inherit", // inherit color from parent for hover to work
                   fontSize: "1.2rem",
+                  display: "block", // make whole row clickable
+                  width: "100%",
                 }}
                 onClick={() => setMobileOpen(false)}
+                // Extra accessibility + interaction polish
+                sx={{
+                  px: 1.5,
+                  py: 1,
+                  borderRadius: "inherit",
+                  transition: "transform 0.1s ease",
+                  "&:focus-visible": {
+                    outline: "2px solid #7B2E2E",
+                    outlineOffset: 2,
+                    bgcolor: "primary.contrastText",
+                  },
+                  "&:active": {
+                    transform: "translateY(1px)",
+                  },
+                }}
               >
                 <Box
                   sx={{
                     display: "flex",
                     gap: 2,
+                    alignItems: "center",
                   }}
                 >
-                  <Typography>{item.icon}</Typography>
-                  <Typography>{item.title}</Typography>
+                  <Typography component="span">{item.icon}</Typography>
+                  <Typography component="span">{item.title}</Typography>
                 </Box>
-              </Link>
+              </RouterLink>
             </Box>
           ))}
         </Box>
@@ -412,17 +495,20 @@ function Navbar() {
             }
             label="Remember me"
           />
-
           <Button
-            variant="contained"
             fullWidth
             sx={{
+              color: "primary.contrastText",
               bgcolor: "#7B2E2E",
-              color: "#fff",
-              mt: 3,
-              py: 1,
+              borderRadius: 0.5,
+              mt: 2,
+              py: "10px",
+              px: "15px",
               fontWeight: 600,
-              "&:hover": { bgcolor: "#5e2020" },
+              border: "1px solid #7B2E2E",
+              boxShadow: "5px 5px 10px rgba(123, 46, 46, 0.2)",
+              transition: "all 0.3s",
+              "&:hover": { bgcolor: "#fff", color: "#7B2E2E" },
             }}
             onClick={handleSubmit}
           >
