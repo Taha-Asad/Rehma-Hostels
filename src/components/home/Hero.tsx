@@ -81,7 +81,7 @@ export function Hero() {
           {/* Eyebrow */}
           <Box sx={{ mb: 4, display: "inline-block" }}>
             <Chip
-              label="PROFESSIONAL STUDENT ACCOMMODATION"
+              label="Your Home Away From Home"
               sx={{
                 backgroundColor: "rgba(255,255,255,0.1)",
                 backdropFilter: "blur(4px)",
@@ -95,6 +95,7 @@ export function Hero() {
                 letterSpacing: "0.05em",
                 "& .MuiChip-label": {
                   px: 1,
+                  textWrap: "wrap",
                 },
               }}
             />
@@ -104,7 +105,7 @@ export function Hero() {
           <Typography
             variant="h1"
             sx={{
-              fontSize: { xs: "3rem", md: "3rem", lg: "3.5rem" },
+              fontSize: { xs: "2rem", md: "3rem", lg: "3.5rem" },
               fontWeight: 700,
               color: "white",
               mb: 3,

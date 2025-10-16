@@ -24,7 +24,7 @@ import {
 import Image from "next/image";
 import Link from "next/link";
 import React, { useState, useEffect } from "react";
-import logo from "../../public/Images/logo.png";
+import logo from "../../public/Images/Logo.jpg";
 import {
   Close,
   Menu as MenuIcon,
@@ -40,10 +40,10 @@ import TuneIcon from "@mui/icons-material/Tune";
 import HotelIcon from "@mui/icons-material/Hotel";
 import RateReviewIcon from "@mui/icons-material/RateReview";
 const navlinks = [
-  { icon: <Home />, title: "Home", url: "/" },
+  { icon: <Home />, title: "Home", url: "#hero" },
   { icon: <TuneIcon />, title: "About Us", url: "#about" },
-  { icon: <TuneIcon />, title: "Amenities", url: "/#amenities" },
-  { icon: <HotelIcon />, title: "Rooms", url: "/#rooms" },
+  { icon: <TuneIcon />, title: "Amenities", url: "#amenities" },
+  { icon: <HotelIcon />, title: "Rooms", url: "#rooms" },
   { icon: <RateReviewIcon />, title: "Reviews", url: "/#reviews" },
   { icon: <Phone />, title: "Contact", url: "/#contact" },
 ];
@@ -57,6 +57,8 @@ function Navbar() {
   const [rememberMe, setRememberMe] = useState(false);
   const [userType, setUserType] = useState("student");
 
+  const [visible, setVisible] = useState(true);
+  const [lastScrollY, setLastScrollY] = useState(0);
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -72,6 +74,32 @@ function Navbar() {
     if (savedType) setUserType(savedType);
     if (savedRemember) setRememberMe(true);
   }, []);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const currentScrollY = window.scrollY;
+
+      // Always visible near top
+      if (currentScrollY < 100) {
+        setVisible(true);
+        setLastScrollY(currentScrollY);
+        return;
+      }
+
+      // If scrolling down → hide
+      if (currentScrollY > lastScrollY) {
+        setVisible(false);
+      } else {
+        // If scrolling up → show
+        setVisible(true);
+      }
+
+      setLastScrollY(currentScrollY);
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [lastScrollY]);
 
   // Form validation
   const validateForm = () => {
@@ -119,11 +147,15 @@ function Navbar() {
       component="nav"
       sx={{
         position: "fixed",
+        top: visible ? 0 : "-170px",
+        transition: "top 0.4s ease-in-out, background-color 0.3s ease",
+        backgroundColor: "rgba(0,0,0,0.8)",
+        backdropFilter: "blur(8px)",
+        boxShadow: visible ? "0 4px 20px rgba(0,0,0,0.3)" : "none",
         display: "flex",
-        bgcolor: "#FBFBFB",
+        bgcolor: "#fff",
         justifyContent: "space-between",
         alignItems: "center",
-        py: 2,
         px: { xs: 2, md: 4 },
         zIndex: 1000,
         width: "100%",
@@ -140,7 +172,7 @@ function Navbar() {
         {/* Logo */}
         <Link href={"/"}>
           {" "}
-          <Image src={logo} alt="REHMA Hostel" width={120} />
+          <Image src={logo} alt="REHMA Hostel" width={150} />
         </Link>
         {/* Desktop Menu */}
         <Box sx={{ display: { xs: "none", md: "flex" }, gap: 3 }}>
@@ -227,7 +259,10 @@ function Navbar() {
               fontWeight: 600,
               boxShadow: "5px 5px 10px rgba(123, 46, 46, 0.2)",
               transition: "all 0.3s",
-              "&:hover": { bgcolor: "primary.contrastText", color: "#7B2E2E" },
+              "&:hover": {
+                bgcolor: "primary.contrastText",
+                color: "#7B2E2E",
+              },
             }}
           >
             Book Now

@@ -7,24 +7,29 @@ import {
   CardMedia,
   Stack,
   Typography,
+  Rating,
 } from "@mui/material";
 
 interface StatsProps {
-  icon: ReactNode;
+  icon?: ReactNode; // main icon (large circle)
+  labelIcon?: ReactNode; // small icon before label
   label: string;
   value: number;
   duration?: number;
   prefix?: string;
   suffix?: string;
+  rating?: number;
 }
 
 function Stats({
   icon,
+  labelIcon,
   label,
   value,
   duration = 1500,
   prefix = "",
   suffix = "",
+  rating,
 }: StatsProps) {
   const [count, setCount] = useState(0);
   const ref = useRef<HTMLDivElement | null>(null);
@@ -50,8 +55,8 @@ function Stats({
 
     const animate = (now: number) => {
       const progress = Math.min((now - startTime) / duration, 1);
-      const eased = 1 - Math.pow(1 - progress, 3); // easeOutCubic
-      const current = Math.floor(eased * value);
+      const eased = 1 - Math.pow(1 - progress, 3);
+      const current = eased * value; // removed floor to allow decimals
       setCount(current);
       if (progress < 1) requestAnimationFrame(animate);
     };
@@ -78,6 +83,7 @@ function Stats({
             },
             bgcolor: "#FFFFFF",
             borderRadius: 1,
+            minHeight: "200px",
             cursor: "default",
           }}
           elevation={0}
@@ -88,26 +94,28 @@ function Stats({
             justifyContent="center"
             spacing={2}
           >
-            <CardMedia
-              sx={{
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                width: 64,
-                height: 64,
-                borderRadius: "50%",
-                bgcolor: "#E3D3D3",
-                color: "#7B2E2E",
-                transition: "background 0.3s ease, transform 0.3s ease",
-                "&:hover": {
-                  bgcolor: "#7B2E2E",
-                  color: "#FFFFFF",
-                  transform: "scale(1.05)",
-                },
-              }}
-            >
-              {icon}
-            </CardMedia>
+            {icon ? (
+              <CardMedia
+                sx={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  width: 64,
+                  height: 64,
+                  borderRadius: "50%",
+                  bgcolor: "#E3D3D3",
+                  color: "#7B2E2E",
+                  transition: "background 0.3s ease, transform 0.3s ease",
+                  "&:hover": {
+                    bgcolor: "#7B2E2E",
+                    color: "#FFFFFF",
+                    transform: "scale(1.05)",
+                  },
+                }}
+              >
+                {icon}
+              </CardMedia>
+            ) : null}
 
             <CardContent sx={{ textAlign: "center", p: 2 }}>
               <Typography
@@ -117,16 +125,63 @@ function Stats({
                 fontWeight={700}
               >
                 {prefix}
-                {value > 0 ? count : ""}
+                {value > 0
+                  ? value % 1 === 0
+                    ? Math.round(count) // whole number target, no decimals
+                    : count.toFixed(1) // has decimal target, keep one decimal
+                  : ""}
                 {suffix}
               </Typography>
-              <Typography
-                variant="body1"
-                color="#505A63"
-                sx={{ textWrap: "nowrap" }}
+
+              {/* Rating neatly below number */}
+              {rating !== undefined && (
+                <Rating
+                  name="read-only"
+                  value={rating}
+                  precision={0.5}
+                  readOnly
+                  size="medium"
+                  sx={{
+                    mt: 0.5,
+                    "& .MuiRating-iconFilled": {
+                      color: "#7B2E2E", // your brand red
+                    },
+                    "& .MuiRating-iconEmpty": {
+                      color: "#BAB1AD", // faded gray for empty stars
+                    },
+                  }}
+                />
+              )}
+
+              {/* Label with small icon before text */}
+              <Stack
+                direction="column"
+                alignItems="center"
+                justifyContent="center"
+                spacing={0.8}
+                sx={{ mt: 0.5 }}
               >
-                {label}
-              </Typography>
+                {labelIcon && (
+                  <Box
+                    sx={{
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      color: "#7B2E2E",
+                      fontSize: 18,
+                    }}
+                  >
+                    {labelIcon}
+                  </Box>
+                )}
+                <Typography
+                  variant="body1"
+                  color="#505A63"
+                  sx={{ textWrap: "nowrap" }}
+                >
+                  {label}
+                </Typography>
+              </Stack>
             </CardContent>
           </Stack>
         </Card>
