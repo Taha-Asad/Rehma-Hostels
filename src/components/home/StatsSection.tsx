@@ -42,7 +42,11 @@ function StatsSection() {
           <Grid size={{ xs: 12, sm: 6, md: 3 }}>
             <Stats
               icon={<Home />}
+<<<<<<< HEAD
               value={40}
+=======
+              value={350}
+>>>>>>> origin/main
               suffix="+"
               label="Rooms Available"
             />
@@ -50,8 +54,14 @@ function StatsSection() {
           <Grid size={{ xs: 12, sm: 6, md: 3 }}>
             <Stats
               icon={<ShieldOutlined />}
+<<<<<<< HEAD
               value={0}
               prefix="24/7"
+=======
+              value={24}
+              suffixValue={7}
+              suffix="/"
+>>>>>>> origin/main
               label="Security & Support"
             />
           </Grid>

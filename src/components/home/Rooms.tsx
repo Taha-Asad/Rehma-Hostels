@@ -93,8 +93,11 @@ const cards = [
 function Rooms() {
   return (
     <Box
+<<<<<<< HEAD
       component={"section"}
       id="rooms"
+=======
+>>>>>>> origin/main
       sx={{
         py: 8,
       }}

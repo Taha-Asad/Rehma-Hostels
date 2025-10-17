@@ -48,8 +48,11 @@ const TestCards = [
 function Testimonials() {
   return (
     <Box
+<<<<<<< HEAD
       component={"section"}
       id="reviews"
+=======
+>>>>>>> origin/main
       sx={{
         py: 8,
         backgroundImage: "linear-gradient(to bottom, #D9D4D1, white, #D9D4D1);",

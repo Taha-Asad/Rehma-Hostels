@@ -58,8 +58,11 @@ const aboutUs = [
 function About() {
   return (
     <Box
+<<<<<<< HEAD
       component={"section"}
       id="about"
+=======
+>>>>>>> origin/main
       sx={{
         py: { xs: 5, md: 8 },
       }}
