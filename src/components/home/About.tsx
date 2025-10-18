@@ -17,6 +17,8 @@ import {
   SignalWifiStatusbar4Bar,
   VolunteerActivism,
 } from "@mui/icons-material";
+import { motion } from "framer-motion";
+
 const aboutUs = [
   {
     icon: <People />,
@@ -55,14 +57,10 @@ const aboutUs = [
       "Choose from daily, monthly, or semester-based packages tailored to your academic schedule",
   },
 ];
+
 function About() {
   return (
     <Box
-<<<<<<< HEAD
-      component={"section"}
-      id="about"
-=======
->>>>>>> origin/main
       sx={{
         py: { xs: 5, md: 8 },
       }}
@@ -89,7 +87,7 @@ function About() {
             }}
           />
           <Typography
-            variant="h1"
+            variant="h2"
             sx={{
               color: "#3D444B",
               py: 2,
@@ -104,30 +102,38 @@ function About() {
         <Box sx={{ py: 3 }}>
           <Grid container spacing={4} alignItems="center">
             <Grid size={{ sm: 12, md: 6 }}>
-              <Box
-                sx={{
-                  borderRadius: "20px",
-                  display: "grid",
-                  placeItems: "center",
-                  boxShadow: "0 20px 40px rgba(123,46,46,0.4)",
-                }}
+              <motion.div
+                initial={{ x: -200, opacity: 0 }}
+                whileInView={{ x: 0, opacity: 1 }}
+                viewport={{ once: true, amount: 0.3 }}
+                transition={{ type: "spring", stiffness: 60, damping: 14 }}
+                style={{ width: "100%" }}
               >
                 <Box
-                  component={Image}
-                  src={hero}
-                  alt="About Section"
                   sx={{
                     borderRadius: "20px",
-                    width: "100%",
-                    height: "auto",
-                    objectFit: "cover",
+                    display: "grid",
+                    placeItems: "center",
+                    boxShadow: "0 20px 40px rgba(123,46,46,0.4)",
                   }}
-                />
-              </Box>
+                >
+                  <Box
+                    component={Image}
+                    src={hero}
+                    alt="About Section"
+                    sx={{
+                      borderRadius: "20px",
+                      width: "100%",
+                      height: "auto",
+                      objectFit: "cover",
+                    }}
+                  />
+                </Box>
+              </motion.div>
             </Grid>
             <Grid size={{ sm: 12, md: 6 }}>
               <Typography
-                variant="h2"
+                variant="h3"
                 sx={{
                   color: "#3D444B",
                   py: 2,
@@ -190,7 +196,7 @@ function About() {
               }}
             >
               <Typography
-                variant="h1"
+                variant="h2"
                 sx={{
                   color: "#3D444B",
                   py: 2,
@@ -213,12 +219,22 @@ function About() {
             {aboutUs.map((items, index) => (
               <Grid size={{ xs: 12, sm: 12, md: 6 }} key={index}>
                 <Stack
+                  component={motion.div}
+                  initial={{ opacity: 0, y: 24 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true, amount: 0.2 }}
+                  transition={{
+                    delay: index * 0.12,
+                    type: "spring",
+                    stiffness: 70,
+                  }}
                   direction={"row"}
                   spacing={3}
                   alignItems={"center"}
                   sx={{
                     transition: "all 0.3s ease",
                     cursor: "pointer",
+                    mt: `${index * 1.5}px`,
                     "&:hover > :nth-of-type(1)": {
                       transform: "translateY(-5px)",
                       boxShadow: "0 8px 20px rgba(0,0,0,0.25)",

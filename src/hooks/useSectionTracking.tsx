@@ -31,7 +31,7 @@ export default function useSectionTracking() {
         },
         {
           threshold: 0.4,
-          rootMargin: "0px 0px -80% 0px",
+          rootMargin: "0px 0px -40% 0px",
         }
       );
 

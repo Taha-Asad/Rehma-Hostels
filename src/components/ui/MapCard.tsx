@@ -132,7 +132,7 @@ export default function MapCard() {
             borderRadius: 0.5,
             py: "10px",
             px: "15px",
-            mt: 10,
+            mt: 7,
             fontWeight: 600,
             boxShadow: "5px 5px 10px rgba(123, 46, 46, 0.2)",
             transition: "all 0.3s",

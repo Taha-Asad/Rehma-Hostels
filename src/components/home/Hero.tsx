@@ -6,11 +6,6 @@ import { Shield, HomeWork, Groups } from "@mui/icons-material";
 export function Hero() {
   return (
     <Box
-<<<<<<< HEAD
-      component="section"
-      id="home"
-=======
->>>>>>> origin/main
       sx={{
         position: "relative",
         minHeight: "70vh",

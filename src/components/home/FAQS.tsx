@@ -12,9 +12,6 @@ import {
   Chip,
   Grid,
   Avatar,
-  Fade,
-  Zoom,
-  useTheme,
   alpha,
   Paper,
 } from "@mui/material";
@@ -34,6 +31,7 @@ import {
   Mail,
   Phone,
 } from "@mui/icons-material";
+import { motion } from "framer-motion";
 
 const faqs = [
   {
@@ -48,7 +46,7 @@ const faqs = [
     answer:
       "Your monthly rent includes accommodation, high-speed WiFi throughout the facility, 24/7 security services, electricity (fair usage), water supply, common area access including study lounges, and basic maintenance services. Meal plans and laundry services are available as optional add-ons.",
     icon: Receipt,
-    color: "#6B4B3E", // replaced bluish tone
+    color: "#6B4B3E",
   },
   {
     question: "Is there a security deposit required?",
@@ -108,8 +106,22 @@ const faqs = [
   },
 ];
 
+const fadeInLeft = {
+  hidden: { opacity: 0, x: -50 },
+  visible: { opacity: 1, x: 0, transition: { duration: 0.6 } },
+};
+
+const fadeInRight = {
+  hidden: { opacity: 0, x: 50 },
+  visible: { opacity: 1, x: 0, transition: { duration: 0.6 } },
+};
+
+const fadeInUp = {
+  hidden: { opacity: 0, y: 50 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.8 } },
+};
+
 function FAQs() {
-  const theme = useTheme();
   const [expanded, setExpanded] = useState<string | false>(false);
 
   const handleChange =
@@ -129,58 +141,27 @@ function FAQs() {
         overflow: "hidden",
       }}
     >
-      {/* Decorative Background Elements */}
-      <Box
-        sx={{
-          position: "absolute",
-          top: "10%",
-          right: "-10%",
-          width: "400px",
-          height: "400px",
-          borderRadius: "50%",
-          background:
-            "radial-gradient(circle, rgba(123,46,46,0.05) 0%, transparent 70%)",
-          filter: "blur(40px)",
-        }}
-      />
-      <Box
-        sx={{
-          position: "absolute",
-          bottom: "10%",
-          left: "-10%",
-          width: "400px",
-          height: "400px",
-          borderRadius: "50%",
-          background:
-            "radial-gradient(circle, rgba(107,75,62,0.05) 0%, transparent 70%)",
-          filter: "blur(40px)",
-        }}
-      />
-
       <Container maxWidth="lg" sx={{ position: "relative", zIndex: 1 }}>
-        {/* Header */}
         <Box sx={{ textAlign: "center", mb: 8 }}>
-          <Fade in timeout={1000}>
-            <Chip
-              icon={<QuestionAnswer />}
-              label="HAVE QUESTIONS?"
-              sx={{
-                mb: 3,
-                px: 2,
-                py: 3,
-                height: "auto",
-                fontSize: "0.875rem",
-                fontWeight: 600,
-                letterSpacing: 1,
+          <Chip
+            icon={<QuestionAnswer />}
+            label="HAVE QUESTIONS?"
+            sx={{
+              mb: 3,
+              px: 2,
+              py: 3,
+              height: "auto",
+              fontSize: "0.875rem",
+              fontWeight: 600,
+              letterSpacing: 1,
+              color: "#7B2E2E",
+              bgcolor: alpha("#7B2E2E", 0.1),
+              border: `1px solid ${alpha("#7B2E2E", 0.2)}`,
+              "& .MuiChip-icon": {
                 color: "#7B2E2E",
-                bgcolor: alpha("#7B2E2E", 0.1),
-                border: `1px solid ${alpha("#7B2E2E", 0.2)}`,
-                "& .MuiChip-icon": {
-                  color: "#7B2E2E",
-                },
-              }}
-            />
-          </Fade>
+              },
+            }}
+          />
 
           <Typography
             variant="h2"
@@ -222,16 +203,21 @@ function FAQs() {
           </Typography>
         </Box>
 
-        {/* FAQ Accordions */}
         <Grid container spacing={3} sx={{ mb: 8 }}>
           {faqs.map((faq, index) => {
             const IconComponent = faq.icon;
             const panelId = `panel${index}`;
             const isExpanded = expanded === panelId;
+            const animation = index % 2 === 0 ? fadeInLeft : fadeInRight;
 
             return (
               <Grid size={{ xs: 12 }} key={index}>
-                <Zoom in timeout={500 + index * 100}>
+                <motion.div
+                  variants={animation}
+                  initial="hidden"
+                  whileInView="visible"
+                  viewport={{ once: true, amount: 0.2 }}
+                >
                   <Accordion
                     expanded={expanded === panelId}
                     onChange={handleChange(panelId)}
@@ -349,122 +335,147 @@ function FAQs() {
                       </Box>
                     </AccordionDetails>
                   </Accordion>
-                </Zoom>
+                </motion.div>
               </Grid>
             );
           })}
         </Grid>
 
-        {/* CTA Section */}
-        <Container maxWidth="md" sx={{ py: 4 }}>
-          <Paper
-            elevation={16}
-            sx={{
-              py: 4,
-              pb: 8,
-              px: 2,
-              bgcolor: "#7B2E2E",
-              background: "linear-gradient(135deg, #7B2E2E 0%, #5F2424 100%)",
-              boxShadow: "0 20px 40px rgba(123,46,46,0.4)",
-            }}
-          >
-            <CardContent
+        {/* CTA Section Animation */}
+        <motion.div
+          variants={fadeInUp}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, amount: 0.2 }}
+        >
+          <Container maxWidth="md" sx={{ py: 4 }}>
+            <Paper
+              elevation={16}
               sx={{
-                p: { xs: 4, md: 4 },
-                textAlign: "center",
-                position: "relative",
+                py: 4,
+                pb: 8,
+                px: 2,
+                bgcolor: "#7B2E2E",
+                background: "linear-gradient(135deg, #7B2E2E 0%, #5F2424 100%)",
+                boxShadow: "0 20px 40px rgba(123,46,46,0.4)",
               }}
             >
-              <Avatar
+              <CardContent
                 sx={{
-                  width: 80,
-                  height: 80,
-                  bgcolor: "rgba(255,255,255,0.1)",
-                  border: "2px solid rgba(255,255,255,0.2)",
-                  mx: "auto",
-                  mb: 3,
+                  p: { xs: 4, md: 4 },
+                  textAlign: "center",
+                  position: "relative",
                 }}
               >
-                <QuestionAnswer sx={{ fontSize: 40, color: "white" }} />
-              </Avatar>
-
-              <Typography
-                variant="h1"
-                sx={{
-                  color: "white",
-                  fontWeight: 700,
-                  fontFamily: "Poppins, sans-serif",
-                  mb: 2,
-                }}
-              >
-                Still Have Questions?
-              </Typography>
-
-              <Typography
-                variant="body1"
-                sx={{
-                  color: "rgba(255,255,255,0.9)",
-                  maxWidth: "600px",
-                  mx: "auto",
-                  mb: 5,
-                }}
-              >
-                Our friendly team is available 24/7 to help you with any
-                questions or concerns.
-              </Typography>
-
-              <Box
-                sx={{
-                  display: "flex",
-                  gap: 2,
-                  justifyContent: "center",
-                  flexWrap: "wrap",
-                }}
-              >
-                <Button
-                  variant="contained"
-                  size="large"
-                  startIcon={<Mail />}
+                <Avatar
                   sx={{
-                    bgcolor: "white",
-                    color: "#7B2E2E",
-                    px: 4,
-                    py: 1.5,
-                    fontSize: "1rem",
-                    fontWeight: 600,
-                    borderRadius: 2,
-                    "&:hover": {
-                      bgcolor: "#f5f5f5",
-                    },
+                    width: 80,
+                    height: 80,
+                    bgcolor: "rgba(255,255,255,0.1)",
+                    border: "2px solid rgba(255,255,255,0.2)",
+                    mx: "auto",
+                    mb: 3,
                   }}
                 >
-                  Send Us a Message
-                </Button>
+                  <QuestionAnswer sx={{ fontSize: 40, color: "white" }} />
+                </Avatar>
 
-                <Button
-                  variant="contained"
-                  size="large"
-                  startIcon={<Phone />}
-                  href="tel:+923001234567"
+                <Typography
+                  variant="h2"
                   sx={{
-                    bgcolor: "#6B4B3E",
                     color: "white",
-                    px: 4,
-                    py: 1.5,
-                    fontSize: "1rem",
-                    fontWeight: 600,
-                    borderRadius: 2,
-                    "&:hover": {
-                      bgcolor: "#5F3E32",
-                    },
+                    fontWeight: 700,
+                    fontFamily: "Poppins, sans-serif",
+                    mb: 2,
                   }}
                 >
-                  Call Us Now
-                </Button>
-              </Box>
-            </CardContent>
-          </Paper>
-        </Container>
+                  Still Have Questions?
+                </Typography>
+
+                <Typography
+                  variant="body1"
+                  sx={{
+                    color: "rgba(255,255,255,0.9)",
+                    maxWidth: "600px",
+                    mx: "auto",
+                    mb: 5,
+                  }}
+                >
+                  Our friendly team is available 24/7 to help you with any
+                  questions or concerns.
+                </Typography>
+
+                <motion.div
+                  initial="hidden"
+                  whileInView="visible"
+                  viewport={{ once: true }}
+                  transition={{ staggerChildren: 0.3 }}
+                  style={{
+                    display: "flex",
+                    gap: "16px",
+                    justifyContent: "center",
+                    flexWrap: "wrap",
+                  }}
+                >
+                  <motion.div variants={fadeInUp}>
+                    <Button
+                      variant="contained"
+                      size="large"
+                      startIcon={<Mail />}
+                      sx={{
+                        bgcolor: "#D4A373",
+                        color: "#FDF9F6",
+                        borderRadius: 0.5,
+                        width: 220,
+                        py: "10px",
+                        px: "15px",
+                        fontWeight: 600,
+                        border: "1px solid #7B2E2E",
+                        boxShadow: "5px 5px 10px rgba(123, 46, 46, 0.25)",
+                        transition: "all 0.3s",
+                        "&:hover": {
+                          bgcolor: "primary.contrastText",
+                          color: "#7B2E2E",
+                          boxShadow: "0 4px 15px rgba(212, 163, 115, 0.4)",
+                        },
+                      }}
+                    >
+                      Send Us a Message
+                    </Button>
+                  </motion.div>
+
+                  <motion.div variants={fadeInUp}>
+                    <Button
+                      variant="contained"
+                      size="large"
+                      startIcon={<Phone />}
+                      href="tel:+923001234567"
+                      sx={{
+                        bgcolor: "primary.contrastText",
+                        color: "#7B2E2E",
+                        borderRadius: 0.5,
+                        width: 220,
+                        py: "10px",
+                        px: "15px",
+                        fontWeight: 600,
+                        border: "1px solid #7B2E2E",
+                        boxShadow: "5px 5px 10px rgba(123, 46, 46, 0.2)",
+                        transition: "all 0.3s",
+                        "&:hover": {
+                          color: "#D9D4D1",
+                          bgcolor: "#D4A373",
+                          boxShadow: "0 4px 15px rgba(212, 163, 115, 0.4)",
+                        },
+                      }}
+                    >
+                      Call Us Now
+                    </Button>
+                  </motion.div>
+                </motion.div>
+              </CardContent>
+            </Paper>
+          </Container>
+        </motion.div>
       </Container>
     </Box>
   );

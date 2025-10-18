@@ -1,13 +1,10 @@
 @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap");
 
 @custom-variant dark (&:is(.dark *));
-<<<<<<< HEAD
 
-=======
 html {
   scroll-behavior: smooth;
 }
->>>>>>> origin/main
 :root {
   --font-size: 16px;
   --background: #ffffff;

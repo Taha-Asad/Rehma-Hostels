@@ -10,7 +10,7 @@ import Rooms from "@/components/home/Rooms";
 import StatsSection from "@/components/home/StatsSection";
 import Testimonials from "@/components/home/Testimonials";
 import { Box } from "@mui/material";
-
+import News from "@/components/home/News";
 export default function Home() {
   useSectionTracking(); // activates the scroll tracking
 
@@ -36,6 +36,9 @@ export default function Home() {
       </Box>
       <Box component="section" id="faqs">
         <FAQS />
+      </Box>
+      <Box component="section" id="news">
+        <News />
       </Box>
       <Box component="section" id="location">
         <Location />

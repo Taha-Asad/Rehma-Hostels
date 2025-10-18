@@ -1,3 +1,4 @@
+"use client";
 import { People } from "@mui/icons-material";
 import {
   Box,
@@ -12,11 +13,14 @@ import {
   ListItem,
   ListItemIcon,
   ListItemText,
+  Paper,
   Stack,
   Typography,
 } from "@mui/material";
 import { CircleCheckBig, Star } from "lucide-react";
-import React from "react";
+import React, { useState } from "react";
+import { motion, Variants } from "framer-motion";
+// import RoomDetailsModal, { Room } from "../ui/RoomDetailsModal";
 
 const cards = [
   {
@@ -90,14 +94,32 @@ const cards = [
     btnText: "Show Details",
   },
 ];
+
+const containerVariants: Variants = {
+  hidden: {},
+  visible: {
+    transition: { staggerChildren: 0.25 },
+  },
+};
+
+const cardVariants: Variants = {
+  hidden: { opacity: 0, y: 50 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.6, ease: [0.25, 0.1, 0.25, 1] },
+  },
+};
 function Rooms() {
+  // const [open, setOpen] = useState(false);
+  // const [selectedRoom, setSelectedRoom] = useState<Room | null>(null);
+
+  // const handleOpen = (room: Room) => {
+  //   setSelectedRoom(room);
+  //   setOpen(true);
+  // };
   return (
     <Box
-<<<<<<< HEAD
-      component={"section"}
-      id="rooms"
-=======
->>>>>>> origin/main
       sx={{
         py: 8,
       }}
@@ -124,7 +146,7 @@ function Rooms() {
             }}
           />
           <Typography
-            variant="h1"
+            variant="h2"
             sx={{
               color: "#3D444B",
               py: 2,
@@ -147,230 +169,320 @@ function Rooms() {
           </Typography>
         </Box>
         <Box>
-          <Grid container spacing={2}>
-            {cards.map((items, index) => (
-              <Grid size={{ xs: 12, sm: 6, md: 4 }} key={index}>
-                <Card
-                  sx={{
-                    mt: 5,
-                    width: "100%",
-                    transition: "all 0.3s ease",
-                    backgroundColor: "rgba(217,212,209,0.25)",
-                    backdropFilter: "blur(8px)",
-                    boxShadow:
-                      index === 1
-                        ? "0 20px 40px rgba(123,46,46,0.45)" // 💡 higher elevation for 2nd card
-                        : "0 8px 20px rgba(123,46,46,0.25), 0 2px 5px rgba(0,0,0,0.1)",
-                    transform: index === 1 ? "translateY(-10px)" : "none", // slightly lifted
-                    "&:hover": {
-                      transform: "translateY(-6px)",
-                      boxShadow: "0 20px 40px rgba(123,46,46,0.4)",
-                    },
-                    bgcolor: "#FFFFFF",
-                    borderRadius: 1,
-                    cursor: "default",
-                    minHeight: "800px",
-                    maxHeight: "800px",
-                  }}
-                >
-                  <Stack
-                    direction={"column"}
-                    sx={{
-                      position: "relative",
-                    }}
-                  >
-                    <CardMedia
-                      component="img"
-                      src={items.image}
-                      alt={`Room ${index + 1}`}
+          <motion.div
+            variants={containerVariants}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, amount: 0.2 }}
+          >
+            <Grid container spacing={2}>
+              {cards.map((items, index) => (
+                <Grid size={{ xs: 12, sm: 6, md: 4 }} key={index}>
+                  <motion.div variants={cardVariants}>
+                    <Card
                       sx={{
+                        mt: 5,
                         width: "100%",
-                        height: "250px",
-                        objectFit: "cover",
-                        borderTopLeftRadius: "4px",
-                        borderTopRightRadius: "4px",
-                        display: "block",
+                        transition: "all 0.3s ease",
+                        backgroundColor: "rgba(217,212,209,0.25)",
+                        backdropFilter: "blur(8px)",
+                        boxShadow:
+                          index === 1
+                            ? "0 20px 40px rgba(123,46,46,0.45)" // 💡 higher elevation for 2nd card
+                            : "0 8px 20px rgba(123,46,46,0.25), 0 2px 5px rgba(0,0,0,0.1)",
+                        transform: index === 1 ? "translateY(-10px)" : "none", // slightly lifted
+                        "&:hover": {
+                          transform: "translateY(-6px)",
+                          boxShadow: "0 20px 40px rgba(123,46,46,0.4)",
+                        },
+                        bgcolor: "#FFFFFF",
+                        borderRadius: 1,
+                        cursor: "default",
+                        minHeight: "800px",
+                        maxHeight: "800px",
                       }}
-                    />
-
-                    {items.chips.map((chip, i) => (
-                      <Chip
-                        key={i}
-                        icon={chip.icon}
-                        label={chip.label}
+                    >
+                      <Stack
+                        direction={"column"}
                         sx={{
-                          position: "absolute",
-                          ...(chip.position === "top-right" && {
-                            top: 10,
-                            right: 10,
-                          }),
-                          ...(chip.position === "top-left" && {
-                            top: 10,
-                            left: 10,
-                          }),
-                          ...(chip.position === "bottom-right" && {
-                            bottom: 10,
-                            right: 10,
-                          }),
-                          ...(chip.position === "bottom-left" && {
-                            bottom: "70%",
-                            left: 10,
-                          }),
+                          position: "relative",
+                        }}
+                      >
+                        <CardMedia
+                          component="img"
+                          src={items.image}
+                          alt={`Room ${index + 1}`}
+                          sx={{
+                            width: "100%",
+                            height: "250px",
+                            objectFit: "cover",
+                            borderTopLeftRadius: "4px",
+                            borderTopRightRadius: "4px",
+                            display: "block",
+                          }}
+                        />
 
-                          display: "flex",
-                          alignItems: "center",
-                          gap: 1.5,
-                          px: 2.5,
-                          py: 1.2,
-                          borderRadius: "10px",
-                          fontWeight: 600,
-                          fontFamily: "Inter",
-                          fontSize: "0.9rem",
-                          border: "1px solid rgba(255,255,255,0.3)",
-                          backdropFilter: "blur(8px)",
-                          transition: "all 0.4s ease-in-out",
-
-                          // 💎 Frosted glass + color logic
-                          ...(chip.position === "top-right"
-                            ? {
-                                background: "rgba(123,46,46,0.6)",
-                                color: "#FFFFFF",
-                                "& .MuiChip-icon": { color: "#FFFFFF" },
-                              }
-                            : {
-                                background: "rgba(255,255,255,0.65)",
-                                color: "#7B2E2E",
-                                "& .MuiChip-icon": { color: "#7B2E2E" },
+                        {items.chips.map((chip, i) => (
+                          <Chip
+                            key={i}
+                            icon={chip.icon}
+                            label={chip.label}
+                            sx={{
+                              position: "absolute",
+                              ...(chip.position === "top-right" && {
+                                top: 10,
+                                right: 10,
+                              }),
+                              ...(chip.position === "top-left" && {
+                                top: 10,
+                                left: 10,
+                              }),
+                              ...(chip.position === "bottom-right" && {
+                                bottom: 10,
+                                right: 10,
+                              }),
+                              ...(chip.position === "bottom-left" && {
+                                bottom: "70%",
+                                left: 10,
                               }),
 
-                          "&:hover": {
-                            transform: "translateY(-6px)",
-                            boxShadow:
-                              chip.position === "top-right"
-                                ? "0 10px 25px rgba(123,46,46,0.5)"
-                                : "0 10px 25px rgba(255,255,255,0.6)",
-                            background:
-                              chip.position === "top-right"
-                                ? "rgba(123,46,46,0.8)"
-                                : "rgba(255,255,255,0.85)",
-                          },
-                        }}
-                      />
-                    ))}
+                              display: "flex",
+                              alignItems: "center",
+                              gap: 1.5,
+                              px: 2.5,
+                              py: 1.2,
+                              borderRadius: "10px",
+                              fontWeight: 600,
+                              fontFamily: "Inter",
+                              fontSize: "0.9rem",
+                              border: "1px solid rgba(255,255,255,0.3)",
+                              backdropFilter: "blur(8px)",
+                              transition: "all 0.4s ease-in-out",
 
-                    <CardContent
-                      sx={{
-                        px: 2,
-                        py: 3,
-                      }}
-                    >
-                      <Typography
-                        variant="h3"
-                        fontFamily={"Poppins"}
-                        color="#7B2E2E"
-                      >
-                        {items.title}
-                      </Typography>
-                      <Typography variant="body1" fontSize={"16px"}>
-                        {items.content}
-                      </Typography>
-                      {items.serviceList.map((list, j) => (
-                        <List key={j} dense>
-                          <ListItem
+                              // 💎 Frosted glass + color logic
+                              ...(chip.position === "top-right"
+                                ? {
+                                    background: "rgba(123,46,46,0.6)",
+                                    color: "#FFFFFF",
+                                    "& .MuiChip-icon": { color: "#FFFFFF" },
+                                  }
+                                : {
+                                    background: "rgba(255,255,255,0.65)",
+                                    color: "#7B2E2E",
+                                    "& .MuiChip-icon": { color: "#7B2E2E" },
+                                  }),
+
+                              "&:hover": {
+                                transform: "translateY(-6px)",
+                                boxShadow:
+                                  chip.position === "top-right"
+                                    ? "0 10px 25px rgba(123,46,46,0.5)"
+                                    : "0 10px 25px rgba(255,255,255,0.6)",
+                                background:
+                                  chip.position === "top-right"
+                                    ? "rgba(123,46,46,0.8)"
+                                    : "rgba(255,255,255,0.85)",
+                              },
+                            }}
+                          />
+                        ))}
+
+                        <CardContent
+                          sx={{
+                            px: 2,
+                            py: 3,
+                          }}
+                        >
+                          <Typography
+                            variant="h3"
+                            fontFamily={"Poppins"}
+                            color="#7B2E2E"
+                          >
+                            {items.title}
+                          </Typography>
+                          <Typography variant="body1" fontSize={"16px"}>
+                            {items.content}
+                          </Typography>
+                          {items.serviceList.map((list, j) => (
+                            <List key={j} dense>
+                              <ListItem
+                                sx={{
+                                  alignItems: "flex-start",
+                                  py: 0, // optional: removes extra vertical padding
+                                }}
+                              >
+                                <ListItemIcon
+                                  sx={{
+                                    minWidth: "30px",
+                                    color: "#7B2E2E",
+                                  }}
+                                >
+                                  <CircleCheckBig size="20px" />
+                                </ListItemIcon>
+
+                                <ListItemText
+                                  primary={list}
+                                  sx={{
+                                    mt: "-2px",
+                                    "& .MuiListItemText-primary": {
+                                      fontFamily: "Inter",
+                                      color: "#505A63",
+                                      fontSize: "0.95rem",
+                                    },
+                                  }}
+                                />
+                              </ListItem>
+                            </List>
+                          ))}
+                          <Box
                             sx={{
-                              alignItems: "flex-start",
-                              py: 0, // optional: removes extra vertical padding
+                              display: "flex",
+                              alignItems: "baseline", // aligns text by their text baseline (looks cleaner)
+                              gap: "6px", // small gap between price and duration
+                              mt: 1,
+                              px: 2,
                             }}
                           >
-                            <ListItemIcon
-                              sx={{
-                                minWidth: "30px",
-                                color: "#7B2E2E",
-                              }}
+                            <Typography
+                              variant="h3"
+                              color="#7B2E2E"
+                              fontFamily="Inter"
+                              fontWeight={700}
                             >
-                              <CircleCheckBig size="20px" />
-                            </ListItemIcon>
-
-                            <ListItemText
-                              primary={list}
-                              sx={{
-                                mt: "-2px",
-                                "& .MuiListItemText-primary": {
-                                  fontFamily: "Inter",
-                                  color: "#505A63",
-                                  fontSize: "0.95rem",
-                                },
-                              }}
-                            />
-                          </ListItem>
-                        </List>
-                      ))}
+                              {items.price}
+                            </Typography>
+                            <Typography
+                              variant="body2"
+                              color="#505A63"
+                              sx={{ fontFamily: "Poppins" }}
+                            >
+                              {items.duration}
+                            </Typography>
+                          </Box>
+                        </CardContent>
+                        <Box
+                          sx={{
+                            display: "flex",
+                            justifyContent: "center",
+                            mt: 1,
+                            mb: 3,
+                          }}
+                        >
+                          <Button
+                            // onClick={() => handleOpen(items)}
+                            sx={{
+                              bgcolor: index === 1 ? "white" : "#7B2E2E",
+                              color: index === 1 ? "#7B2E2E" : "white",
+                              border: "2px solid #7B2E2E",
+                              borderRadius: 0.5,
+                              mb: 2,
+                              py: "10px",
+                              px: "15px",
+                              width: "150px",
+                              fontWeight: 600,
+                              boxShadow:
+                                index === 1
+                                  ? "5px 5px 10px rgba(0,0,0,0.15)"
+                                  : "5px 5px 10px rgba(123, 46, 46, 0.2)",
+                              transition: "all 0.3s",
+                              "&:hover": {
+                                bgcolor: index === 1 ? "#7B2E2E" : "white",
+                                color: index === 1 ? "white" : "#7B2E2E",
+                              },
+                            }}
+                          >
+                            {items.btnText}
+                          </Button>
+                        </Box>
+                      </Stack>
+                    </Card>
+                  </motion.div>
+                </Grid>
+              ))}
+            </Grid>
+            <Box>
+              <Container maxWidth={"sm"} sx={{ py: 4 }}>
+                <motion.div variants={cardVariants}>
+                  <Paper
+                    elevation={16}
+                    sx={{
+                      pt: 4,
+                      pb: 6,
+                      px: 2,
+                      bgcolor: "#7B2E2E",
+                      boxShadow: "0 20px 40px rgba(123,46,46,0.4)",
+                      color: "#fff",
+                      textAlign: "center",
+                    }}
+                  >
+                    <Stack direction={"column"}>
+                      <Typography
+                        variant="h6"
+                        sx={{
+                          fontWeight: 700,
+                          mb: 1,
+                          fontFamily: "Poppins, sans-serif",
+                        }}
+                      >
+                        Special Promotion
+                      </Typography>
+                      <Typography
+                        variant="body1"
+                        sx={{ mb: 1 }}
+                        color="#D4A373"
+                      >
+                        Book for 6 months and get{" "}
+                        <Box component="span" sx={{ fontWeight: 800 }}>
+                          1 month FREE
+                        </Box>
+                        !
+                      </Typography>
+                      <Typography variant="body2" sx={{ opacity: 0.9 }}>
+                        Limited time offer. Contact us for details.
+                      </Typography>
                       <Box
                         sx={{
-                          display: "flex",
-                          alignItems: "baseline", // aligns text by their text baseline (looks cleaner)
-                          gap: "6px", // small gap between price and duration
-                          mt: 1,
-                          px: 2,
+                          display: "grid",
+                          placeItems: "center",
+                          pt: 2,
                         }}
                       >
-                        <Typography
-                          variant="h2"
-                          color="#7B2E2E"
-                          fontFamily="Inter"
-                          fontWeight={700}
+                        <Button
+                          sx={{
+                            bgcolor: "primary.contrastText",
+                            color: "#7B2E2E",
+                            borderRadius: 0.5,
+                            width: 300,
+                            py: "10px",
+                            px: "15px",
+                            fontWeight: 600,
+                            border: "1px solid #7B2E2E",
+                            boxShadow: "5px 5px 10px rgba(123, 46, 46, 0.2)",
+                            transition: "all 0.3s",
+                            "&:hover": {
+                              color: "#D9D4D1",
+                              bgcolor: "#D4A373",
+                              boxShadow: "0 4px 15px rgba(212, 163, 115, 0.4)",
+                            },
+                          }}
                         >
-                          {items.price}
-                        </Typography>
-                        <Typography
-                          variant="body2"
-                          color="#505A63"
-                          sx={{ fontFamily: "Poppins" }}
-                        >
-                          {items.duration}
-                        </Typography>
+                          Show More Room
+                        </Button>
                       </Box>
-                    </CardContent>
-                    <Box
-                      sx={{
-                        display: "flex",
-                        justifyContent: "center",
-                        mt: 1,
-                        mb: 3,
-                      }}
-                    >
-                      <Button
-                        sx={{
-                          bgcolor: index === 1 ? "white" : "#7B2E2E",
-                          color: index === 1 ? "#7B2E2E" : "white",
-                          border: "2px solid #7B2E2E",
-                          borderRadius: 0.5,
-                          mb: 2,
-                          py: "10px",
-                          px: "15px",
-                          width: "150px",
-                          fontWeight: 600,
-                          boxShadow:
-                            index === 1
-                              ? "5px 5px 10px rgba(0,0,0,0.15)"
-                              : "5px 5px 10px rgba(123, 46, 46, 0.2)",
-                          transition: "all 0.3s",
-                          "&:hover": {
-                            bgcolor: index === 1 ? "#7B2E2E" : "white",
-                            color: index === 1 ? "white" : "#7B2E2E",
-                          },
-                        }}
-                      >
-                        {items.btnText}
-                      </Button>
-                    </Box>
-                  </Stack>
-                </Card>
-              </Grid>
-            ))}
-          </Grid>
+                    </Stack>
+                  </Paper>
+                </motion.div>
+              </Container>
+            </Box>
+          </motion.div>
         </Box>
       </Container>
+
+      {/* <RoomDetailsModal
+        open={open}
+        onClose={() => setOpen(false)}
+        room={selectedRoom}
+      /> */}
     </Box>
   );
 }

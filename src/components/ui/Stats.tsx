@@ -14,13 +14,7 @@ interface StatsProps {
   icon?: ReactNode; // main icon (large circle)
   labelIcon?: ReactNode; // small icon before label
   label: string;
-<<<<<<< HEAD
-  value: number;
-  duration?: number;
-  prefix?: string;
-  suffix?: string;
-  rating?: number;
-=======
+
   value: number; // numeric value to animate to (e.g., 24 for "24/7")
   suffixValue?: number; // optional second number to animate (e.g., 7 for "24/7")
   duration?: number; // animation duration (ms)
@@ -29,7 +23,6 @@ interface StatsProps {
   rating?: number; // optional star rating below the number
   width?: number | string; // card width (e.g., 320, "100%")
   height?: number | string; // card height (e.g., 200, "240px")
->>>>>>> origin/main
 }
 
 function Stats({
@@ -37,21 +30,11 @@ function Stats({
   labelIcon,
   label,
   value,
-<<<<<<< HEAD
-=======
   suffixValue,
->>>>>>> origin/main
   duration = 1500,
   prefix = "",
   suffix = "",
   rating,
-<<<<<<< HEAD
-}: StatsProps) {
-  const [count, setCount] = useState(0);
-  const ref = useRef<HTMLDivElement | null>(null);
-  const [isVisible, setIsVisible] = useState(false);
-
-=======
   width,
   height,
 }: StatsProps) {
@@ -61,7 +44,6 @@ function Stats({
   const [isVisible, setIsVisible] = useState(false);
 
   // Trigger animation when component becomes visible
->>>>>>> origin/main
   useEffect(() => {
     const observer = new IntersectionObserver(
       ([entry]) => {
@@ -76,10 +58,6 @@ function Stats({
     return () => observer.disconnect();
   }, []);
 
-<<<<<<< HEAD
-=======
-  // Animate main value
->>>>>>> origin/main
   useEffect(() => {
     if (!isVisible || typeof value !== "number") return;
     const startTime = performance.now();
@@ -87,11 +65,7 @@ function Stats({
     const animate = (now: number) => {
       const progress = Math.min((now - startTime) / duration, 1);
       const eased = 1 - Math.pow(1 - progress, 3);
-<<<<<<< HEAD
-      const current = eased * value; // removed floor to allow decimals
-=======
       const current = eased * value;
->>>>>>> origin/main
       setCount(current);
       if (progress < 1) requestAnimationFrame(animate);
     };
@@ -99,9 +73,6 @@ function Stats({
     requestAnimationFrame(animate);
   }, [isVisible, value, duration]);
 
-<<<<<<< HEAD
-=======
-  // Animate suffix value if provided
   useEffect(() => {
     if (!isVisible || typeof suffixValue !== "number") return;
     const startTime = performance.now();
@@ -131,22 +102,14 @@ function Stats({
       : Number(suffixCount).toFixed(1)
     : "";
 
->>>>>>> origin/main
   return (
     <Box ref={ref}>
       <Stack direction="row" justifyContent="center">
         <Card
           sx={{
             px: { xs: 5, md: 8 },
-<<<<<<< HEAD
-            width: "100%",
             py: 3,
             transition: "all 0.3s ease",
-            backgroundColor: "rgba(217,212,209,0.25)",
-=======
-            py: 3,
-            transition: "all 0.3s ease",
->>>>>>> origin/main
             backdropFilter: "blur(8px)",
             boxShadow:
               "0 8px 20px rgba(123,46,46,0.25), 0 2px 5px rgba(0,0,0,0.1)",
@@ -156,13 +119,9 @@ function Stats({
             },
             bgcolor: "#FFFFFF",
             borderRadius: 1,
-<<<<<<< HEAD
-            minHeight: "200px",
-=======
             width: width ?? "100%",
             height: height ?? undefined,
             minHeight: height ? undefined : 200,
->>>>>>> origin/main
             cursor: "default",
           }}
           elevation={0}
@@ -198,23 +157,8 @@ function Stats({
 
             <CardContent sx={{ textAlign: "center", p: 2 }}>
               <Typography
-                variant="h2"
+                variant="h3"
                 color="#7B2E2E"
-<<<<<<< HEAD
-                fontFamily="Inter"
-                fontWeight={700}
-              >
-                {prefix}
-                {value > 0
-                  ? value % 1 === 0
-                    ? Math.round(count) // whole number target, no decimals
-                    : count.toFixed(1) // has decimal target, keep one decimal
-                  : ""}
-                {suffix}
-              </Typography>
-
-              {/* Rating neatly below number */}
-=======
                 fontFamily="Inter, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif"
                 fontWeight={700}
               >
@@ -225,7 +169,6 @@ function Stats({
                 {suffixValue === undefined ? suffix : ""}
               </Typography>
 
->>>>>>> origin/main
               {rating !== undefined && (
                 <Rating
                   name="read-only"
@@ -236,26 +179,15 @@ function Stats({
                   sx={{
                     mt: 0.5,
                     "& .MuiRating-iconFilled": {
-<<<<<<< HEAD
-                      color: "#7B2E2E", // your brand red
-                    },
-                    "& .MuiRating-iconEmpty": {
-                      color: "#BAB1AD", // faded gray for empty stars
-=======
                       color: "#7B2E2E",
                     },
                     "& .MuiRating-iconEmpty": {
                       color: "#BAB1AD",
->>>>>>> origin/main
                     },
                   }}
                 />
               )}
 
-<<<<<<< HEAD
-              {/* Label with small icon before text */}
-=======
->>>>>>> origin/main
               <Stack
                 direction="column"
                 alignItems="center"
@@ -279,11 +211,7 @@ function Stats({
                 <Typography
                   variant="body1"
                   color="#505A63"
-<<<<<<< HEAD
-                  sx={{ textWrap: "nowrap" }}
-=======
                   sx={{ whiteSpace: "nowrap" }}
->>>>>>> origin/main
                 >
                   {label}
                 </Typography>

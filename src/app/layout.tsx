@@ -3,15 +3,10 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { AppRouterCacheProvider } from "@mui/material-nextjs/v13-appRouter";
 import Navbar from "@/components/Navbar";
-<<<<<<< HEAD
-import ClientThemeProvider from "@/components/ClientThemeProvider";
-import { Toaster } from "react-hot-toast";
-=======
 import "leaflet/dist/leaflet.css";
 import ClientThemeProvider from "@/components/ClientThemeProvider";
 import { Toaster } from "react-hot-toast";
 import Footer from "@/components/Footer";
->>>>>>> origin/main
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
@@ -23,7 +18,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Hostel Management System",
+  title: "Rehma Hostels & Professional Apartment",
   description:
     "Landing page and admin/student portal for hostel management system",
 };
@@ -43,10 +38,7 @@ export default function RootLayout({
           <ClientThemeProvider>
             <Navbar />
             {children}
-<<<<<<< HEAD
-=======
             <Footer />
->>>>>>> origin/main
           </ClientThemeProvider>
           <Toaster />
         </AppRouterCacheProvider>

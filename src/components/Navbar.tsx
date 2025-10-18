@@ -33,27 +33,19 @@ import {
   Lock,
   Home,
   Phone,
+  RateReview,
 } from "@mui/icons-material";
 import toast from "react-hot-toast";
 import EmailIcon from "@mui/icons-material/Email";
 import TuneIcon from "@mui/icons-material/Tune";
 import HotelIcon from "@mui/icons-material/Hotel";
-import RateReviewIcon from "@mui/icons-material/RateReview";
-<<<<<<< HEAD
-const navlinks = [
-  { icon: <Home />, title: "Home", url: "#hero" },
-  { icon: <TuneIcon />, title: "About Us", url: "#about" },
-  { icon: <TuneIcon />, title: "Amenities", url: "#amenities" },
-  { icon: <HotelIcon />, title: "Rooms", url: "#rooms" },
-=======
 import AutoStoriesIcon from "@mui/icons-material/AutoStories";
 const navlinks = [
   { icon: <Home />, title: "Home", url: "/#" },
   { icon: <AutoStoriesIcon />, title: "About Us", url: "/#about" },
   { icon: <TuneIcon />, title: "Amenities", url: "/#amenities" },
   { icon: <HotelIcon />, title: "Rooms", url: "/#rooms" },
->>>>>>> origin/main
-  { icon: <RateReviewIcon />, title: "Reviews", url: "/#reviews" },
+  { icon: <RateReview />, title: "Reviews", url: "/#reviews" },
   { icon: <Phone />, title: "Contact", url: "/#contact" },
 ];
 
@@ -151,8 +143,6 @@ function Navbar() {
     }
   };
 
-<<<<<<< HEAD
-=======
   const handleScroll = (id: string) => {
     const section = document.getElementById(id);
     if (section) {
@@ -163,7 +153,6 @@ function Navbar() {
     }
   };
 
->>>>>>> origin/main
   return (
     <Box
       component="nav"
@@ -250,10 +239,7 @@ function Navbar() {
                     "&:hover::after": { width: "70%" },
                   }}
                   aria-current={active ? "page" : undefined}
-<<<<<<< HEAD
-=======
                   onClick={() => handleScroll(item.url)}
->>>>>>> origin/main
                 >
                   <Box
                     sx={{
@@ -530,7 +516,9 @@ function Navbar() {
             <RadioGroup
               row
               value={userType}
-              onChange={(e) => setUserType(e.target.value)}
+              onChange={(e: {
+                target: { value: React.SetStateAction<string> };
+              }) => setUserType(e.target.value)}
             >
               <FormControlLabel
                 value="student"

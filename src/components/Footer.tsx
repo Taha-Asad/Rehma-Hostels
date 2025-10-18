@@ -11,8 +11,9 @@ import {
   IconButton,
   Link,
   Stack,
-  Fab,
-  Tooltip,
+  SpeedDial,
+  SpeedDialAction,
+  keyframes,
 } from "@mui/material";
 import {
   Facebook,
@@ -28,9 +29,8 @@ import {
 } from "@mui/icons-material";
 import Image from "next/image";
 
-// If you have a logo image, place it in public folder and update the path
-// import logoImage from '/logo.png';
-
+import logoImage from "../../public/Images/Logo.jpg";
+import ShareIcon from "@mui/icons-material/Share";
 function Footer() {
   const currentYear = new Date().getFullYear();
 
@@ -42,12 +42,47 @@ function Footer() {
     { label: "Contact", href: "#contact" },
   ];
 
+  const rotate = keyframes`
+  0% { transform: translateY(0deg); }
+  25% { transform: translateY(90deg); }
+  50% { transform: translateY(0deg); }
+  75% { transform: translateY(90deg); }
+  100% { transform: translateY(0); }
+`;
+
   const socialLinks = [
     { icon: <Facebook />, href: "#", label: "Facebook" },
     { icon: <Instagram />, href: "#", label: "Instagram" },
     { icon: <Twitter />, href: "#", label: "Twitter" },
     { icon: <YouTube />, href: "#", label: "YouTube" },
     { icon: <LinkedIn />, href: "#", label: "LinkedIn" },
+  ];
+  const actions = [
+    {
+      icon: <Facebook />,
+      name: "Facebook",
+      link: "https://facebook.com",
+    },
+    {
+      icon: <Instagram />,
+      name: "Instagram",
+      link: "https://instagram.com",
+    },
+    {
+      icon: <LinkedIn />,
+      name: "LinkedIn",
+      link: "https://linkedin.com",
+    },
+    {
+      icon: <EmailIcon />,
+      name: "Email",
+      link: "mailto:example@example.com",
+    },
+    {
+      icon: <WhatsAppIcon />,
+      name: "WhatsApp",
+      link: "https://wa.me/923001234567",
+    },
   ];
 
   return (
@@ -78,26 +113,11 @@ function Footer() {
           {/* Company Info */}
           <Grid size={{ xs: 12, md: 6, lg: 3 }}>
             <Box sx={{ mb: 3 }}>
-              {/* Replace with your logo */}
-              <Typography
-                variant="h5"
-                sx={{
-                  fontWeight: "bold",
-                  color: "white",
-                  fontFamily: "Poppins, sans-serif",
-                }}
-              >
-                REHMA
-              </Typography>
-              {/* Or use Image component for logo
-              <Image 
-                src="/logo.png" 
-                alt="REHMA Professional Hostel & Apartments" 
+              <Image
+                src={logoImage}
+                alt="REHMA Professional Hostel & Apartments"
                 width={120}
-                height={48}
-                style={{ filter: 'brightness(0) invert(1)' }}
               />
-              */}
             </Box>
 
             <Typography
@@ -416,7 +436,7 @@ function Footer() {
                 variant="body2"
                 sx={{ color: "rgba(255, 255, 255, 0.8)" }}
               >
-                Powered by HSM Technology
+                Powered by Intelliage Solutions
               </Typography>
               <Box
                 sx={{
@@ -436,45 +456,39 @@ function Footer() {
         </Box>
       </Container>
 
-      {/* Floating WhatsApp Button */}
-      <Tooltip title="Chat on WhatsApp" placement="left">
-        <Fab
-          component="a"
-          href="https://wa.me/923001234567"
-          target="_blank"
-          rel="noopener noreferrer"
-          sx={{
-            position: "fixed",
-            bottom: 32,
-            right: 32,
-            bgcolor: "#25D366",
+      <SpeedDial
+        ariaLabel="Social Media Menu"
+        direction="up"
+        sx={{
+          position: "fixed",
+          bottom: 32,
+          right: 32,
+          "& .MuiSpeedDial-fab": {
+            bgcolor: "#5f2424",
             color: "white",
             width: 64,
             height: 64,
-            boxShadow: "0 8px 24px rgba(37, 211, 102, 0.5)",
+            boxShadow: "0 20px 40px rgba(123,46,46,0.3)",
+            transition: "all 0.5s ease",
             "&:hover": {
-              bgcolor: "#128C7E",
+              bgcolor: "#D4A373",
               transform: "scale(1.1)",
-              boxShadow: "0 12px 32px rgba(37, 211, 102, 0.7)",
+              animation: `${rotate} 0.6s ease-in-out`,
+              boxShadow: "0 20px 40px rgba(212,163,115,0.5)",
             },
-            transition: "all 0.3s",
-            animation: "pulse 2s infinite",
-            "@keyframes pulse": {
-              "0%": {
-                boxShadow: "0 0 0 0 rgba(37, 211, 102, 0.7)",
-              },
-              "70%": {
-                boxShadow: "0 0 0 20px rgba(37, 211, 102, 0)",
-              },
-              "100%": {
-                boxShadow: "0 0 0 0 rgba(37, 211, 102, 0)",
-              },
-            },
-          }}
-        >
-          <WhatsAppIcon sx={{ fontSize: 32 }} />
-        </Fab>
-      </Tooltip>
+          },
+        }}
+        icon={<ShareIcon sx={{ fontSize: 32 }} />}
+      >
+        {actions.map((action) => (
+          <SpeedDialAction
+            key={action.name}
+            icon={action.icon}
+            tooltipTitle={action.name}
+            onClick={() => window.open(action.link, "_blank")}
+          />
+        ))}
+      </SpeedDial>
     </Box>
   );
 }

@@ -23,14 +23,14 @@ const baseTheme = createTheme({
       lineHeight: 1.2,
     },
     h2: {
-      fontSize: { xs: "2rem", md: "2.5rem", lg: "3rem" },
+      fontSize: { xs: "2.25rem", md: "3rem", lg: "3.75rem" },
       fontWeight: 600,
       fontFamily: "Poppins, sans-serif",
       lineHeight: 1.3,
       letterSpacing: "-0.5px",
     },
     h3: {
-      fontSize: { xs: "1.5rem", md: "1.75rem", lg: "2rem" },
+      fontSize: { xs: "2rem", md: "2.5rem", lg: "3rem" },
       fontWeight: 500,
       fontFamily: "Poppins, sans-serif",
       lineHeight: 1.4,
