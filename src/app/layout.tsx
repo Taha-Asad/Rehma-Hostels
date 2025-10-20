@@ -3,7 +3,6 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { AppRouterCacheProvider } from "@mui/material-nextjs/v13-appRouter";
 import Navbar from "@/components/Navbar";
-import "leaflet/dist/leaflet.css";
 import ClientThemeProvider from "@/components/ClientThemeProvider";
 import { Toaster } from "react-hot-toast";
 import Footer from "@/components/Footer";

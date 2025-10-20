@@ -40,9 +40,9 @@ export default function Home() {
       <Box component="section" id="news">
         <News />
       </Box>
-      <Box component="section" id="location">
+      {/* <Box component="section" id="location">
         <Location />
-      </Box>
+      </Box> */}
       <Box component="section" id="contact">
         <Contact />
       </Box>

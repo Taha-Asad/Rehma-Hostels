@@ -748,14 +748,14 @@ export default function NewsPage() {
             tooltipTitle="Add Article"
             onClick={() => {
               // Navigate to add article page or open modal
-              window.location.href = "/admin/news/add";
+              // window.location.href = "/admin/news/add";
             }}
           />
           <SpeedDialAction
             icon={<Edit />}
             tooltipTitle="Manage Articles"
             onClick={() => {
-              window.location.href = "/admin/news";
+              // window.location.href = "/admin/news";
             }}
           />
         </SpeedDial>
