@@ -76,9 +76,12 @@ async function getArticle(id: string): Promise<NewsArticle | null> {
   return article || null;
 }
 
-export default async function BlogPost({ params }: { params: { id: string } }) {
-  const { id } = params as { id: string };
-  const article = await getArticle(id);
+interface PageProps {
+  params: Promise<{ id: string }>;
+}
+export default async function BlogPost({ params }: PageProps) {
+  const resolvedParams = await params;
+  const article = await getArticle(resolvedParams.id);
   if (!article) {
     notFound();
   }

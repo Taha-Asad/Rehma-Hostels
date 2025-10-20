@@ -18,7 +18,7 @@ import {
   Typography,
 } from "@mui/material";
 import { CircleCheckBig, Star } from "lucide-react";
-import React, { useState } from "react";
+import React from "react";
 import { motion, Variants } from "framer-motion";
 // import RoomDetailsModal, { Room } from "../ui/RoomDetailsModal";
 
