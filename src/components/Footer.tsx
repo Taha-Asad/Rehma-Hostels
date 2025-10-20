@@ -13,7 +13,6 @@ import {
   Stack,
   SpeedDial,
   SpeedDialAction,
-  keyframes,
 } from "@mui/material";
 import {
   Facebook,
@@ -41,14 +40,6 @@ function Footer() {
     { label: "Reviews", href: "#reviews" },
     { label: "Contact", href: "#contact" },
   ];
-
-  const rotate = keyframes`
-  0% { transform: translateY(0deg); }
-  25% { transform: translateY(90deg); }
-  50% { transform: translateY(0deg); }
-  75% { transform: translateY(90deg); }
-  100% { transform: translateY(0); }
-`;
 
   const socialLinks = [
     { icon: <Facebook />, href: "#", label: "Facebook" },
@@ -473,7 +464,6 @@ function Footer() {
             "&:hover": {
               bgcolor: "#D4A373",
               transform: "scale(1.1)",
-              animation: `${rotate} 0.6s ease-in-out`,
               boxShadow: "0 20px 40px rgba(212,163,115,0.5)",
             },
           },

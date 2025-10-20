@@ -141,68 +141,52 @@ function FAQs() {
         overflow: "hidden",
       }}
     >
-      <Container maxWidth="lg" sx={{ position: "relative", zIndex: 1 }}>
-        <Box sx={{ textAlign: "center", mb: 8 }}>
-          <Chip
-            icon={<QuestionAnswer />}
-            label="HAVE QUESTIONS?"
-            sx={{
-              mb: 3,
-              px: 2,
-              py: 3,
-              height: "auto",
-              fontSize: "0.875rem",
-              fontWeight: 600,
-              letterSpacing: 1,
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          textAlign: "center",
+          flexDirection: "column",
+          py: 2,
+          pb: 3,
+        }}
+      >
+        <Chip
+          label="Have Questions?"
+          variant="outlined"
+          sx={{
+            bgcolor: "#F1E9E9",
+            "& .MuiChip-label": {
               color: "#7B2E2E",
-              bgcolor: alpha("#7B2E2E", 0.1),
-              border: `1px solid ${alpha("#7B2E2E", 0.2)}`,
-              "& .MuiChip-icon": {
-                color: "#7B2E2E",
-              },
-            }}
-          />
-
-          <Typography
-            variant="h2"
-            sx={{
-              fontSize: { xs: "2.5rem", md: "3.5rem", lg: "4rem" },
-              fontWeight: 800,
-              fontFamily: "Poppins, sans-serif",
-              color: "#3D444B",
-              mb: 2,
-              lineHeight: 1.2,
-            }}
-          >
-            Everything You Need
-            <Box
-              component="span"
-              sx={{
-                display: "block",
-                background: "linear-gradient(135deg, #7B2E2E 0%, #6B4B3E 100%)",
-                backgroundClip: "text",
-                WebkitBackgroundClip: "text",
-                WebkitTextFillColor: "transparent",
-              }}
-            >
-              To Know
-            </Box>
-          </Typography>
-
-          <Typography
-            variant="h6"
-            sx={{
-              color: "#505A63",
-              maxWidth: "700px",
-              mx: "auto",
-              lineHeight: 1.8,
-              fontWeight: 400,
-            }}
-          >
-            Find answers to common questions about living at REHMA.
-          </Typography>
-        </Box>
-
+              fontWeight: 600,
+            },
+          }}
+        />
+        <Typography
+          variant="h2"
+          sx={{
+            color: "#3D444B",
+            py: 2,
+          }}
+        >
+          Everything You Need <br />
+          <Box component="span" sx={{ color: "#7B2E2E" }}>
+            To Know
+          </Box>
+        </Typography>
+        <Typography
+          variant="body1"
+          sx={{
+            color: "#505A63",
+            width: "60%",
+          }}
+        >
+          Find answers to common questions about living at REHMA. We&apos;re
+          here to make your decision easy and confident.
+        </Typography>
+      </Box>
+      <Container maxWidth="lg" sx={{ position: "relative", zIndex: 1 }}>
         <Grid container spacing={3} sx={{ mb: 8 }}>
           {faqs.map((faq, index) => {
             const IconComponent = faq.icon;

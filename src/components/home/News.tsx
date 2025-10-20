@@ -19,7 +19,6 @@ import {
   Divider,
   Avatar,
   Zoom,
-  Fade,
 } from "@mui/material";
 import React, { useState, useEffect } from "react";
 import { motion, Variants } from "framer-motion";
@@ -28,7 +27,6 @@ import {
   Star,
   CalendarMonth,
   ArrowForward,
-  TrendingUp,
   NotificationsActive,
   Close,
   Share,
@@ -58,15 +56,17 @@ interface NewsArticle {
   chips: NewsChip[];
 }
 
+// Animation Variants
 const containerVariants: Variants = {
-  hidden: {},
+  hidden: { opacity: 0 },
   visible: {
+    opacity: 1,
     transition: { staggerChildren: 0.25 },
   },
 };
 
 const cardVariants: Variants = {
-  hidden: { opacity: 0, y: 50 },
+  hidden: { opacity: 0, y: 40 },
   visible: {
     opacity: 1,
     y: 0,
@@ -112,7 +112,7 @@ const initialCards: NewsArticle[] = [
   {
     id: 2,
     image:
-      "https://images.unsplash.com/photo-1565372918193-0f90551ec8ab?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080",
+      "https://images.unsplash.com/photo-1593642634315-48f5414c3ad9?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080",
     title: "New Study Lounges Opened",
     content:
       "Dedicated quiet study areas now available for better focus and productivity.",
@@ -149,7 +149,7 @@ const initialCards: NewsArticle[] = [
   {
     id: 3,
     image:
-      "https://images.unsplash.com/photo-1596495577886-d920f1d2abf3?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080",
+      "https://images.unsplash.com/photo-1593642634315-48f5414c3ad9?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080",
     title: "Nutrition Plans Launched",
     content:
       "Healthy and tasty meal plans tailored for students are now offered at the hostel.",
@@ -194,6 +194,7 @@ const News = () => {
   const fetchNewsData = async () => {
     setLoading(true);
     try {
+      // mock fetch delay
       setTimeout(() => {
         setCards(initialCards);
         setLoading(false);
@@ -241,8 +242,6 @@ const News = () => {
 
   return (
     <Box
-      component="section"
-      id="news"
       sx={{
         py: { xs: 6, md: 10 },
         background:
@@ -251,96 +250,58 @@ const News = () => {
         overflow: "hidden",
       }}
     >
-      {/* Decorative background elements */}
-      <Box
-        sx={{
-          position: "absolute",
-          top: "20%",
-          left: "-5%",
-          width: 300,
-          height: 300,
-          borderRadius: "50%",
-          background:
-            "radial-gradient(circle, rgba(123,46,46,0.05) 0%, transparent 70%)",
-          filter: "blur(40px)",
-        }}
-      />
-
       <Container maxWidth="lg">
         <Box
+          component={motion.div}
+          initial={{ opacity: 0, y: -20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+          viewport={{ once: true }}
           sx={{
             display: "flex",
             justifyContent: "center",
             alignItems: "center",
             textAlign: "center",
             flexDirection: "column",
-            mb: 6,
+            py: 2,
+            pb: 3,
           }}
         >
-          <motion.div
-            initial={{ opacity: 0, y: -20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-          >
-            <Chip
-              icon={<TrendingUp />}
-              label="LATEST UPDATES"
-              sx={{
-                bgcolor: "rgba(123,46,46,0.1)",
-                border: "1px solid rgba(123,46,46,0.2)",
-                "& .MuiChip-label": {
-                  color: "#7B2E2E",
-                  fontWeight: 600,
-                  letterSpacing: 1,
-                },
-                "& .MuiChip-icon": {
-                  color: "#7B2E2E",
-                },
-                mb: 3,
-                px: 2,
-                py: 3,
-                height: "auto",
-              }}
-            />
-          </motion.div>
-
+          <Chip
+            label="NEWS & UPDATES"
+            variant="outlined"
+            sx={{
+              bgcolor: "#F1E9E9",
+              "& .MuiChip-label": {
+                color: "#7B2E2E",
+                fontWeight: 600,
+              },
+            }}
+          />
           <Typography
             variant="h2"
             sx={{
               color: "#3D444B",
-              fontFamily: "Poppins, sans-serif",
+              py: 2,
               fontWeight: 700,
-              fontSize: { xs: "2.5rem", md: "3.5rem" },
-              mb: 2,
+              fontFamily: "Poppins, sans-serif",
             }}
           >
-            Trusted by Students
-            <Box
-              component="span"
-              sx={{
-                display: "block",
-                background: "linear-gradient(135deg, #7B2E2E 0%, #D4A373 100%)",
-                backgroundClip: "text",
-                WebkitBackgroundClip: "text",
-                WebkitTextFillColor: "transparent",
-              }}
-            >
-              Across Lahore
+            Stay Informed with <br />
+            <Box component="span" sx={{ color: "#7B2E2E" }}>
+              The Latest Campus News
             </Box>
           </Typography>
-
           <Typography
             variant="body1"
             sx={{
               color: "#505A63",
-              maxWidth: "600px",
-              mx: "auto",
-              fontSize: "1.1rem",
-              lineHeight: 1.8,
+              width: "60%",
+              maxWidth: 600,
             }}
           >
-            Hear from our community of students and professionals who have found
-            their perfect home at REHMA.
+            Explore the newest announcements, facility updates, and important
+            notifications from our hostel management team.
           </Typography>
         </Box>
 
@@ -857,33 +818,20 @@ const News = () => {
               )}
             </Dialog>
 
-            {/* Newsletter Section - Keep as is */}
             <Container maxWidth="md" sx={{ mt: 8 }}>
               <motion.div variants={cardVariants}>
                 <Paper
-                  elevation={0}
+                  elevation={16}
                   sx={{
                     background:
                       "linear-gradient(135deg, #7B2E2E 0%, #5f2424 100%)",
-                    borderRadius: 3,
-                    p: { xs: 4, md: 6 },
+                    py: 2,
+                    pb: 4,
                     position: "relative",
                     overflow: "hidden",
                     boxShadow: "0 20px 40px rgba(123,46,46,0.3)",
                   }}
                 >
-                  {/* Background pattern */}
-                  <Box
-                    sx={{
-                      position: "absolute",
-                      inset: 0,
-                      opacity: 0.1,
-                      backgroundImage:
-                        "radial-gradient(circle at 2px 2px, white 1px, transparent 0)",
-                      backgroundSize: "30px 30px",
-                    }}
-                  />
-
                   <Stack
                     direction="column"
                     spacing={3}
@@ -997,10 +945,12 @@ const News = () => {
                       </Button>
                     </Box>
 
-                    {/* Show More Button */}
+                    {/* Show More Button (navigates to /news) */}
                     <Button
                       variant="outlined"
                       startIcon={<ArrowForward />}
+                      component={Link}
+                      href="/news"
                       sx={{
                         borderColor: "rgba(255,255,255,0.3)",
                         color: "white",

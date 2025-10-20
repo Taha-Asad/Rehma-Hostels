@@ -77,8 +77,8 @@ async function getArticle(id: string): Promise<NewsArticle | null> {
 }
 
 export default async function BlogPost({ params }: { params: { id: string } }) {
-  const article = await getArticle(params.id);
-
+  const { id } = params as { id: string };
+  const article = await getArticle(id);
   if (!article) {
     notFound();
   }

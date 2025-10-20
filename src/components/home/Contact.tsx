@@ -29,6 +29,7 @@ import {
   Phone as PhoneIcon,
   School as SchoolIcon,
   CheckCircle as CheckCircleIcon,
+  Celebration,
 } from "@mui/icons-material";
 import Stats from "../ui/Stats";
 import { motion, Variants } from "framer-motion";
@@ -564,6 +565,20 @@ function Contact() {
               }}
             >
               <Stack direction={"column"} sx={{ p: { xs: 3, md: 4 } }}>
+                <Box sx={{ display: "grid", placeItems: "center", pb: 3 }}>
+                  <Celebration
+                    sx={{
+                      fontSize: 48,
+                      color: "#D4A373",
+                      animation: "pulse 2s infinite",
+                      "@keyframes pulse": {
+                        "0%": { transform: "scale(1)" },
+                        "50%": { transform: "scale(1.1)" },
+                        "100%": { transform: "scale(1)" },
+                      },
+                    }}
+                  />
+                </Box>
                 <Typography
                   variant="h6"
                   sx={{

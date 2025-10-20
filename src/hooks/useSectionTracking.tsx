@@ -1,54 +1,27 @@
 "use client";
-import { useEffect, useRef } from "react";
+import { useEffect } from "react";
 
 export default function useSectionTracking() {
-  const rafRef = useRef<number | null>(null);
-
   useEffect(() => {
-    const update = () => {
-      const sections = Array.from(document.querySelectorAll("section[id]"));
-      if (!sections.length) return;
+    const sections = document.querySelectorAll("section[id]");
 
-      const observer = new IntersectionObserver(
-        (entries) => {
-          const visible = entries.filter((e) => e.isIntersecting);
-          if (!visible.length) return;
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            history.replaceState(null, "", `#${entry.target.id}`);
+            console.log("tracking", entry.target.id);
+          }
+        });
+      },
+      { threshold: 0.1, rootMargin: "0px 0px -20% 0px" }
+    );
 
-          const best = visible.reduce((a, b) =>
-            a.intersectionRatio >= b.intersectionRatio ? a : b
-          );
-
-          const id = best.target.getAttribute("id");
-          if (!id) return;
-
-          if (rafRef.current) cancelAnimationFrame(rafRef.current);
-          rafRef.current = requestAnimationFrame(() => {
-            const newUrl = `${window.location.pathname}#${id}`;
-            if (window.location.hash !== `#${id}`) {
-              history.replaceState(null, "", newUrl);
-            }
-          });
-        },
-        {
-          threshold: 0.4,
-          rootMargin: "0px 0px -40% 0px",
-        }
-      );
-
-      sections.forEach((s) => observer.observe(s));
-
-      return () => observer.disconnect();
-    };
-
-    const cleanup = update();
-
-    // If sections are lazy-loaded, re-attach on next frame
-    const timeout = setTimeout(update, 1000);
-
-    return () => {
-      cleanup && cleanup();
-      clearTimeout(timeout);
-      if (rafRef.current) cancelAnimationFrame(rafRef.current);
-    };
+    sections.forEach((section) => {
+      console.log("observing", section.id);
+      observer.observe(section);
+    });
+    sections.forEach((sec) => observer.observe(sec));
+    return () => observer.disconnect();
   }, []);
 }
