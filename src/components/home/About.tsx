@@ -18,8 +18,6 @@ import {
   VolunteerActivism,
 } from "@mui/icons-material";
 import { motion } from "framer-motion";
-import Link from "next/link";
-import { scrollToSection } from "@/utils/scrollToSection";
 
 const aboutUs = [
   {
@@ -153,26 +151,9 @@ function About() {
                 to live. Situated in a peaceful and convenient area of Lahore,
                 we offer well-managed and fully maintained spaces that truly
                 feel like home. Our rooms for rent in Lahore are designed to
-                provide the perfect mix of privacy, convenience, and modern{" "}
-                <Box
-                  component={Link}
-                  href={"/#amenities"}
-                  onClick={() => scrollToSection("amenities")}
-                  color={"#D4A373"}
-                  sx={{
-                    display: "inline-block",
-                    textDecorationThickness: "1px",
-                    textUnderlineOffset: "4px",
-                    transition: "transform 0.3s ease",
-                    "&:hover": {
-                      transform: "translateY(-2px)",
-                    },
-                  }}
-                >
-                  amenities
-                </Box>
-                , making everyday living simple and stress-free. With a calm
-                environment, responsive management,
+                provide the perfect mix of privacy, convenience, and modern
+                amenities, making everyday living simple and stress-free. With a
+                calm environment, responsive management,
                 <Box
                   component={"span"}
                   sx={{ color: "#7B2E2E", fontWeight: "bold" }}
@@ -189,16 +170,6 @@ function About() {
                 </Box>
                 .
               </Typography>
-              {/* <Typography>
-                Since our establishment, we&apos;ve been committed to providing
-                students and working professionals with a safe, comfortable, and
-                supportive environment in the heart of Lahore. Our facility is
-                designed to help you focus on what matters most — your studies
-                and career growth. We believe that where you live shapes how you
-                live. That&apos;s why every aspect of REHMA is carefully crafted
-                to support your journey, from our modern amenities to our
-                dedicated staff who treat every resident like family.
-              </Typography> */}
             </Grid>
           </Grid>
         </Box>

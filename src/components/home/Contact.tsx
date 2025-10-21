@@ -455,7 +455,7 @@ function Contact() {
                       fontFamily: "Poppins, sans-serif",
                     }}
                   >
-                    Why Students & Professionals Choose REHMA
+                    Why Professionals Choose REHMA
                   </Typography>
                   <Box sx={{ display: "grid", rowGap: 1.5 }}>
                     {whyPoints.map((point, idx) => (

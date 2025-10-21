@@ -2,10 +2,6 @@
 
 @custom-variant dark (&:is(.dark *));
 
-html {
-  scroll-behavior: smooth;
-  overflow: "overlay";
-}
 :root {
   --font-size: 16px;
   --background: #ffffff;
@@ -132,6 +128,7 @@ html {
 
   body {
     @apply bg-background text-foreground;
+    scrollbar-gutter: stable;
   }
 }
 
@@ -192,4 +189,9 @@ html {
 
 html {
   font-size: var(--font-size);
+  scroll-behavior: smooth;
+  overflow-y: scroll;
+}
+body {
+  scrollbar-gutter: stable;
 }

@@ -54,6 +54,7 @@ import {
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { Clock, MapPin, Shield, Users, X } from "lucide-react";
+import { scrollToSection } from "@/utils/scrollToSection";
 // import { motion } from "framer-motion";
 
 interface RoomDetailsModalProps {
@@ -489,7 +490,7 @@ const allRooms: Room[] = [
     reviews: 32,
     available: true,
     description:
-      "A comfortable single room perfect for students who value privacy and quiet study time. Features modern amenities and ample storage space.",
+      "A comfortable single room perfect for professionals who value privacy and quiet study time. Features modern amenities and ample storage space.",
     amenities: [
       { label: "High-speed WiFi", icon: <Wifi /> },
       { label: "Air Conditioning", icon: <AcUnit /> },
@@ -574,7 +575,7 @@ const allRooms: Room[] = [
     reviews: 45,
     available: true,
     description:
-      "Budget-friendly triple sharing room perfect for student groups. Includes individual study areas and storage for each occupant.",
+      "Budget-friendly triple sharing room perfect for professionals groups. Includes individual study areas and storage for each occupant.",
     amenities: [
       { label: "High-speed WiFi", icon: <Wifi /> },
       { label: "Air Conditioning", icon: <AcUnit /> },
@@ -632,7 +633,7 @@ const allRooms: Room[] = [
     reviews: 89,
     available: true,
     description:
-      "Affordable single room with essential amenities for budget-conscious students. Comfortable and functional living space.",
+      "Affordable single room with essential amenities for budget-conscious professionals. Comfortable and functional living space.",
     amenities: [
       { label: "WiFi", icon: <Wifi /> },
       { label: "Ceiling Fan", icon: <AcUnit /> },
@@ -670,14 +671,6 @@ const serviceIcons: { [key: string]: React.ReactElement } = {
   "Premium AC": <AcUnit />,
 };
 
-// Add scrollToSection function
-const scrollToSection = (sectionId: string) => {
-  const element = document.getElementById(sectionId);
-  if (element) {
-    element.scrollIntoView({ behavior: "smooth" });
-  }
-};
-
 export default function RoomsPage() {
   const [rooms] = useState<Room[]>(allRooms);
   const [filteredRooms, setFilteredRooms] = useState<Room[]>(allRooms);
@@ -697,7 +690,16 @@ export default function RoomsPage() {
   // Add modal state
   const [selectedRoom, setSelectedRoom] = useState<Room | null>(null);
   const [modalOpen, setModalOpen] = useState(false);
-
+  const selectConfig = {
+    MenuProps: {
+      disableScrollLock: true, // This prevents the scrollbar from being removed
+      PaperProps: {
+        style: {
+          maxHeight: 300,
+        },
+      },
+    },
+  };
   useEffect(() => {
     let filtered = [...rooms];
 
@@ -1176,6 +1178,7 @@ export default function RoomsPage() {
                   value={sortBy}
                   onChange={(e: SelectChangeEvent) => setSortBy(e.target.value)}
                   label="Sort By"
+                  {...selectConfig}
                   sx={{
                     borderRadius: 2,
                     bgcolor: "#FAFAFA",

@@ -17,8 +17,6 @@ import {
   DialogContent,
   IconButton,
   Divider,
-  Avatar,
-  Zoom,
 } from "@mui/material";
 import React, { useState, useEffect } from "react";
 import { motion, Variants } from "framer-motion";
@@ -34,6 +32,7 @@ import {
   AccessTime,
   Person,
   OpenInNew,
+  Circle,
 } from "@mui/icons-material";
 import Link from "next/link";
 
@@ -82,9 +81,9 @@ const initialCards: NewsArticle[] = [
       "https://images.unsplash.com/photo-1593642634315-48f5414c3ad9?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080",
     title: "Campus Renovation Completed",
     content:
-      "The hostel underwent major renovations, offering students a modern and comfortable living environment.",
+      "The hostel underwent major renovations, offering professionals a modern and comfortable living environment.",
     fullContent: `
-      <p>We are thrilled to announce that the comprehensive renovation of our campus facilities has been successfully completed. This major upgrade represents our commitment to providing students with a world-class living and learning environment.</p>
+      <p>We are thrilled to announce that the comprehensive renovation of our campus facilities has been successfully completed. This major upgrade represents our commitment to providing professionals with a world-class living and learning environment.</p>
       
       <h3>Key Improvements Include:</h3>
       <ul>
@@ -94,19 +93,19 @@ const initialCards: NewsArticle[] = [
         <li><strong>Improved Infrastructure:</strong> Updated electrical systems, high-speed internet connectivity, and better ventilation throughout the facility.</li>
       </ul>
       
-      <p>The renovation project, which began in January 2025, was completed ahead of schedule and within budget. We worked closely with student representatives to ensure that the improvements aligned with the needs and preferences of our residents.</p>
+      <p>The renovation project, which began in January 2025, was completed ahead of schedule and within budget. We worked closely with professionals representatives to ensure that the improvements aligned with the needs and preferences of our residents.</p>
       
-      <h3>Student Feedback</h3>
-      <p>"The new facilities are amazing! The study areas are now perfect for both individual study and group projects," says Sarah Ahmed, a third-year engineering student.</p>
+      <h3>Professional Feedback</h3>
+      <p>"The new facilities are amazing! The study areas are now perfect for both individual study and group projects," says Sarah Ahmed, a third-year engineering professionals.</p>
       
-      <p>We invite all current and prospective students to visit and experience the transformed campus. Tours are available daily from 9 AM to 6 PM.</p>
+      <p>We invite all current and prospective professionals to visit and experience the transformed campus. Tours are available daily from 9 AM to 6 PM.</p>
     `,
     date: "Oct 15, 2025",
     author: "Admin Team",
     readTime: "5 min read",
     category: "Announcements",
     chips: [
-      { icon: <People />, label: "All Students", position: "bottom-left" },
+      { icon: <People />, label: "All Residents", position: "bottom-left" },
     ],
   },
   {
@@ -117,11 +116,11 @@ const initialCards: NewsArticle[] = [
     content:
       "Dedicated quiet study areas now available for better focus and productivity.",
     fullContent: `
-      <p>In response to student feedback, we are excited to unveil our brand new study lounges designed to enhance academic performance and provide the perfect environment for focused learning.</p>
+      <p>In response to Residents feedback, we are excited to unveil our brand new study lounges designed to enhance academic performance and provide the perfect environment for focused learning.</p>
       
       <h3>Features of the New Study Lounges:</h3>
       <ul>
-        <li><strong>24/7 Access:</strong> Round-the-clock availability for students with different study schedules.</li>
+        <li><strong>24/7 Access:</strong> Round-the-clock availability for professionals with different study schedules.</li>
         <li><strong>Sound-Proof Zones:</strong> Specially designed quiet areas for maximum concentration.</li>
         <li><strong>Group Study Rooms:</strong> Bookable spaces for collaborative projects and discussions.</li>
         <li><strong>High-Speed WiFi:</strong> Dedicated bandwidth for seamless research and online learning.</li>
@@ -129,7 +128,7 @@ const initialCards: NewsArticle[] = [
       </ul>
       
       <h3>Booking System</h3>
-      <p>Students can now book study rooms through our HSM app. Simply log in, select your preferred time slot, and reserve your space. Walk-in spaces are also available on a first-come, first-served basis.</p>
+      <p>Residents can now book study rooms through our HSM app. Simply log in, select your preferred time slot, and reserve your space. Walk-in spaces are also available on a first-come, first-served basis.</p>
       
       <p>The lounges are equipped with ergonomic furniture, adjustable lighting, and climate control to ensure maximum comfort during long study sessions.</p>
     `,
@@ -140,7 +139,7 @@ const initialCards: NewsArticle[] = [
     chips: [
       {
         icon: <People />,
-        label: "Students & Professionals",
+        label: "Professionals",
         position: "bottom-left",
       },
       { icon: <Star />, label: "Featured", position: "top-right" },
@@ -152,9 +151,9 @@ const initialCards: NewsArticle[] = [
       "https://images.unsplash.com/photo-1593642634315-48f5414c3ad9?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080",
     title: "Nutrition Plans Launched",
     content:
-      "Healthy and tasty meal plans tailored for students are now offered at the hostel.",
+      "Healthy and tasty meal plans tailored for Professionals are now offered at the hostel.",
     fullContent: `
-      <p>We are delighted to introduce our new comprehensive nutrition plans, carefully designed by certified nutritionists to meet the dietary needs and preferences of our diverse student community.</p>
+      <p>We are delighted to introduce our new comprehensive nutrition plans, carefully designed by certified nutritionists to meet the dietary needs and preferences of our diverse Professionals community.</p>
       
       <h3>Available Meal Plans:</h3>
       <ul>
@@ -203,6 +202,25 @@ const News = () => {
       console.error("Error fetching news:", error);
       setLoading(false);
     }
+  };
+  const chipStyle = {
+    backgroundColor: "rgba(255,255,255,0.1)",
+    backdropFilter: "blur(4px)",
+    border: "1px solid rgba(255,255,255,0.2)",
+    color: "white",
+    fontWeight: 600,
+    px: 1,
+    py: 1,
+    height: "auto",
+    "& .MuiChip-icon": {
+      fontSize: "18px",
+      color: "white",
+    },
+  };
+
+  const circleStyle = {
+    fontSize: "10px",
+    color: "rgba(255,255,255,0.7)",
   };
 
   const handleSubscribe = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -526,6 +544,7 @@ const News = () => {
                     py: "10px",
                     px: "15px",
                     fontWeight: 600,
+                    border: "1px solid #D4A373",
                     boxShadow: "5px 5px 10px rgba(123, 46, 46, 0.25)",
                     transition: "all 0.3s",
                     "&:hover": {
@@ -545,30 +564,55 @@ const News = () => {
             <Dialog
               open={modalOpen}
               onClose={handleCloseModal}
-              maxWidth="md"
+              maxWidth="lg"
               fullWidth
-              TransitionComponent={Zoom}
               PaperProps={{
                 sx: {
-                  borderRadius: 3,
                   overflow: "hidden",
-                  maxHeight: "90vh",
+                  height: { xs: "auto", md: "85vh" },
+                  maxHeight: { xs: "90vh", md: "85vh" },
                 },
               }}
             >
               {selectedArticle && (
                 <>
-                  {/* Modal Header with Image */}
-                  <Box sx={{ position: "relative" }}>
+                  <Box
+                    sx={{
+                      display: "flex",
+                      flexDirection: { xs: "column", md: "row" },
+                      height: "100%",
+                    }}
+                  >
+                    {/* Modal Header with Image */}
                     <Box
                       sx={{
-                        height: { xs: 250, sm: 350 },
+                        width: { xs: "100%", md: "50%" },
+                        height: { xs: 300, md: "100%" },
                         position: "relative",
-                        background: `linear-gradient(180deg, transparent 0%, rgba(0,0,0,0.8) 100%), url(${selectedArticle.image})`,
-                        backgroundSize: "cover",
-                        backgroundPosition: "center",
+                        overflow: "hidden",
                       }}
                     >
+                      <Box
+                        component="img"
+                        src={selectedArticle.image}
+                        alt={selectedArticle.title}
+                        sx={{
+                          width: "100%",
+                          height: "100%",
+                          objectFit: "cover",
+                        }}
+                      />
+                      <Box
+                        sx={{
+                          position: "absolute",
+                          bottom: 0,
+                          left: 0,
+                          right: 0,
+                          height: "50%",
+                          background:
+                            "linear-gradient(to top, rgba(0,0,0,0.7), transparent)",
+                        }}
+                      />
                       {/* Close Button */}
                       <IconButton
                         onClick={handleCloseModal}
@@ -625,229 +669,243 @@ const News = () => {
                         </Typography>
 
                         {/* Meta Info */}
-                        <Stack
-                          direction="row"
-                          spacing={2}
+                        <Grid
+                          container
                           alignItems="center"
-                          sx={{ flexWrap: "wrap", gap: 2 }}
+                          justifyContent="flex-start"
+                          sx={{
+                            pb: 5,
+                            flexWrap: "wrap",
+                            gap: 2, // handles responsive spacing
+                          }}
                         >
-                          <Box
-                            sx={{
-                              display: "flex",
-                              alignItems: "center",
-                              gap: 1,
-                            }}
-                          >
-                            <Avatar
-                              sx={{
-                                bgcolor: "rgba(255,255,255,0.2)",
-                                width: 32,
-                                height: 32,
-                                backdropFilter: "blur(10px)",
-                              }}
-                            >
-                              <Person sx={{ fontSize: 18, color: "white" }} />
-                            </Avatar>
-                            <Typography
-                              variant="body2"
-                              sx={{ color: "rgba(255,255,255,0.9)" }}
-                            >
-                              {selectedArticle.author}
-                            </Typography>
-                          </Box>
-                          <Typography
-                            variant="body2"
-                            sx={{ color: "rgba(255,255,255,0.7)" }}
-                          >
-                            •
-                          </Typography>
-                          <Box
-                            sx={{
-                              display: "flex",
-                              alignItems: "center",
-                              gap: 0.5,
-                            }}
-                          >
-                            <CalendarMonth
-                              sx={{
-                                fontSize: 16,
-                                color: "rgba(255,255,255,0.9)",
-                              }}
+                          <Grid>
+                            <Chip
+                              icon={<Person />}
+                              label={selectedArticle.author}
+                              sx={chipStyle}
                             />
-                            <Typography
-                              variant="body2"
-                              sx={{ color: "rgba(255,255,255,0.9)" }}
-                            >
-                              {selectedArticle.date}
-                            </Typography>
-                          </Box>
-                          <Typography
-                            variant="body2"
-                            sx={{ color: "rgba(255,255,255,0.7)" }}
-                          >
-                            •
-                          </Typography>
-                          <Box
-                            sx={{
-                              display: "flex",
-                              alignItems: "center",
-                              gap: 0.5,
-                            }}
-                          >
-                            <AccessTime
-                              sx={{
-                                fontSize: 16,
-                                color: "rgba(255,255,255,0.9)",
-                              }}
+                          </Grid>
+
+                          <Circle sx={circleStyle} />
+
+                          <Grid>
+                            <Chip
+                              icon={<CalendarMonth />}
+                              label={selectedArticle.date}
+                              sx={chipStyle}
                             />
-                            <Typography
-                              variant="body2"
-                              sx={{ color: "rgba(255,255,255,0.9)" }}
-                            >
-                              {selectedArticle.readTime}
-                            </Typography>
-                          </Box>
-                        </Stack>
+                          </Grid>
+
+                          <Circle sx={circleStyle} />
+
+                          <Grid>
+                            <Chip
+                              icon={<AccessTime />}
+                              label={selectedArticle.readTime}
+                              sx={chipStyle}
+                            />
+                          </Grid>
+                        </Grid>
                       </Box>
                     </Box>
-                  </Box>
 
-                  {/* Modal Content */}
-                  <DialogContent sx={{ p: { xs: 3, sm: 4 } }}>
-                    {/* Action Buttons */}
                     <Box
                       sx={{
+                        width: { xs: "100%", md: "50%" },
+                        height: "100%",
                         display: "flex",
-                        justifyContent: "space-between",
-                        alignItems: "center",
-                        mb: 3,
+                        flexDirection: "column",
                       }}
                     >
-                      <Box sx={{ display: "flex", gap: 1 }}>
-                        {selectedArticle.chips.map((chip, i) => (
-                          <Chip
-                            key={i}
-                            icon={chip.icon}
-                            label={chip.label}
-                            size="small"
+                      {/* Modal Content */}
+                      <DialogContent
+                        sx={{
+                          flex: 1,
+                          p: { xs: 3, md: 4 },
+                          overflow: "hidden",
+                          scrollbarWidth: "thin", // Firefox
+                          scrollbarColor: "#7B2E2E transparent",
+                          transition: "all 1s ease-in-out",
+                          scrollbarGutter: "stable",
+                          "&:hover": {
+                            overflowY: "overlay",
+                          },
+                          "&::-webkit-scrollbar": {
+                            width: "8px",
+                            backgroundColor: "transparent", // track
+                          },
+                          "&::-webkit-scrollbar:hover": {
+                            boxShadow: "0 4px 15px rgba(212, 163, 115, 0.4)",
+                          },
+                          "&::-webkit-scrollbar-thumb": {
+                            backgroundColor: "#7B2E2E",
+                            borderRadius: "10px",
+                          },
+                          "&::-webkit-scrollbar-thumb:hover": {
+                            backgroundColor: "#D4A373",
+                            boxShadow: "0 4px 15px rgba(212, 163, 115, 0.4)",
+                          },
+                        }}
+                      >
+                        {/* Action Buttons */}
+                        <Box
+                          sx={{
+                            display: "flex",
+                            justifyContent: "space-between",
+                            alignItems: "center",
+                            mb: 3,
+                          }}
+                        >
+                          <Box sx={{ display: "flex", gap: 1 }}>
+                            {selectedArticle.chips.map((chip, i) => (
+                              <Chip
+                                key={i}
+                                icon={chip.icon}
+                                label={chip.label}
+                                size="small"
+                                sx={{
+                                  bgcolor: "rgba(123,46,46,0.1)",
+                                  color: "#7B2E2E",
+                                  py: 2,
+                                  px: 2,
+                                  gap: 0.8,
+                                  "& .MuiChip-icon": {
+                                    color: "#7B2E2E",
+                                  },
+                                }}
+                              />
+                            ))}
+                          </Box>
+                          <Stack direction="row" spacing={1}>
+                            <IconButton
+                              onClick={handleShare}
+                              sx={{
+                                border: "1px solid rgba(123,46,46,0.2)",
+                                "&:hover": {
+                                  bgcolor: "rgba(123,46,46,0.05)",
+                                },
+                              }}
+                            >
+                              <Share sx={{ fontSize: 20 }} />
+                            </IconButton>
+                            <IconButton
+                              sx={{
+                                border: "1px solid rgba(123,46,46,0.2)",
+                                "&:hover": {
+                                  bgcolor: "rgba(123,46,46,0.05)",
+                                },
+                              }}
+                            >
+                              <BookmarkBorder sx={{ fontSize: 20 }} />
+                            </IconButton>
+                          </Stack>
+                        </Box>
+
+                        <Divider sx={{ mb: 3 }} />
+
+                        {/* Article Content */}
+                        <Box
+                          dangerouslySetInnerHTML={{
+                            __html: selectedArticle.fullContent,
+                          }}
+                          sx={{
+                            "& h3": {
+                              fontFamily: "Poppins, sans-serif",
+                              fontWeight: 600,
+                              color: "#3D444B",
+                              mt: 4,
+                              mb: 2,
+                              fontSize: "1.4rem",
+                            },
+                            "& p": {
+                              color: "#505A63",
+                              lineHeight: 1.8,
+                              mb: 2.5,
+                              fontSize: "1.05rem",
+                            },
+                            "& ul": {
+                              color: "#505A63",
+                              pl: 3,
+                              mb: 3,
+                              "& li": {
+                                mb: 1.5,
+                                lineHeight: 1.7,
+                                fontSize: "1.05rem",
+                              },
+                            },
+                            "& strong": {
+                              color: "#3D444B",
+                              fontWeight: 600,
+                            },
+                          }}
+                        />
+
+                        <Divider sx={{ my: 4 }} />
+
+                        <Box
+                          sx={{
+                            display: "flex",
+                            flexDirection: { xs: "column", sm: "row" },
+                            gap: 2,
+                            justifyContent: "space-between",
+                            alignItems: { xs: "stretch", sm: "center" },
+                          }}
+                        >
+                          <Button
+                            variant="outlined"
+                            onClick={handleCloseModal}
+                            size="large"
+                            href="tel:+923001234567"
                             sx={{
-                              bgcolor: "rgba(123,46,46,0.1)",
+                              bgcolor: "primary.contrastText",
                               color: "#7B2E2E",
-                              "& .MuiChip-icon": {
+                              borderRadius: 0.5,
+                              width: 120,
+                              py: "10px",
+                              px: "15px",
+                              fontWeight: 600,
+                              border: "1px solid #7B2E2E",
+                              boxShadow: "5px 5px 10px rgba(123, 46, 46, 0.2)",
+                              transition: "all 0.3s",
+                              "&:hover": {
+                                color: "#D9D4D1",
+                                bgcolor: "#D4A373",
+                                boxShadow:
+                                  "0 4px 15px rgba(212, 163, 115, 0.4)",
+                              },
+                            }}
+                          >
+                            Close
+                          </Button>
+                          <Button
+                            variant="contained"
+                            component={Link}
+                            href={`/news/${selectedArticle.id}`}
+                            endIcon={<OpenInNew />}
+                            sx={{
+                              bgcolor: "#7B2E2E",
+                              color: "white",
+                              border: "2px solid #7B2E2E",
+                              borderRadius: 0.5,
+                              py: "10px",
+                              px: "15px",
+                              width: 200,
+                              fontWeight: 600,
+                              boxShadow: "5px 5px 10px rgba(123, 46, 46, 0.2)",
+                              transition: "all 0.3s",
+                              "&:hover": {
+                                bgcolor: "white",
                                 color: "#7B2E2E",
                               },
                             }}
-                          />
-                        ))}
-                      </Box>
-                      <Stack direction="row" spacing={1}>
-                        <IconButton
-                          onClick={handleShare}
-                          sx={{
-                            border: "1px solid rgba(123,46,46,0.2)",
-                            "&:hover": {
-                              bgcolor: "rgba(123,46,46,0.05)",
-                            },
-                          }}
-                        >
-                          <Share sx={{ fontSize: 20 }} />
-                        </IconButton>
-                        <IconButton
-                          sx={{
-                            border: "1px solid rgba(123,46,46,0.2)",
-                            "&:hover": {
-                              bgcolor: "rgba(123,46,46,0.05)",
-                            },
-                          }}
-                        >
-                          <BookmarkBorder sx={{ fontSize: 20 }} />
-                        </IconButton>
-                      </Stack>
+                          >
+                            View Full Article
+                          </Button>
+                        </Box>
+                      </DialogContent>
                     </Box>
-
-                    <Divider sx={{ mb: 3 }} />
-
-                    {/* Article Content */}
-                    <Box
-                      dangerouslySetInnerHTML={{
-                        __html: selectedArticle.fullContent,
-                      }}
-                      sx={{
-                        "& h3": {
-                          fontFamily: "Poppins, sans-serif",
-                          fontWeight: 600,
-                          color: "#3D444B",
-                          mt: 4,
-                          mb: 2,
-                          fontSize: "1.4rem",
-                        },
-                        "& p": {
-                          color: "#505A63",
-                          lineHeight: 1.8,
-                          mb: 2.5,
-                          fontSize: "1.05rem",
-                        },
-                        "& ul": {
-                          color: "#505A63",
-                          pl: 3,
-                          mb: 3,
-                          "& li": {
-                            mb: 1.5,
-                            lineHeight: 1.7,
-                            fontSize: "1.05rem",
-                          },
-                        },
-                        "& strong": {
-                          color: "#3D444B",
-                          fontWeight: 600,
-                        },
-                      }}
-                    />
-
-                    <Divider sx={{ my: 4 }} />
-
-                    {/* Footer Actions */}
-                    <Box
-                      sx={{
-                        display: "flex",
-                        flexDirection: { xs: "column", sm: "row" },
-                        gap: 2,
-                        justifyContent: "space-between",
-                        alignItems: { xs: "stretch", sm: "center" },
-                      }}
-                    >
-                      <Button
-                        variant="outlined"
-                        onClick={handleCloseModal}
-                        sx={{
-                          borderColor: "#7B2E2E",
-                          color: "#7B2E2E",
-                          "&:hover": {
-                            borderColor: "#5f2424",
-                            bgcolor: "rgba(123,46,46,0.05)",
-                          },
-                        }}
-                      >
-                        Close
-                      </Button>
-                      <Button
-                        variant="contained"
-                        component={Link}
-                        href={`/news/${selectedArticle.id}`}
-                        endIcon={<OpenInNew />}
-                        sx={{
-                          bgcolor: "#7B2E2E",
-                          "&:hover": {
-                            bgcolor: "#5f2424",
-                            transform: "translateY(-2px)",
-                            boxShadow: "0 8px 20px rgba(123,46,46,0.3)",
-                          },
-                        }}
-                      >
-                        View Full Article
-                      </Button>
-                    </Box>
-                  </DialogContent>
+                  </Box>
                 </>
               )}
             </Dialog>

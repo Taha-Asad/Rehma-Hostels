@@ -59,7 +59,7 @@ function Navbar() {
   const [openModal, setOpenModal] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
-  const [userType, setUserType] = useState("student");
+  const [userType, setUserType] = useState("resident");
 
   const [visible, setVisible] = useState(true);
   const [lastScrollY, setLastScrollY] = useState(0);
@@ -528,9 +528,9 @@ function Navbar() {
               }) => setUserType(e.target.value)}
             >
               <FormControlLabel
-                value="student"
+                value="resident"
                 control={<Radio />}
-                label="Student"
+                label="resident"
               />
               <FormControlLabel
                 value="admin"

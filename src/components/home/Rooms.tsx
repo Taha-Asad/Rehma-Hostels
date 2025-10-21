@@ -140,7 +140,7 @@ const cards: Room[] = [
     rating: 4.8,
     reviews: 67,
     description:
-      "Our twin rooms are perfect for students who prefer to share their living space. Each occupant gets their own bed, study desk, and storage space.",
+      "Our twin rooms are perfect for Professionals who prefer to share their living space. Each occupant gets their own bed, study desk, and storage space.",
     amenities: [
       { icon: <Wifi />, label: "High-Speed WiFi" },
       { icon: <Wind />, label: "Air Conditioning" },
@@ -484,6 +484,7 @@ const RoomDetailsModal: React.FC<RoomDetailsModalProps> = ({
                         px: 1,
                         maxWidth: "155px",
                         borderRadius: 0.5,
+                        boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
                         bgcolor: "#ECE1E1",
                         "& .MuiChip-icon": {
                           color: "#7B2E2E",

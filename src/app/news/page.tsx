@@ -12,53 +12,35 @@ import {
   Typography,
   TextField,
   InputAdornment,
-  IconButton,
   Pagination,
-  Stack,
   Select,
   MenuItem,
   FormControl,
   InputLabel,
-  Skeleton,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
-  SpeedDial,
-  SpeedDialAction,
-  SpeedDialIcon,
-  Alert,
-  Snackbar,
-  Menu,
-  ListItemIcon,
-  ListItemText,
   Divider,
   ToggleButton,
   ToggleButtonGroup,
+  SelectChangeEvent,
   Breadcrumbs,
+  Link as RouterLink,
   Fade,
 } from "@mui/material";
 import React, { useState, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
 import {
   Search,
   ArrowForward,
-  Add,
-  Edit,
-  Delete,
-  MoreVert,
-  ViewModule,
   ViewList,
-  Close,
-  AdminPanelSettings,
   People,
   Star,
   Visibility,
-  Share,
   GridView,
+  TrendingUp,
+  LocationOn,
+  Circle,
 } from "@mui/icons-material";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
+import { CaseUpper } from "lucide-react";
 
 // Types
 interface NewsChip {
@@ -72,7 +54,6 @@ interface NewsArticle {
   image: string;
   title: string;
   content: string;
-  fullContent: string;
   date: string;
   author: string;
   readTime: string;
@@ -90,8 +71,7 @@ const allNewsArticles: NewsArticle[] = [
       "https://images.unsplash.com/photo-1593642634315-48f5414c3ad9?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080",
     title: "Campus Renovation Completed",
     content:
-      "The hostel underwent major renovations, offering students a modern and comfortable living environment.",
-    fullContent: "...",
+      "The hostel underwent major renovations, offering professionals a modern and comfortable living environment.",
     date: "Oct 15, 2025",
     author: "Admin Team",
     readTime: "5 min read",
@@ -99,7 +79,7 @@ const allNewsArticles: NewsArticle[] = [
     views: 1250,
     featured: true,
     chips: [
-      { icon: <People />, label: "All Students", position: "bottom-left" },
+      { icon: <People />, label: "All Residents", position: "bottom-left" },
     ],
   },
   {
@@ -109,7 +89,6 @@ const allNewsArticles: NewsArticle[] = [
     title: "New Study Lounges Opened",
     content:
       "Dedicated quiet study areas now available for better focus and productivity.",
-    fullContent: "...",
     date: "Sep 28, 2025",
     author: "Facility Management",
     readTime: "4 min read",
@@ -119,7 +98,7 @@ const allNewsArticles: NewsArticle[] = [
     chips: [
       {
         icon: <People />,
-        label: "Students & Professionals",
+        label: "Staff & Professionals",
         position: "bottom-left",
       },
       { icon: <Star />, label: "Featured", position: "top-right" },
@@ -131,8 +110,7 @@ const allNewsArticles: NewsArticle[] = [
       "https://images.unsplash.com/photo-1596495577886-d920f1d2abf3?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080",
     title: "Nutrition Plans Launched",
     content:
-      "Healthy and tasty meal plans tailored for students are now offered at the hostel.",
-    fullContent: "...",
+      "Healthy and tasty meal plans tailored for residents are now offered at the hostel.",
     date: "Aug 12, 2025",
     author: "Nutrition Team",
     readTime: "6 min read",
@@ -149,14 +127,13 @@ const allNewsArticles: NewsArticle[] = [
       "https://images.unsplash.com/photo-1555854877-bab0e564b8d5?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080",
     title: "Sports Tournament Announcement",
     content: "Annual inter-hostel sports tournament scheduled for next month.",
-    fullContent: "...",
     date: "Jul 20, 2025",
     author: "Sports Committee",
     readTime: "3 min read",
     category: "Events",
     views: 450,
     chips: [
-      { icon: <People />, label: "All Students", position: "bottom-left" },
+      { icon: <People />, label: "All Residents", position: "bottom-left" },
     ],
   },
   {
@@ -165,7 +142,6 @@ const allNewsArticles: NewsArticle[] = [
       "https://images.unsplash.com/photo-1523050854058-8df90110c9f1?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080",
     title: "WiFi Upgrade Complete",
     content: "High-speed internet now available in all rooms and common areas.",
-    fullContent: "...",
     date: "Jun 15, 2025",
     author: "IT Department",
     readTime: "2 min read",
@@ -181,7 +157,6 @@ const allNewsArticles: NewsArticle[] = [
       "https://images.unsplash.com/photo-1571902943202-507ec2618e8f?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080",
     title: "New Gym Equipment Installed",
     content: "State-of-the-art fitness equipment added to the hostel gym.",
-    fullContent: "...",
     date: "May 10, 2025",
     author: "Admin Team",
     readTime: "4 min read",
@@ -198,21 +173,19 @@ const allNewsArticles: NewsArticle[] = [
 ];
 
 const categories = [
-  "All",
-  "Announcements",
-  "Facilities",
-  "Services",
-  "Events",
-  "Technology",
+  { name: "All" },
+  { name: "Announcements" },
+  { name: "Facilities" },
+  { name: "Services" },
+  { name: "Events" },
+  { name: "Technology" },
 ];
-const sortOptions = ["Latest", "Most Viewed", "Featured", "Alphabetical"];
 
 export default function NewsPage() {
   // State management
   const [articles, setArticles] = useState<NewsArticle[]>(allNewsArticles);
   const [filteredArticles, setFilteredArticles] =
     useState<NewsArticle[]>(allNewsArticles);
-  const [loading, setLoading] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [sortBy, setSortBy] = useState("Latest");
@@ -220,29 +193,30 @@ export default function NewsPage() {
   const [page, setPage] = useState(1);
   const [itemsPerPage] = useState(6);
 
-  // Admin state - Replace with actual auth check
-  const [isAdmin, setIsAdmin] = useState(true); // Mock admin status
-  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
-  const [articleToDelete, setArticleToDelete] = useState<NewsArticle | null>(
-    null
-  );
-  const [snackbarOpen, setSnackbarOpen] = useState(false);
-  const [snackbarMessage, setSnackbarMessage] = useState("");
-  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-  const [selectedArticle, setSelectedArticle] = useState<NewsArticle | null>(
-    null
-  );
-
   // Search params
   const searchParams = useSearchParams();
   const categoryFromUrl = searchParams.get("category");
-
+  const clearFilters = () => {
+    setSearchTerm("");
+    setSelectedCategory("All");
+    setSortBy("featured");
+  };
   useEffect(() => {
     if (categoryFromUrl) {
       setSelectedCategory(categoryFromUrl);
     }
   }, [categoryFromUrl]);
 
+  const selectConfig = {
+    MenuProps: {
+      disableScrollLock: true, // This prevents the scrollbar from being removed
+      PaperProps: {
+        style: {
+          maxHeight: 300,
+        },
+      },
+    },
+  };
   // Filter and sort logic
   useEffect(() => {
     let filtered = [...articles];
@@ -292,70 +266,24 @@ export default function NewsPage() {
     page * itemsPerPage
   );
 
-  // Admin functions
-  const handleDeleteClick = (article: NewsArticle) => {
-    setArticleToDelete(article);
-    setDeleteDialogOpen(true);
-    handleMenuClose();
-  };
-
-  const handleDeleteConfirm = async () => {
-    if (articleToDelete) {
-      // Add API call here to delete from backend
-      setArticles((prev) => prev.filter((a) => a.id !== articleToDelete.id));
-      setSnackbarMessage("Article deleted successfully");
-      setSnackbarOpen(true);
-      setDeleteDialogOpen(false);
-      setArticleToDelete(null);
-    }
-  };
-
-  const handleMenuClick = (
-    event: React.MouseEvent<HTMLElement>,
-    article: NewsArticle
-  ) => {
-    setAnchorEl(event.currentTarget);
-    setSelectedArticle(article);
-  };
-
-  const handleMenuClose = () => {
-    setAnchorEl(null);
-    setSelectedArticle(null);
-  };
-
   return (
-    <Box sx={{ bgcolor: "#FAFAFA", minHeight: "100vh", pt: 12 }}>
+    <Box
+      sx={{
+        bgcolor: "#FAFAFA",
+        minHeight: "100vh",
+        pt: 12,
+        width: "100%",
+        overflow: "hidden",
+      }}
+    >
       <Box
         sx={{
           background: "linear-gradient(135deg, #7B2E2E 0%, #5f2424 100%)",
           py: { xs: 8, md: 12 },
           color: "white",
           position: "relative",
-          overflow: "hidden",
         }}
       >
-        <Box
-          sx={{
-            position: "absolute",
-            top: -100,
-            right: -100,
-            width: 300,
-            height: 300,
-            borderRadius: "50%",
-            background: "rgba(212, 163, 115, 0.2)",
-          }}
-        />
-        <Box
-          sx={{
-            position: "absolute",
-            bottom: -50,
-            left: -50,
-            width: 200,
-            height: 200,
-            borderRadius: "50%",
-            background: "rgba(255,255,255,0.1)",
-          }}
-        />
         <Container maxWidth="lg" sx={{ position: "relative", zIndex: 1 }}>
           <Fade in timeout={800}>
             <Typography
@@ -390,7 +318,6 @@ export default function NewsPage() {
       </Box>
 
       <Container maxWidth="lg" sx={{ mt: -6, position: "relative", zIndex: 1 }}>
-        {/* Filters and Controls */}
         <Paper
           elevation={16}
           sx={{
@@ -402,43 +329,100 @@ export default function NewsPage() {
             boxShadow: "0 20px 40px rgba(123,46,46,0.4)",
           }}
         >
-          <Stack
-            direction={{ xs: "column", md: "row" }}
-            spacing={2}
-            alignItems={{ xs: "stretch", md: "center" }}
-            justifyContent="space-between"
-          >
-            {/* Category Filter */}
-            <FormControl size="small" sx={{ minWidth: 180 }}>
-              <InputLabel>Category</InputLabel>
-              <Select
-                value={selectedCategory}
-                onChange={(e) => setSelectedCategory(e.target.value)}
-                label="Category"
-              >
-                {categories.map((cat) => (
-                  <MenuItem key={cat} value={cat}>
-                    {cat}
+          <Grid container spacing={2} alignItems="center">
+            <Grid size={{ xs: 12, md: 3 }}>
+              <TextField
+                fullWidth
+                placeholder="Search article..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                sx={{
+                  "& .MuiOutlinedInput-root": {
+                    borderRadius: 2,
+                    bgcolor: "#FAFAFA",
+                    "&:hover fieldset": {
+                      borderColor: "#7B2E2E",
+                    },
+                    "&.Mui-focused fieldset": {
+                      borderColor: "#7B2E2E",
+                    },
+                  },
+                }}
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <Search sx={{ color: "#7B2E2E" }} />
+                    </InputAdornment>
+                  ),
+                }}
+              />
+            </Grid>
+            <Grid size={{ xs: 6, md: 3 }}>
+              <FormControl fullWidth>
+                <InputLabel>Category</InputLabel>
+                <Select
+                  value={selectedCategory}
+                  onChange={(e: SelectChangeEvent) =>
+                    setSelectedCategory(e.target.value)
+                  }
+                  label="Category"
+                  {...selectConfig}
+                  sx={{
+                    borderRadius: 2,
+                    bgcolor: "#FAFAFA",
+                  }}
+                >
+                  {categories.map((item) => (
+                    <MenuItem value={item.name} key={item.name}>
+                      <Box
+                        sx={{ display: "flex", alignItems: "center", gap: 1 }}
+                      >
+                        <Star sx={{ fontSize: 18, color: "#D4A373" }} />
+                        {item.name}{" "}
+                      </Box>
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+            </Grid>
+            <Grid size={{ xs: 6, md: 3 }}>
+              <FormControl fullWidth>
+                <InputLabel>Sort By</InputLabel>
+                <Select
+                  value={sortBy}
+                  onChange={(e: SelectChangeEvent) => setSortBy(e.target.value)}
+                  label="Sort By"
+                  {...selectConfig}
+                  sx={{
+                    borderRadius: 2,
+                    bgcolor: "#FAFAFA",
+                  }}
+                >
+                  <MenuItem value="featured">
+                    <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                      <Star sx={{ fontSize: 18, color: "#D4A373" }} />
+                      Featured
+                    </Box>
                   </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
-
-            {/* Sort Options */}
-            <FormControl size="small" sx={{ minWidth: 150 }}>
-              <InputLabel>Sort By</InputLabel>
-              <Select
-                value={sortBy}
-                onChange={(e) => setSortBy(e.target.value)}
-                label="Sort By"
-              >
-                {sortOptions.map((option) => (
-                  <MenuItem key={option} value={option}>
-                    {option}
+                  <MenuItem value="Most Viewed">
+                    <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                      <TrendingUp sx={{ fontSize: 18, color: "#D4A373" }} />
+                      Most Viewed
+                    </Box>
                   </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
+                  <MenuItem value="Alphabetical">
+                    <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                      <Box
+                        sx={{ display: "flex", alignItems: "center", gap: 1 }}
+                      >
+                        <CaseUpper style={{ fontSize: 18, color: "#D4A373" }} />
+                        Alphabetical{" "}
+                      </Box>{" "}
+                    </Box>
+                  </MenuItem>
+                </Select>
+              </FormControl>
+            </Grid>
             <Grid size={{ xs: 12, md: 3 }}>
               <ToggleButtonGroup
                 value={viewMode}
@@ -467,410 +451,373 @@ export default function NewsPage() {
                 </ToggleButton>
               </ToggleButtonGroup>
             </Grid>
-
-            {/* Results Count */}
-            <Typography variant="body2" color="text.secondary">
-              Showing {paginatedArticles.length} of {filteredArticles.length}{" "}
-              articles
-            </Typography>
-          </Stack>
+          </Grid>
         </Paper>
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "flex-end",
+            mt: 2,
+          }}
+        >
+          <Button
+            variant="contained"
+            onClick={clearFilters}
+            sx={{
+              bgcolor: "#7B2E2E",
+              borderRadius: 2,
+              px: 4,
+              py: 1.2,
+              fontWeight: 600,
+              boxShadow: "0 4px 12px rgba(123,46,46,0.3)",
+              "&:hover": {
+                bgcolor: "#5f2424",
+              },
+            }}
+          >
+            Clear Filters
+          </Button>
+        </Box>
 
-        {/* Breadcrumbs */}
         <Breadcrumbs sx={{ mb: 3 }}>
           <Link href="/" style={{ color: "#7B2E2E", textDecoration: "none" }}>
             Home
           </Link>
-          <Typography color="text.primary">News</Typography>
-          {selectedCategory !== "All" && (
-            <Typography color="text.primary">{selectedCategory}</Typography>
-          )}
+          <Typography color="text.primary">Articles</Typography>
         </Breadcrumbs>
 
-        {/* News Grid/List */}
-        <AnimatePresence mode="wait">
-          <motion.div
-            key={viewMode}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
-            transition={{ duration: 0.3 }}
+        <Grid size={{ xs: 12, md: 9 }}>
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              mb: 3,
+            }}
           >
-            {loading ? (
-              <Grid container spacing={3}>
-                {[...Array(6)].map((_, index) => (
-                  <Grid
-                    size={{ xs: 12, sm: 6, md: viewMode === "grid" ? 4 : 12 }}
-                    key={index}
-                  >
-                    <Card>
-                      <Skeleton variant="rectangular" height={250} />
-                      <CardContent>
-                        <Skeleton variant="text" height={40} />
-                        <Skeleton variant="text" height={60} />
-                        <Skeleton variant="text" width={100} />
-                      </CardContent>
-                    </Card>
-                  </Grid>
-                ))}
-              </Grid>
-            ) : paginatedArticles.length > 0 ? (
-              <Grid container spacing={3}>
-                {paginatedArticles.map((article, index) => (
-                  <Grid
-                    size={{
-                      xs: 12,
-                      sm: viewMode === "grid" ? 6 : 12,
-                      md: viewMode === "grid" ? 4 : 12,
-                    }}
-                    key={article.id}
-                  >
-                    <motion.div
-                      initial={{ opacity: 0, y: 20 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: index * 0.1 }}
-                    >
-                      <Card
-                        sx={{
-                          height: viewMode === "grid" ? 450 : "auto",
-                          display: "flex",
-                          flexDirection: viewMode === "grid" ? "column" : "row",
-                          position: "relative",
-                          transition: "all 0.3s ease",
-                          "&:hover": {
-                            transform: "translateY(-4px)",
-                            boxShadow: "0 20px 40px rgba(123,46,46,0.15)",
-                          },
-                        }}
-                      >
-                        {/* Admin Actions */}
-                        {isAdmin && (
-                          <IconButton
-                            size="small"
-                            onClick={(e) => handleMenuClick(e, article)}
-                            sx={{
-                              position: "absolute",
-                              top: 8,
-                              right: 8,
-                              bgcolor: "rgba(255,255,255,0.9)",
-                              zIndex: 1,
-                              "&:hover": {
-                                bgcolor: "white",
-                              },
-                            }}
-                          >
-                            <MoreVert />
-                          </IconButton>
-                        )}
-
-                        {/* Image */}
-                        <Box sx={{ position: "relative" }}>
-                          <CardMedia
-                            component="img"
-                            image={article.image}
-                            alt={article.title}
-                            sx={{
-                              width: viewMode === "grid" ? "100%" : 280,
-                              height: viewMode === "grid" ? 250 : 200,
-                              objectFit: "cover",
-                            }}
-                          />
-                          {/* Chips */}
-                          {article.chips.map((chip, i) => (
-                            <Chip
-                              key={i}
-                              icon={chip.icon}
-                              label={chip.label}
-                              size="small"
-                              sx={{
-                                position: "absolute",
-                                ...(chip.position === "top-right" && {
-                                  top: 16,
-                                  right: isAdmin ? 56 : 16,
-                                  bgcolor: "rgba(123,46,46,0.9)",
-                                  color: "white",
-                                }),
-                                ...(chip.position === "bottom-left" && {
-                                  bottom: 16,
-                                  left: 16,
-                                  bgcolor: "rgba(255,255,255,0.9)",
-                                  color: "#7B2E2E",
-                                }),
-                              }}
-                            />
-                          ))}
-                        </Box>
-
-                        {/* Content */}
-                        <CardContent
-                          sx={{
-                            flex: 1,
-                            display: "flex",
-                            flexDirection: "column",
-                          }}
-                        >
-                          {/* Meta Info */}
-                          <Stack
-                            direction="row"
-                            spacing={2}
-                            alignItems="center"
-                            sx={{ mb: 2 }}
-                          >
-                            <Chip
-                              label={article.category}
-                              size="small"
-                              sx={{
-                                bgcolor: "rgba(123,46,46,0.1)",
-                                color: "#7B2E2E",
-                                fontWeight: 600,
-                              }}
-                            />
-                            <Typography
-                              variant="caption"
-                              color="text.secondary"
-                            >
-                              {article.date}
-                            </Typography>
-                            {article.views && (
-                              <>
-                                <Typography
-                                  variant="caption"
-                                  color="text.secondary"
-                                >
-                                  •
-                                </Typography>
-                                <Box
-                                  sx={{
-                                    display: "flex",
-                                    alignItems: "center",
-                                    gap: 0.5,
-                                  }}
-                                >
-                                  <Visibility
-                                    sx={{
-                                      fontSize: 14,
-                                      color: "text.secondary",
-                                    }}
-                                  />
-                                  <Typography
-                                    variant="caption"
-                                    color="text.secondary"
-                                  >
-                                    {article.views}
-                                  </Typography>
-                                </Box>
-                              </>
-                            )}
-                          </Stack>
-
-                          {/* Title */}
-                          <Typography
-                            variant="h6"
-                            sx={{
-                              fontWeight: 700,
-                              color: "#3D444B",
-                              mb: 1,
-                              fontFamily: "Poppins, sans-serif",
-                              fontSize:
-                                viewMode === "list" ? "1.5rem" : "1.25rem",
-                            }}
-                          >
-                            {article.title}
-                          </Typography>
-
-                          {/* Content */}
-                          <Typography
-                            variant="body2"
-                            color="text.secondary"
-                            sx={{
-                              mb: 2,
-                              flex: 1,
-                              lineHeight: 1.7,
-                              display: "-webkit-box",
-                              WebkitLineClamp: viewMode === "list" ? 3 : 2,
-                              WebkitBoxOrient: "vertical",
-                              overflow: "hidden",
-                            }}
-                          >
-                            {article.content}
-                          </Typography>
-
-                          {/* Footer */}
-                          <Stack
-                            direction="row"
-                            justifyContent="space-between"
-                            alignItems="center"
-                          >
-                            <Typography
-                              variant="caption"
-                              color="text.secondary"
-                            >
-                              By {article.author} • {article.readTime}
-                            </Typography>
-                            <Button
-                              component={Link}
-                              href={`/news/${article.id}`}
-                              endIcon={<ArrowForward />}
-                              sx={{
-                                color: "#7B2E2E",
-                                "&:hover": {
-                                  color: "#D4A373",
-                                  bgcolor: "transparent",
-                                },
-                              }}
-                            >
-                              Read More
-                            </Button>
-                          </Stack>
-                        </CardContent>
-                      </Card>
-                    </motion.div>
-                  </Grid>
-                ))}
-              </Grid>
-            ) : (
-              <Paper sx={{ p: 8, textAlign: "center" }}>
-                <Typography variant="h5" sx={{ mb: 2, color: "#3D444B" }}>
-                  No articles found
-                </Typography>
-                <Typography color="text.secondary">
-                  Try adjusting your search or filter criteria
-                </Typography>
-              </Paper>
-            )}
-          </motion.div>
-        </AnimatePresence>
-
-        {/* Pagination */}
-        {totalPages > 1 && (
-          <Box sx={{ display: "flex", justifyContent: "center", mt: 6, mb: 8 }}>
-            <Pagination
-              count={totalPages}
-              page={page}
-              onChange={(e, value) => setPage(value)}
-              color="primary"
-              size="large"
+            <Typography
+              variant="body1"
+              sx={{ color: "#505A63", fontWeight: 600 }}
+            >
+              Showing {paginatedArticles.length} of {filteredArticles.length}{" "}
+              articles
+            </Typography>
+            <Chip
+              icon={<LocationOn />}
+              label="Lahore, Pakistan"
               sx={{
-                "& .MuiPaginationItem-root": {
-                  "&.Mui-selected": {
-                    bgcolor: "#7B2E2E",
-                    "&:hover": {
-                      bgcolor: "#5f2424",
-                    },
-                  },
-                },
+                bgcolor: "#09869815",
+                color: "#098698",
+                border: "1px solid #098698",
+                fontWeight: 600,
               }}
             />
           </Box>
-        )}
+
+          {paginatedArticles.length > 0 ? (
+            <Grid container spacing={3} sx={{ mb: 5 }}>
+              {paginatedArticles.map((news) => (
+                <Grid
+                  size={{
+                    xs: 12,
+                    sm: viewMode === "grid" ? 6 : 12,
+                    lg: viewMode === "grid" ? 4 : 12,
+                  }}
+                  key={news.id}
+                >
+                  <Card
+                    sx={{
+                      height: viewMode === "grid" ? 480 : "auto",
+                      display: "flex",
+                      flexDirection: viewMode === "grid" ? "column" : "row",
+                      overflow: "hidden",
+                      border: "1px solid #F1E9E9",
+                      transition: "all 0.3s ease-in-out",
+                      width: "100%",
+                      backgroundColor: "rgba(217,212,209,0.25)",
+                      backdropFilter: "blur(8px)",
+                      boxShadow:
+                        "0 8px 20px rgba(123,46,46,0.25), 0 2px 5px rgba(0,0,0,0.1)",
+                      "&:hover": {
+                        transform: "translateY(-6px)",
+                        boxShadow: "0 20px 40px rgba(123,46,46,0.4)",
+                      },
+                      bgcolor: "#FFFFFF",
+                      borderRadius: 1,
+                      cursor: "default",
+                    }}
+                  >
+                    <Box sx={{ position: "relative", overflow: "hidden" }}>
+                      <CardMedia
+                        component="img"
+                        image={news.image}
+                        alt={news.title}
+                        sx={{
+                          width: viewMode === "grid" ? "100%" : 320,
+                          height: viewMode === "grid" ? 220 : 200,
+                          objectFit: "cover",
+                          transition: "transform 0.3s ease",
+                          "&:hover": {
+                            transform: "scale(1.1)",
+                          },
+                        }}
+                      />
+                      <Box
+                        sx={{
+                          position: "absolute",
+                          inset: 0,
+                          background:
+                            "linear-gradient(to top, rgba(0,0,0,0.5) 0%, transparent 50%)",
+                        }}
+                      />
+                      {news.featured && (
+                        <Chip
+                          icon={<Star />}
+                          label="Featured"
+                          size="small"
+                          sx={{
+                            position: "absolute",
+                            top: 10,
+                            right: 10,
+                            bgcolor: "#D4A373",
+                            color: "white",
+                            fontWeight: 600,
+                            boxShadow: "0 4px 15px rgba(212,163,115,0.5)",
+                          }}
+                        />
+                      )}
+                      {news.chips.map((item, index) => (
+                        <Chip
+                          key={index}
+                          label={item.label}
+                          icon={item.icon}
+                          sx={{
+                            position: "absolute",
+                            ...(item.position === "bottom-left" && {
+                              bottom: "10%",
+                              left: 10,
+                            }),
+                            display: "flex",
+                            alignItems: "center",
+                            gap: 1.5,
+                            px: 2.5,
+                            py: 1.2,
+                            borderRadius: "10px",
+                            fontWeight: 600,
+                            fontFamily: "Inter",
+                            fontSize: "0.9rem",
+                            border: "1px solid rgba(255,255,255,0.3)",
+                            backdropFilter: "blur(8px)",
+                            transition: "all 0.4s ease-in-out",
+                            "&:hover": {
+                              transform: "translateY(-6px)",
+                              boxShadow: "0 10px 25px rgba(255,255,255,0.6)",
+                              background: "rgba(255,255,255,0.85)",
+                            },
+                          }}
+                        />
+                      ))}
+                    </Box>
+
+                    <CardContent
+                      sx={{
+                        flex: 1,
+                        display: "flex",
+                        flexDirection: "column",
+                        p: 3,
+                      }}
+                    >
+                      <Box sx={{ display: "flex", gap: 2, mb: 2 }}>
+                        <Chip
+                          label={news.category}
+                          variant="outlined"
+                          sx={{
+                            bgcolor: "#F1E9E9",
+                            "& .MuiChip-label": {
+                              color: "#7B2E2E",
+                              fontWeight: 600,
+                            },
+                          }}
+                        />
+                        <Typography sx={{ fontSize: "14px", color: "#505A63" }}>
+                          {news.date}
+                        </Typography>
+                        <Typography sx={{ fontSize: "12px", color: "#505A63" }}>
+                          <Box
+                            component={"span"}
+                            sx={{
+                              display: "flex",
+                              alignItems: "center",
+                              gap: 0.5,
+                            }}
+                          >
+                            <Visibility sx={{ fontSize: "16px" }} />
+                            {news.views} views
+                          </Box>
+                        </Typography>
+                      </Box>
+
+                      <Typography
+                        variant="h6"
+                        sx={{
+                          fontWeight: 700,
+                          color: "#3D444B",
+                          mb: 1,
+                          fontFamily: "Poppins, sans-serif",
+                        }}
+                      >
+                        {news.title}
+                      </Typography>
+
+                      <Typography
+                        variant="body2"
+                        color="text.secondary"
+                        sx={{ mb: 2, lineHeight: 1.6, flex: 1 }}
+                      >
+                        {news.content}
+                      </Typography>
+
+                      <Divider sx={{ mb: 2, borderColor: "#F1E9E9" }} />
+
+                      <Box
+                        sx={{
+                          display: "flex",
+                          alignItems: "center",
+                          mt: "auto",
+                          justifyContent: "space-between",
+                        }}
+                      >
+                        <Typography
+                          variant="body2"
+                          sx={{
+                            color: "#A0A0A0",
+                            fontSize: "0.75rem",
+                            display: "flex",
+                            alignItems: "center",
+                            gap: 0.5,
+                            opacity: 0.8,
+                          }}
+                        >
+                          {news.author}
+                          <Circle
+                            sx={{
+                              fontSize: "3px",
+                              color: "#A0A0A0",
+                              opacity: 0.8,
+                            }}
+                          />
+                          {news.readTime}
+                        </Typography>
+
+                        <RouterLink
+                          component={Link}
+                          href={`/news/${news.id}/`}
+                          sx={{
+                            display: "inline-flex",
+                            alignItems: "center",
+                            gap: 1,
+                            color: "#7B2E2E",
+                            textDecoration: "none",
+                            fontWeight: 600,
+                            fontSize: "1rem",
+                            mt: "auto",
+                            cursor: "pointer",
+                            transition: "all 0.3s ease",
+                            "&:hover": {
+                              color: "#D4A373",
+                              gap: 1.5,
+                              textDecoration: "underline",
+                              "& .arrow-icon": {
+                                transform: "translateX(4px)",
+                              },
+                            },
+                          }}
+                        >
+                          Read More
+                          <ArrowForward
+                            className="arrow-icon"
+                            sx={{
+                              fontSize: 18,
+                              transition: "transform 0.3s ease",
+                            }}
+                          />
+                        </RouterLink>
+                      </Box>
+                    </CardContent>
+                  </Card>
+                </Grid>
+              ))}
+            </Grid>
+          ) : (
+            <Paper
+              sx={{
+                p: 8,
+                textAlign: "center",
+                borderRadius: 3,
+                background: "linear-gradient(135deg, #FFFFFF 0%, #FAFAFA 100%)",
+                border: "1px solid #F1E9E9",
+              }}
+            >
+              <Typography
+                variant="h5"
+                sx={{
+                  mb: 2,
+                  color: "#3D444B",
+                  fontWeight: 700,
+                  fontFamily: "Poppins, sans-serif",
+                }}
+              >
+                No Articles found
+              </Typography>
+              <Typography color="text.secondary" sx={{ mb: 3 }}>
+                Try adjusting your filters or search criteria
+              </Typography>
+              <Button
+                variant="contained"
+                onClick={clearFilters}
+                sx={{
+                  bgcolor: "#7B2E2E",
+                  borderRadius: 2,
+                  px: 4,
+                  py: 1.2,
+                  "&:hover": {
+                    bgcolor: "#5f2424",
+                  },
+                }}
+              >
+                Clear Filters
+              </Button>
+            </Paper>
+          )}
+
+          {totalPages > 1 && (
+            <Box sx={{ display: "flex", justifyContent: "center", mt: 6 }}>
+              <Pagination
+                count={totalPages}
+                page={page}
+                onChange={(e, value) => setPage(value)}
+                size="large"
+                sx={{
+                  "& .MuiPaginationItem-root": {
+                    borderRadius: 2,
+                    fontWeight: 600,
+                    "&.Mui-selected": {
+                      bgcolor: "#7B2E2E",
+                      boxShadow: "0 4px 15px rgba(123,46,46,0.3)",
+                      "&:hover": {
+                        bgcolor: "#5f2424",
+                      },
+                    },
+                    "&:hover": {
+                      bgcolor: "#7B2E2E15",
+                    },
+                  },
+                }}
+              />
+            </Box>
+          )}
+        </Grid>
       </Container>
-
-      {/* Admin FAB */}
-      {isAdmin && (
-        <SpeedDial
-          ariaLabel="Admin actions"
-          sx={{ position: "fixed", bottom: 32, right: 32 }}
-          icon={
-            <SpeedDialIcon openIcon={<Close />} icon={<AdminPanelSettings />} />
-          }
-        >
-          <SpeedDialAction
-            icon={<Add />}
-            tooltipTitle="Add Article"
-            onClick={() => {
-              // Navigate to add article page or open modal
-              window.location.href = "/admin/news/add";
-            }}
-          />
-          <SpeedDialAction
-            icon={<Edit />}
-            tooltipTitle="Manage Articles"
-            onClick={() => {
-              window.location.href = "/admin/news";
-            }}
-          />
-        </SpeedDial>
-      )}
-
-      {/* Admin Menu */}
-      <Menu
-        anchorEl={anchorEl}
-        open={Boolean(anchorEl)}
-        onClose={handleMenuClose}
-      >
-        <MenuItem
-          component={Link}
-          href={`/admin/news/edit/${selectedArticle?.id}`}
-        >
-          <ListItemIcon>
-            <Edit fontSize="small" />
-          </ListItemIcon>
-          <ListItemText>Edit</ListItemText>
-        </MenuItem>
-        <MenuItem
-          onClick={() => selectedArticle && handleDeleteClick(selectedArticle)}
-        >
-          <ListItemIcon>
-            <Delete fontSize="small" color="error" />
-          </ListItemIcon>
-          <ListItemText>Delete</ListItemText>
-        </MenuItem>
-        <Divider />
-        <MenuItem component={Link} href={`/news/${selectedArticle?.id}`}>
-          <ListItemIcon>
-            <Visibility fontSize="small" />
-          </ListItemIcon>
-          <ListItemText>View</ListItemText>
-        </MenuItem>
-        <MenuItem>
-          <ListItemIcon>
-            <Share fontSize="small" />
-          </ListItemIcon>
-          <ListItemText>Share</ListItemText>
-        </MenuItem>
-      </Menu>
-
-      {/* Delete Confirmation Dialog */}
-      <Dialog
-        open={deleteDialogOpen}
-        onClose={() => setDeleteDialogOpen(false)}
-        maxWidth="xs"
-        fullWidth
-      >
-        <DialogTitle>Confirm Delete</DialogTitle>
-        <DialogContent>
-          <Typography>
-            Are you sure you want to delete `${articleToDelete?.title}`? This
-            action cannot be undone.
-          </Typography>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={() => setDeleteDialogOpen(false)}>Cancel</Button>
-          <Button
-            onClick={handleDeleteConfirm}
-            color="error"
-            variant="contained"
-          >
-            Delete
-          </Button>
-        </DialogActions>
-      </Dialog>
-
-      {/* Snackbar for notifications */}
-      <Snackbar
-        open={snackbarOpen}
-        autoHideDuration={6000}
-        onClose={() => setSnackbarOpen(false)}
-        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
-      >
-        <Alert
-          onClose={() => setSnackbarOpen(false)}
-          severity="success"
-          sx={{ width: "100%" }}
-        >
-          {snackbarMessage}
-        </Alert>
-      </Snackbar>
     </Box>
   );
 }

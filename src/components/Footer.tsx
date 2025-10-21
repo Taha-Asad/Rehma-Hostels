@@ -386,7 +386,7 @@ function Footer() {
                 }
               >
                 <Link
-                  href="#"
+                  href="/legal/privacy-policy"
                   sx={{
                     color: "rgba(255, 255, 255, 0.8)",
                     textDecoration: "none",
@@ -397,7 +397,7 @@ function Footer() {
                   Privacy Policy
                 </Link>
                 <Link
-                  href="#"
+                  href="/legal/terms"
                   sx={{
                     color: "rgba(255, 255, 255, 0.8)",
                     textDecoration: "none",
@@ -408,7 +408,7 @@ function Footer() {
                   Terms of Service
                 </Link>
                 <Link
-                  href="#"
+                  href="/legal/refund-policy"
                   sx={{
                     color: "rgba(255, 255, 255, 0.8)",
                     textDecoration: "none",

@@ -81,7 +81,7 @@ function Testimonials() {
           }}
         >
           <Chip
-            label="STUDENT TESTIMONIALS"
+            label="TESTIMONIALS"
             variant="outlined"
             sx={{
               bgcolor: "#F1E9E9",
@@ -98,7 +98,7 @@ function Testimonials() {
               py: 2,
             }}
           >
-            Trusted by Students <br />
+            Trusted by Professionals <br />
             <Box component="span" sx={{ color: "#7B2E2E" }}>
               Across Lahore{" "}
             </Box>{" "}
@@ -110,8 +110,8 @@ function Testimonials() {
               width: "60%",
             }}
           >
-            Hear from our community of students and professionals who have found
-            their perfect home at REHMA.{" "}
+            Hear from our community of professionals who have found their
+            perfect home at REHMA.{" "}
           </Typography>
         </Box>
         <motion.div
@@ -288,8 +288,7 @@ function Testimonials() {
                       fontSize={"20px"}
                       fontFamily={"Poppins"}
                     >
-                      Join our community of successful students and
-                      professionals
+                      Join our community of successful professionals
                     </Typography>
                     <Button
                       onClick={() => scrollToSection("contact")}
