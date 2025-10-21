@@ -3,12 +3,12 @@ import type { Metadata } from "next";
 import HomeContent from "./HomeContent";
 
 export const metadata: Metadata = {
-  title: "Rehma Professional Hostels & Apartment",
+  title: "Affordable Rooms for Rent in Lahore – Rehma Hostels",
   description:
     "Looking for rooms for rent in Lahore? Rehma Hostels offers budget-friendly, secure, and fully equipped rooms for individuals and professionals.",
   keywords: "hostels, rooms for rent, Lahore, budget hostels, secure hostels",
   openGraph: {
-    title: "Rooms for Rent in Lahore | Rehma Hostels",
+    title: "Affordable Rooms for Rent in Lahore - Rehma Hostels",
     description:
       "Looking for rooms for rent in Lahore? Rehma Hostels offers budget-friendly, secure, and fully equipped rooms for individuals and professionals.",
     type: "website",
