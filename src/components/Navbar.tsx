@@ -344,7 +344,6 @@ function Navbar() {
               position: "fixed", // Added fixed positioning
               top: 0,
               right: 0,
-              height: "100vh", // Full viewport height
               width: 300,
               bgcolor: "#fff",
               display: "flex",
@@ -446,7 +445,7 @@ function Navbar() {
                 borderRadius: 0.5,
                 py: "10px",
                 px: "15px",
-                width: "70%",
+                width: 200,
                 fontWeight: 600,
                 boxShadow: "5px 5px 10px rgba(123, 46, 46, 0.2)",
                 transition: "all 0.3s",
@@ -466,7 +465,7 @@ function Navbar() {
                 borderRadius: 0.5,
                 py: "10px",
                 px: "15px",
-                width: "70%",
+                width: 200,
                 fontWeight: 600,
                 border: "1px solid #7B2E2E",
                 boxShadow: "5px 5px 10px rgba(123, 46, 46, 0.2)",
