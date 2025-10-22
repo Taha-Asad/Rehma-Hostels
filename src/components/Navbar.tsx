@@ -324,16 +324,14 @@ function Navbar() {
           keepMounted: true,
           disableScrollLock: false, // this locks the background
         }}
-        PaperProps={{
-          sx: {
-            width: 300,
-            bgcolor: "#fff",
-            display: "flex",
-            flexDirection: "column",
-            justifyContent: "flex-start",
-            overflowY: "auto",
-            overscrollBehavior: "contain", // critical: stops bounce scroll weirdness
-          },
+        sx={{
+          width: 300,
+          bgcolor: "#fff",
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "flex-start",
+          overflowY: "auto",
+          overscrollBehavior: "contain", // critical: stops bounce scroll weirdness
         }}
       >
         <Box sx={{ display: "flex", justifyContent: "flex-end", p: 1 }}>
