@@ -105,13 +105,6 @@ function Navbar() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, [lastScrollY]);
 
-  useEffect(() => {
-    document.body.style.overflow = mobileOpen ? "hidden" : "";
-    return () => {
-      document.body.style.overflow = "";
-    };
-  }, [mobileOpen]);
-
   // Form validation
   const validateForm = () => {
     if (!formData.email.trim()) return toast.error("Valid Email is required");
@@ -327,27 +320,19 @@ function Navbar() {
         anchor="right"
         open={mobileOpen}
         onClose={() => setMobileOpen(false)}
+        ModalProps={{
+          keepMounted: true,
+          disableScrollLock: false, // this locks the background
+        }}
         PaperProps={{
           sx: {
             width: 300,
-            position: "fixed",
-            top: 0,
-            right: 0,
-            bottom: 0,
             bgcolor: "#fff",
             display: "flex",
             flexDirection: "column",
             justifyContent: "flex-start",
-            overflow: "hidden",
-          },
-        }}
-        ModalProps={{
-          keepMounted: true,
-          disableScrollLock: false,
-          sx: {
-            "& .MuiBackdrop-root": {
-              position: "fixed", // backdrop also locks
-            },
+            overflowY: "auto",
+            overscrollBehavior: "contain", // critical: stops bounce scroll weirdness
           },
         }}
       >
