@@ -70,6 +70,7 @@ function Navbar() {
     password: "",
   });
   const isActive = (url: string) => location.pathname === url;
+
   // Load saved user info
   useEffect(() => {
     const savedEmail = localStorage.getItem("email");
@@ -83,9 +84,6 @@ function Navbar() {
 
   useEffect(() => {
     const handleScroll = () => {
-      // Don't hide navbar when mobile drawer is open
-      if (mobileOpen) return;
-
       const currentScrollY = window.scrollY;
 
       // Always visible near top
@@ -108,7 +106,26 @@ function Navbar() {
 
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
-  }, [lastScrollY, mobileOpen]);
+  }, [lastScrollY]);
+
+  // Prevent body scroll when drawer is open
+  useEffect(() => {
+    if (mobileOpen) {
+      document.body.style.overflow = "hidden";
+      document.body.style.position = "fixed";
+      document.body.style.width = "100%";
+    } else {
+      document.body.style.overflow = "";
+      document.body.style.position = "";
+      document.body.style.width = "";
+    }
+
+    return () => {
+      document.body.style.overflow = "";
+      document.body.style.position = "";
+      document.body.style.width = "";
+    };
+  }, [mobileOpen]);
 
   // Form validation
   const validateForm = () => {
@@ -161,12 +178,16 @@ function Navbar() {
     }
   };
 
+  const handleDrawerClose = () => {
+    setMobileOpen(false);
+  };
+
   return (
     <Box
       component="nav"
       sx={{
         position: "fixed",
-        top: visible || mobileOpen ? 0 : "-170px", // Keep visible when drawer is open
+        top: visible ? 0 : "-170px",
         transition: "top 0.4s ease-in-out, background-color 0.3s ease",
         backgroundColor: "rgba(0,0,0,0.8)",
         backdropFilter: "blur(8px)",
@@ -178,6 +199,7 @@ function Navbar() {
         px: { xs: 2, md: 4 },
         zIndex: 1000,
         width: "100%",
+        height: "70px", // Fixed height to prevent layout shift
       }}
     >
       <Container
@@ -324,39 +346,39 @@ function Navbar() {
       <Drawer
         anchor="right"
         open={mobileOpen}
-        onClose={() => setMobileOpen(false)}
+        onClose={handleDrawerClose}
         ModalProps={{
           keepMounted: true,
-          disableScrollLock: true, // Changed to true to prevent background scrolling
         }}
-        slotProps={{
-          backdrop: {
-            sx: {
-              position: "fixed",
-              top: 0,
-              left: 0,
-              right: 0,
-              bottom: 0,
+        sx={{
+          "& .MuiDrawer-paper": {
+            width: 300,
+            boxSizing: "border-box",
+            backgroundColor: "#fff",
+            overflowY: "auto",
+            "&::-webkit-scrollbar": {
+              width: "4px",
             },
-          },
-          paper: {
-            sx: {
-              position: "fixed", // Added fixed positioning
-              top: 0,
-              right: 0,
-              width: 300,
-              bgcolor: "#fff",
-              display: "flex",
-              flexDirection: "column",
-              justifyContent: "flex-start",
-              overflowY: "auto",
-              overscrollBehavior: "contain",
+            "&::-webkit-scrollbar-thumb": {
+              backgroundColor: "#7B2E2E",
+              borderRadius: "2px",
             },
           },
         }}
       >
-        <Box sx={{ display: "flex", justifyContent: "flex-end", p: 1 }}>
-          <IconButton onClick={() => setMobileOpen(false)}>
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "flex-end",
+            p: 1,
+            position: "sticky",
+            top: 0,
+            backgroundColor: "#fff",
+            zIndex: 1,
+            borderBottom: "1px solid #F1E9E9",
+          }}
+        >
+          <IconButton onClick={handleDrawerClose}>
             <Close />
           </IconButton>
         </Box>
@@ -368,19 +390,20 @@ function Navbar() {
             display: "flex",
             flexDirection: "column",
             gap: 1,
-            px: 5,
+            px: 3,
+            py: 2,
           }}
         >
           {navlinks.map((item, index) => (
             <Box
               key={index}
               sx={{
-                color: "#3D444B", // base color (children inherit this)
+                color: "#3D444B",
                 borderRadius: 1,
                 transition: "background-color 0.2s ease, color 0.2s ease",
                 "&:hover": {
                   bgcolor: "primary.contrastText",
-                  color: "#7B2E2E", // hover color now applies
+                  color: "#7B2E2E",
                 },
               }}
             >
@@ -389,13 +412,12 @@ function Navbar() {
                 href={item.url}
                 style={{
                   textDecoration: "none",
-                  color: "inherit", // inherit color from parent for hover to work
+                  color: "inherit",
                   fontSize: "1.2rem",
-                  display: "block", // make whole row clickable
+                  display: "block",
                   width: "100%",
                 }}
-                onClick={() => setMobileOpen(false)}
-                // Extra accessibility + interaction polish
+                onClick={handleDrawerClose}
                 sx={{
                   px: 1.5,
                   py: 1,
@@ -424,62 +446,66 @@ function Navbar() {
               </RouterLink>
             </Box>
           ))}
-          <Box
-            sx={{
-              display: "flex",
-              flexDirection: "column",
-              justifyContent: "center",
-              alignItems: "center",
-              gap: 2,
-              pb: 2, // Added padding bottom
+        </Box>
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "center",
+            alignItems: "center",
+            gap: 2,
+            p: 3,
+            position: "sticky",
+            bottom: 0,
+            backgroundColor: "#fff",
+            borderTop: "1px solid #F1E9E9",
+          }}
+        >
+          <Button
+            onClick={() => {
+              handleDrawerClose();
+              scrollToSection("contact");
             }}
-          >
-            <Button
-              onClick={() => {
-                scrollToSection("contact");
-                setMobileOpen(false); // Close drawer after clicking
-              }}
-              sx={{
-                bgcolor: "#7B2E2E",
-                color: "primary.contrastText",
-                borderRadius: 0.5,
-                py: "10px",
-                px: "15px",
-                width: 200,
-                fontWeight: 600,
-                boxShadow: "5px 5px 10px rgba(123, 46, 46, 0.2)",
-                transition: "all 0.3s",
-                "&:hover": {
-                  bgcolor: "primary.contrastText",
-                  color: "#7B2E2E",
-                },
-              }}
-            >
-              Book Now
-            </Button>
-
-            <Button
-              sx={{
+            sx={{
+              bgcolor: "#7B2E2E",
+              color: "primary.contrastText",
+              borderRadius: 0.5,
+              py: "10px",
+              px: "15px",
+              width: "100%",
+              fontWeight: 600,
+              boxShadow: "5px 5px 10px rgba(123, 46, 46, 0.2)",
+              transition: "all 0.3s",
+              "&:hover": {
                 bgcolor: "primary.contrastText",
                 color: "#7B2E2E",
-                borderRadius: 0.5,
-                py: "10px",
-                px: "15px",
-                width: 200,
-                fontWeight: 600,
-                border: "1px solid #7B2E2E",
-                boxShadow: "5px 5px 10px rgba(123, 46, 46, 0.2)",
-                transition: "all 0.3s",
-                "&:hover": { bgcolor: "#7B2E2E", color: "#fff" },
-              }}
-              onClick={() => {
-                setOpenModal(true);
-                setMobileOpen(false); // Close drawer when opening modal
-              }}
-            >
-              Sign In
-            </Button>
-          </Box>
+              },
+            }}
+          >
+            Book Now
+          </Button>
+
+          <Button
+            sx={{
+              bgcolor: "primary.contrastText",
+              color: "#7B2E2E",
+              borderRadius: 0.5,
+              py: "10px",
+              px: "15px",
+              width: "100%",
+              fontWeight: 600,
+              border: "1px solid #7B2E2E",
+              boxShadow: "5px 5px 10px rgba(123, 46, 46, 0.2)",
+              transition: "all 0.3s",
+              "&:hover": { bgcolor: "#7B2E2E", color: "#fff" },
+            }}
+            onClick={() => {
+              handleDrawerClose();
+              setOpenModal(true);
+            }}
+          >
+            Sign In
+          </Button>
         </Box>
       </Drawer>
 
