@@ -328,7 +328,7 @@ function Navbar() {
             top: 0,
             right: 0,
             bottom: 0,
-            overflowY: "hidden", // keeps its own content scrollable if needed
+            overflowY: "auto", // keeps its own content scrollable if needed
             bgcolor: "#fff",
             boxShadow: "0 8px 30px rgba(0,0,0,0.12)",
             borderLeft: "1px solid rgba(0,0,0,0.06)",
@@ -476,6 +476,8 @@ function Navbar() {
         onClose={() => setOpenModal(false)}
         component={Paper}
         sx={{
+          overflow: { xs: "auto", md: "hidden" },
+
           "& .MuiDialog-paper": {
             width: "100%",
             maxWidth: 500,

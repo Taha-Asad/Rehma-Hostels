@@ -612,9 +612,16 @@ export default function NewsPage() {
                 >
                   <Card
                     sx={{
-                      height: viewMode === "grid" ? 480 : "auto",
+                      height: {
+                        xs: 515,
+                        sm: viewMode === "grid" ? 480 : "auto",
+                      },
                       display: "flex",
-                      flexDirection: viewMode === "grid" ? "column" : "row",
+                      // Stack on mobile; row only from sm+ when in list mode
+                      flexDirection: {
+                        xs: "column",
+                        sm: viewMode === "grid" ? "column" : "row",
+                      },
                       overflow: "hidden",
                       border: "1px solid #F1E9E9",
                       transition: "all 0.3s ease-in-out",
@@ -630,23 +637,57 @@ export default function NewsPage() {
                       bgcolor: "#FFFFFF",
                       borderRadius: 1,
                       cursor: "default",
+                      alignItems: "stretch",
                     }}
                   >
-                    <Box sx={{ position: "relative", overflow: "hidden" }}>
+                    <Box
+                      sx={{
+                        position: "relative",
+                        overflow: "hidden",
+                        // Do not let the image shrink in list row layout
+                        flex: {
+                          xs: "0 0 auto",
+                          sm: viewMode === "grid" ? "0 0 auto" : "0 0 300px",
+                          md: viewMode === "grid" ? "0 0 auto" : "0 0 320px",
+                        },
+                        minWidth: {
+                          xs: "100%",
+                          sm: viewMode === "grid" ? "auto" : 300,
+                          md: viewMode === "grid" ? "auto" : 320,
+                        },
+                      }}
+                    >
                       <CardMedia
                         component="img"
                         image={news.image}
                         alt={news.title}
                         sx={{
-                          width: viewMode === "grid" ? "100%" : 320,
-                          height: viewMode === "grid" ? 220 : 200,
+                          display: "block",
+                          width: "100%",
+                          height: {
+                            xs: 220, // taller on mobile so it doesn't feel cramped
+                            sm: 240,
+                            md: viewMode === "grid" ? 250 : 220,
+                          },
                           objectFit: "cover",
+                          borderBottom: {
+                            xs: "1px solid rgba(0,0,0,0.08)",
+                            sm: "none",
+                          },
+                          borderRight: {
+                            xs: "none",
+                            sm:
+                              viewMode === "grid"
+                                ? "none"
+                                : "1px solid rgba(0,0,0,0.08)",
+                          },
                           transition: "transform 0.3s ease",
                           "&:hover": {
-                            transform: "scale(1.1)",
+                            transform: "scale(1.05)",
                           },
                         }}
                       />
+
                       <Box
                         sx={{
                           position: "absolute",
@@ -655,6 +696,7 @@ export default function NewsPage() {
                             "linear-gradient(to top, rgba(0,0,0,0.5) 0%, transparent 50%)",
                         }}
                       />
+
                       {news.featured && (
                         <Chip
                           icon={<Star />}
@@ -662,8 +704,8 @@ export default function NewsPage() {
                           size="small"
                           sx={{
                             position: "absolute",
-                            top: 10,
-                            right: 10,
+                            top: { xs: 8, sm: 10 },
+                            right: { xs: 8, sm: 10 },
                             bgcolor: "#D4A373",
                             color: "white",
                             fontWeight: 600,
@@ -671,6 +713,7 @@ export default function NewsPage() {
                           }}
                         />
                       )}
+
                       {news.chips.map((item, index) => (
                         <Chip
                           key={index}
@@ -679,18 +722,18 @@ export default function NewsPage() {
                           sx={{
                             position: "absolute",
                             ...(item.position === "bottom-left" && {
-                              bottom: "10%",
-                              left: 10,
+                              bottom: { xs: 8, sm: "10%" },
+                              left: { xs: 8, sm: 10 },
                             }),
                             display: "flex",
                             alignItems: "center",
                             gap: 1.5,
-                            px: 2.5,
-                            py: 1.2,
+                            px: { xs: 1.25, sm: 2.5 },
+                            py: { xs: 0.6, sm: 1.2 },
                             borderRadius: "10px",
                             fontWeight: 600,
                             fontFamily: "Inter",
-                            fontSize: "0.9rem",
+                            fontSize: { xs: "0.75rem", sm: "0.9rem" },
                             border: "1px solid rgba(255,255,255,0.3)",
                             backdropFilter: "blur(8px)",
                             transition: "all 0.4s ease-in-out",
@@ -709,7 +752,8 @@ export default function NewsPage() {
                         flex: 1,
                         display: "flex",
                         flexDirection: "column",
-                        p: 3,
+                        p: { xs: 2, sm: 3 },
+                        minWidth: 0, // prevents text overflow when in row layout
                       }}
                     >
                       <Box sx={{ display: "flex", gap: 2, mb: 2 }}>

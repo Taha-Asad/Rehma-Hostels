@@ -78,7 +78,7 @@ const RoomDetailsModal: React.FC<RoomDetailsModalProps> = ({
       fullWidth
       PaperProps={{
         sx: {
-          overflow: "hidden",
+          overflow: { xs: "auto", md: "hidden" },
           height: { xs: "auto", md: "85vh" },
           maxHeight: { xs: "90vh", md: "85vh" },
         },
@@ -1337,9 +1337,16 @@ export default function RoomsPage() {
                   >
                     <Card
                       sx={{
-                        height: viewMode === "grid" ? 480 : "auto",
+                        height: {
+                          xs: 570,
+                          sm: viewMode === "grid" ? 480 : "auto",
+                        },
                         display: "flex",
-                        flexDirection: viewMode === "grid" ? "column" : "row",
+                        // Stack on mobile; row only from sm+ when in list mode
+                        flexDirection: {
+                          xs: "column",
+                          sm: viewMode === "grid" ? "column" : "row",
+                        },
                         overflow: "hidden",
                         border: "1px solid #F1E9E9",
                         transition: "all 0.3s ease-in-out",
@@ -1355,20 +1362,53 @@ export default function RoomsPage() {
                         bgcolor: "#FFFFFF",
                         borderRadius: 1,
                         cursor: "default",
+                        alignItems: "stretch",
                       }}
                     >
-                      <Box sx={{ position: "relative", overflow: "hidden" }}>
+                      <Box
+                        sx={{
+                          position: "relative",
+                          overflow: "hidden",
+                          // Do not let the image shrink in list row layout
+                          flex: {
+                            xs: "0 0 auto",
+                            sm: viewMode === "grid" ? "0 0 auto" : "0 0 300px",
+                            md: viewMode === "grid" ? "0 0 auto" : "0 0 320px",
+                          },
+                          minWidth: {
+                            xs: "100%",
+                            sm: viewMode === "grid" ? "auto" : 300,
+                            md: viewMode === "grid" ? "auto" : 320,
+                          },
+                        }}
+                      >
                         <CardMedia
                           component="img"
                           image={room.image}
                           alt={room.title}
                           sx={{
-                            width: viewMode === "grid" ? "100%" : 320,
-                            height: viewMode === "grid" ? 220 : 200,
+                            display: "block",
+                            width: "100%",
+                            height: {
+                              xs: 220, // taller on mobile so it doesn't feel cramped
+                              sm: 240,
+                              md: viewMode === "grid" ? 250 : 220,
+                            },
                             objectFit: "cover",
+                            borderBottom: {
+                              xs: "1px solid rgba(0,0,0,0.08)",
+                              sm: "none",
+                            },
+                            borderRight: {
+                              xs: "none",
+                              sm:
+                                viewMode === "grid"
+                                  ? "none"
+                                  : "1px solid rgba(0,0,0,0.08)",
+                            },
                             transition: "transform 0.3s ease",
                             "&:hover": {
-                              transform: "scale(1.1)",
+                              transform: "scale(1.05)",
                             },
                           }}
                         />
@@ -1387,8 +1427,8 @@ export default function RoomsPage() {
                             size="small"
                             sx={{
                               position: "absolute",
-                              top: 10,
-                              right: 10,
+                              top: { xs: 8, sm: 10 },
+                              right: { xs: 8, sm: 10 },
                               bgcolor: "#D4A373",
                               color: "white",
                               fontWeight: 600,
@@ -1423,7 +1463,15 @@ export default function RoomsPage() {
                         )}
                       </Box>
 
-                      <CardContent sx={{ flex: 1, p: 3 }}>
+                      <CardContent
+                        sx={{
+                          flex: 1,
+                          display: "flex",
+                          flexDirection: "column",
+                          p: { xs: 2, sm: 3 },
+                          minWidth: 0, // prevents text overflow when in row layout
+                        }}
+                      >
                         <Typography
                           variant="h6"
                           sx={{

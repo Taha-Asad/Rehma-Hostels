@@ -223,7 +223,7 @@ const RoomDetailsModal: React.FC<RoomDetailsModalProps> = ({
       fullWidth
       PaperProps={{
         sx: {
-          overflow: "hidden",
+          overflow: {xs: "auto" , md: "hidden"},
           height: { xs: "auto", md: "85vh" },
           maxHeight: { xs: "90vh", md: "85vh" },
         },
