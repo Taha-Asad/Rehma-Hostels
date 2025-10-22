@@ -199,7 +199,7 @@ function Navbar() {
         px: { xs: 2, md: 4 },
         zIndex: 1000,
         width: "100%",
-        height: "70px", // Fixed height to prevent layout shift
+        height: 150, // Fixed height to prevent layout shift
       }}
     >
       <Container
