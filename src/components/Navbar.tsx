@@ -323,7 +323,6 @@ function Navbar() {
         PaperProps={{
           sx: {
             width: 300,
-            height: "100vh", // force full height
             position: "fixed",
             top: 0,
             right: 0,
