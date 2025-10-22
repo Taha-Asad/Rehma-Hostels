@@ -1,4 +1,5 @@
 "use client";
+
 import {
   Box,
   Button,
@@ -42,6 +43,7 @@ import HotelIcon from "@mui/icons-material/Hotel";
 import AutoStoriesIcon from "@mui/icons-material/AutoStories";
 import { scrollToSection } from "@/utils/scrollToSection";
 import { ScrollText } from "lucide-react";
+
 const navlinks = [
   { icon: <Home />, title: "Home", url: "/#" },
   { icon: <AutoStoriesIcon />, title: "About Us", url: "/#about" },
@@ -81,6 +83,9 @@ function Navbar() {
 
   useEffect(() => {
     const handleScroll = () => {
+      // Don't hide navbar when mobile drawer is open
+      if (mobileOpen) return;
+
       const currentScrollY = window.scrollY;
 
       // Always visible near top
@@ -103,7 +108,7 @@ function Navbar() {
 
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
-  }, [lastScrollY]);
+  }, [lastScrollY, mobileOpen]);
 
   // Form validation
   const validateForm = () => {
@@ -161,7 +166,7 @@ function Navbar() {
       component="nav"
       sx={{
         position: "fixed",
-        top: visible ? 0 : "-170px",
+        top: visible || mobileOpen ? 0 : "-170px", // Keep visible when drawer is open
         transition: "top 0.4s ease-in-out, background-color 0.3s ease",
         backgroundColor: "rgba(0,0,0,0.8)",
         backdropFilter: "blur(8px)",
@@ -322,16 +327,33 @@ function Navbar() {
         onClose={() => setMobileOpen(false)}
         ModalProps={{
           keepMounted: true,
-          disableScrollLock: false, // this locks the background
+          disableScrollLock: true, // Changed to true to prevent background scrolling
         }}
-        sx={{
-          width: 300,
-          bgcolor: "#fff",
-          display: "flex",
-          flexDirection: "column",
-          justifyContent: "flex-start",
-          overflowY: "auto",
-          overscrollBehavior: "contain", // critical: stops bounce scroll weirdness
+        slotProps={{
+          backdrop: {
+            sx: {
+              position: "fixed",
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0,
+            },
+          },
+          paper: {
+            sx: {
+              position: "fixed", // Added fixed positioning
+              top: 0,
+              right: 0,
+              height: "100vh", // Full viewport height
+              width: 300,
+              bgcolor: "#fff",
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "flex-start",
+              overflowY: "auto",
+              overscrollBehavior: "contain",
+            },
+          },
         }}
       >
         <Box sx={{ display: "flex", justifyContent: "flex-end", p: 1 }}>
@@ -411,10 +433,14 @@ function Navbar() {
             justifyContent: "center",
             alignItems: "center",
             gap: 2,
+            pb: 2, // Added padding bottom
           }}
         >
           <Button
-            onClick={() => scrollToSection("contact")}
+            onClick={() => {
+              scrollToSection("contact");
+              setMobileOpen(false); // Close drawer after clicking
+            }}
             sx={{
               bgcolor: "#7B2E2E",
               color: "primary.contrastText",
@@ -448,7 +474,10 @@ function Navbar() {
               transition: "all 0.3s",
               "&:hover": { bgcolor: "#7B2E2E", color: "#fff" },
             }}
-            onClick={() => setOpenModal(true)}
+            onClick={() => {
+              setOpenModal(true);
+              setMobileOpen(false); // Close drawer when opening modal
+            }}
           >
             Sign In
           </Button>
