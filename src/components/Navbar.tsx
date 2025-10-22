@@ -425,62 +425,62 @@ function Navbar() {
               </RouterLink>
             </Box>
           ))}
-        </Box>
-        <Box
-          sx={{
-            display: "flex",
-            flexDirection: "column",
-            justifyContent: "center",
-            alignItems: "center",
-            gap: 2,
-            pb: 2, // Added padding bottom
-          }}
-        >
-          <Button
-            onClick={() => {
-              scrollToSection("contact");
-              setMobileOpen(false); // Close drawer after clicking
-            }}
+          <Box
             sx={{
-              bgcolor: "#7B2E2E",
-              color: "primary.contrastText",
-              borderRadius: 0.5,
-              py: "10px",
-              px: "15px",
-              width: "70%",
-              fontWeight: 600,
-              boxShadow: "5px 5px 10px rgba(123, 46, 46, 0.2)",
-              transition: "all 0.3s",
-              "&:hover": {
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "center",
+              alignItems: "center",
+              gap: 2,
+              pb: 2, // Added padding bottom
+            }}
+          >
+            <Button
+              onClick={() => {
+                scrollToSection("contact");
+                setMobileOpen(false); // Close drawer after clicking
+              }}
+              sx={{
+                bgcolor: "#7B2E2E",
+                color: "primary.contrastText",
+                borderRadius: 0.5,
+                py: "10px",
+                px: "15px",
+                width: "70%",
+                fontWeight: 600,
+                boxShadow: "5px 5px 10px rgba(123, 46, 46, 0.2)",
+                transition: "all 0.3s",
+                "&:hover": {
+                  bgcolor: "primary.contrastText",
+                  color: "#7B2E2E",
+                },
+              }}
+            >
+              Book Now
+            </Button>
+
+            <Button
+              sx={{
                 bgcolor: "primary.contrastText",
                 color: "#7B2E2E",
-              },
-            }}
-          >
-            Book Now
-          </Button>
-
-          <Button
-            sx={{
-              bgcolor: "primary.contrastText",
-              color: "#7B2E2E",
-              borderRadius: 0.5,
-              py: "10px",
-              px: "15px",
-              width: "70%",
-              fontWeight: 600,
-              border: "1px solid #7B2E2E",
-              boxShadow: "5px 5px 10px rgba(123, 46, 46, 0.2)",
-              transition: "all 0.3s",
-              "&:hover": { bgcolor: "#7B2E2E", color: "#fff" },
-            }}
-            onClick={() => {
-              setOpenModal(true);
-              setMobileOpen(false); // Close drawer when opening modal
-            }}
-          >
-            Sign In
-          </Button>
+                borderRadius: 0.5,
+                py: "10px",
+                px: "15px",
+                width: "70%",
+                fontWeight: 600,
+                border: "1px solid #7B2E2E",
+                boxShadow: "5px 5px 10px rgba(123, 46, 46, 0.2)",
+                transition: "all 0.3s",
+                "&:hover": { bgcolor: "#7B2E2E", color: "#fff" },
+              }}
+              onClick={() => {
+                setOpenModal(true);
+                setMobileOpen(false); // Close drawer when opening modal
+              }}
+            >
+              Sign In
+            </Button>
+          </Box>
         </Box>
       </Drawer>
 
