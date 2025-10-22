@@ -105,6 +105,16 @@ function Navbar() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, [lastScrollY]);
 
+  useEffect(() => {
+    if (mobileOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+    return () => {
+      document.body.style.overflow = "";
+    };
+  });
   // Form validation
   const validateForm = () => {
     if (!formData.email.trim()) return toast.error("Valid Email is required");
@@ -327,14 +337,11 @@ function Navbar() {
             top: 0,
             right: 0,
             bottom: 0,
-            overflowY: "auto", // keeps its own content scrollable if needed
             bgcolor: "#fff",
-            boxShadow: "0 8px 30px rgba(0,0,0,0.12)",
-            borderLeft: "1px solid rgba(0,0,0,0.06)",
             display: "flex",
             flexDirection: "column",
-            justifyContent: "space-between",
-            zIndex: 1400,
+            justifyContent: "flex-start",
+            overflow: "hidden",
           },
         }}
         ModalProps={{
@@ -354,12 +361,12 @@ function Navbar() {
 
         <Box
           sx={{
+            flex: 1,
+            overflowY: "auto",
             display: "flex",
             flexDirection: "column",
-            alignItems: "left",
-            gap: 2,
-            pl: 5,
-            pr: 10,
+            gap: 1,
+            px: 5,
           }}
         >
           {navlinks.map((item, index) => (
