@@ -947,7 +947,7 @@ function Rooms() {
                             bgcolor: "primary.contrastText",
                             color: "#7B2E2E",
                             borderRadius: 0.5,
-                            width: 300,
+                            width: { xs: 250, md: 300 },
                             py: "10px",
                             px: "15px",
                             fontWeight: 600,

@@ -323,16 +323,27 @@ function Navbar() {
         PaperProps={{
           sx: {
             width: 300,
+            height: "100vh", // force full height
             position: "fixed",
             top: 0,
             right: 0,
+            bottom: 0,
+            overflowY: "hidden", // keeps its own content scrollable if needed
             bgcolor: "#fff",
             boxShadow: "0 8px 30px rgba(0,0,0,0.12)",
             borderLeft: "1px solid rgba(0,0,0,0.06)",
             display: "flex",
             flexDirection: "column",
-            justifyContent: "flex-start",
+            justifyContent: "space-between",
             zIndex: 1400,
+          },
+        }}
+        ModalProps={{
+          keepMounted: true,
+          sx: {
+            "& .MuiBackdrop-root": {
+              position: "fixed", // backdrop also locks
+            },
           },
         }}
       >

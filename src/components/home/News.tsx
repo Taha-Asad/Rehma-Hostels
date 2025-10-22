@@ -531,7 +531,7 @@ const News = () => {
                       </Grid>
                     ))}
               </Grid>
-              <Box sx={{ display: "grid", placeItems: "center" }}>
+              <Box sx={{ display: "grid", placeItems: "center", py: 4 }}>
                 <Button
                   component={Link}
                   href="/news"
@@ -977,16 +977,17 @@ const News = () => {
                       Don&apos;t miss out on any important updates from REHMA.
                     </Typography>
 
-                    <Box
+                    <Stack
+                      direction={{ xs: "column", md: "row" }}
                       component="form"
                       onSubmit={handleSubscribe}
                       sx={{
                         display: "flex",
                         gap: 2,
-                        flexWrap: { xs: "wrap", sm: "nowrap" },
                         justifyContent: "center",
                         width: "100%",
                         maxWidth: 500,
+                        px: 2,
                       }}
                     >
                       <TextField
@@ -1035,7 +1036,7 @@ const News = () => {
                       >
                         {subscribing ? "Subscribing..." : "Subscribe"}
                       </Button>
-                    </Box>
+                    </Stack>
 
                     {/* Show More Button (navigates to /news) */}
                   </Stack>
