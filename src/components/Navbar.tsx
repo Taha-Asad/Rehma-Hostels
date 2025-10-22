@@ -106,15 +106,12 @@ function Navbar() {
   }, [lastScrollY]);
 
   useEffect(() => {
-    if (mobileOpen) {
-      document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "";
-    }
+    document.body.style.overflow = mobileOpen ? "hidden" : "";
     return () => {
       document.body.style.overflow = "";
     };
-  });
+  }, [mobileOpen]);
+
   // Form validation
   const validateForm = () => {
     if (!formData.email.trim()) return toast.error("Valid Email is required");
@@ -346,6 +343,7 @@ function Navbar() {
         }}
         ModalProps={{
           keepMounted: true,
+          disableScrollLock: false,
           sx: {
             "& .MuiBackdrop-root": {
               position: "fixed", // backdrop also locks
@@ -430,7 +428,6 @@ function Navbar() {
             justifyContent: "center",
             alignItems: "center",
             gap: 2,
-            pt: 1,
           }}
         >
           <Button
