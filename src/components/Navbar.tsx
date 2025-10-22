@@ -347,7 +347,7 @@ function Navbar() {
           },
         }}
       >
-        <Box sx={{ display: "flex", justifyContent: "flex-end", p: 2 }}>
+        <Box sx={{ display: "flex", justifyContent: "flex-end", p: 1 }}>
           <IconButton onClick={() => setMobileOpen(false)}>
             <Close />
           </IconButton>
@@ -358,7 +358,7 @@ function Navbar() {
             display: "flex",
             flexDirection: "column",
             alignItems: "left",
-            gap: 3,
+            gap: 2,
             pl: 5,
             pr: 10,
           }}
@@ -424,7 +424,7 @@ function Navbar() {
             justifyContent: "center",
             alignItems: "center",
             gap: 2,
-            pt: 2,
+            pt: 1,
           }}
         >
           <Button

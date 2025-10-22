@@ -335,18 +335,19 @@ export default async function BlogPost({ params }: PageProps) {
 
       <Container
         maxWidth="lg"
-        sx={{ mt: 8, mb: 5, position: "relative", zIndex: 1 }}
+        sx={{ mt: 8, pb: 5, position: "relative", zIndex: 1 }}
       >
         <Grid container spacing={4}>
           {/* Main Content */}
           <Grid size={{ xs: 12, md: 8 }}>
             <Paper
-              elevation={0}
+              elevation={16}
               sx={{
-                borderRadius: 3,
-                p: { xs: 3, sm: 4, md: 6 },
-                boxShadow: "0 20px 40px rgba(0,0,0,0.08)",
-                bgcolor: "white",
+                py: 4,
+                pb: 8,
+                px: 2,
+                bgcolor: "#F6F4F4",
+                boxShadow: "0 20px 40px rgba(123,46,46,0.4)",
               }}
             >
               {/* Breadcrumbs */}
@@ -474,13 +475,14 @@ export default async function BlogPost({ params }: PageProps) {
           <Grid size={{ xs: 12, md: 4 }}>
             {/* Author Card */}
             <Paper
-              elevation={0}
+              elevation={16}
               sx={{
-                borderRadius: 3,
-                p: 3,
-                mb: 3,
-                boxShadow: "0 10px 30px rgba(0,0,0,0.08)",
-                bgcolor: "white",
+                py: 4,
+                pb: 8,
+                px: 2,
+                mb: 7,
+                bgcolor: "#F6F4F4",
+                boxShadow: "0 20px 40px rgba(123,46,46,0.4)",
               }}
             >
               <Typography
@@ -522,13 +524,14 @@ export default async function BlogPost({ params }: PageProps) {
 
             {/* CTA Card */}
             <Paper
-              elevation={0}
+              elevation={16}
               sx={{
-                background: "linear-gradient(135deg, #7B2E2E 0%, #5f2424 100%)",
-                borderRadius: 3,
-                p: 4,
-                boxShadow: "0 20px 40px rgba(123,46,46,0.3)",
-                color: "white",
+                pt: 4,
+                pb: 6,
+                px: 2,
+                bgcolor: "#7B2E2E",
+                boxShadow: "0 20px 40px rgba(123,46,46,0.4)",
+                color: "#fff",
                 textAlign: "center",
               }}
             >
