@@ -24,37 +24,37 @@ const aboutUs = [
     icon: <People />,
     title: "Separate Sections for Boys & Girls",
     content:
-      "Dedicated sections with separate entrances and facilities ensuring complete privacy and comfort for all residents",
+      "Rehma offers dedicated and secure spaces for all residents. Whether you’re looking for a boys hostel in Lahore or a girls hostel in Lahore, our facilities ensure privacy, comfort, and a peaceful stay.",
   },
   {
     icon: <AutoAwesomeRounded />,
-    title: "HSM Digital Management System",
+    title: "Rehma's Digital Management System",
     content:
-      "Smart technology for seamless bookings, payments, maintenance requests, and instant communication",
+      "Our smart management system makes living effortless — from online bookings and payments to maintenance requests and instant communication with our team.",
   },
   {
     icon: <VolunteerActivism />,
     title: "Professional & Caring Staff",
     content:
-      "Experienced team dedicated to providing exceptional service and support 24/7 for your peace of mind",
+      "Our trained and friendly staff are available around the clock, ensuring every resident receives the care, respect, and assistance they deserve.",
   },
   {
     icon: <Shield />,
     title: "Advanced Security Systems",
     content:
-      "CCTV surveillance, biometric access control, and round-the-clock security personnel for your safety",
+      "Your safety is our top priority. With 24/7 CCTV monitoring, biometric access, and security personnel on duty, you can live with peace of mind.",
   },
   {
     icon: <SignalWifiStatusbar4Bar />,
     title: "High-Speed WiFi Connectivity",
     content:
-      "Unlimited high-speed internet throughout the facility supporting your studies and entertainment",
+      "Enjoy unlimited, reliable, and high-speed internet across the entire facility, perfect for studying, working, or streaming your favorite shows.",
   },
   {
     icon: <People />,
     title: "Flexible Accommodation Plans",
     content:
-      "Choose from daily, monthly, or semester-based packages tailored to your academic schedule",
+      "Choose from a variety of stay options — daily, monthly, or semester-based packages designed to match your schedule and lifestyle.",
   },
 ];
 
@@ -73,6 +73,7 @@ function About() {
             alignItems: "center",
             textAlign: "center",
             flexDirection: "column",
+            pb: 5,
           }}
         >
           <Chip
@@ -93,9 +94,9 @@ function About() {
               py: 2,
             }}
           >
-            Your Home Away <br />
+            Affordable Hostels & Apartments <br />
             <Box component="span" sx={{ color: "#7B2E2E" }}>
-              From Home
+              In Lahore
             </Box>{" "}
           </Typography>
         </Box>
@@ -133,7 +134,7 @@ function About() {
             </Grid>
             <Grid size={{ sm: 12, md: 6 }}>
               <Typography
-                variant="h3"
+                variant="h2"
                 sx={{
                   color: "#3D444B",
                   py: 2,
@@ -145,34 +146,29 @@ function About() {
                 </Box>{" "}
               </Typography>
               <Typography variant="body1">
-                At REHMA Professional Hostel & Apartments, we understand that
-                finding the right accommodation is crucial to your academic and
-                professional success. That&apos;s why we&apos;ve created a
-                living environment that combines the{" "}
+                Rehma Professional Hostels & Apartments, comfort and reliability
+                make all the difference when it comes to finding the right place
+                to live. Situated in a peaceful and convenient area of Lahore,
+                we offer well-managed and fully maintained spaces that truly
+                feel like home. Our rooms for rent in Lahore are designed to
+                provide the perfect mix of privacy, convenience, and modern
+                amenities, making everyday living simple and stress-free. With a
+                calm environment, responsive management,
                 <Box
                   component={"span"}
                   sx={{ color: "#7B2E2E", fontWeight: "bold" }}
                 >
-                  comfort of home
+                  {" "}
+                  focus on cleanliness and comfort,{" "}
                 </Box>{" "}
-                with the{" "}
+                Rehma ensures you can settle in easily and{" "}
                 <Box
                   component={"span"}
                   sx={{ color: "#7B2E2E", fontWeight: "bold" }}
                 >
-                  reliability of professional management
+                  enjoy a pleasant, worry-free stay
                 </Box>
                 .
-              </Typography>
-              <Typography>
-                Since our establishment, we&apos;ve been committed to providing
-                students and working professionals with a safe, comfortable, and
-                supportive environment in the heart of Lahore. Our facility is
-                designed to help you focus on what matters most — your studies
-                and career growth. We believe that where you live shapes how you
-                live. That&apos;s why every aspect of REHMA is carefully crafted
-                to support your journey, from our modern amenities to our
-                dedicated staff who treat every resident like family.
               </Typography>
             </Grid>
           </Grid>
@@ -210,8 +206,9 @@ function About() {
                   color: "#505A63",
                 }}
               >
-                Experience the REHMA difference with features designed
-                specifically for student and professional success{" "}
+                Experience the Rehma difference, where comfort, security, and
+                reliability come together to make everyday living easier for
+                professionals and residents.
               </Typography>
             </Box>
           </Container>
@@ -254,7 +251,7 @@ function About() {
                       bgcolor: "#E8DDDC",
                       borderRadius: 1,
                       height: "50px",
-                      width: "80px",
+                      minWidth: "55px",
                       placeItems: "center",
                     }}
                   >

@@ -23,7 +23,7 @@ import { scrollToSection } from "@/utils/scrollToSection";
 
 const TestCards = [
   {
-    text: '"REHMA feels like a home away from home. The professional environment combined with genuine care from the staff makes it perfect for serious students. Highly recommended!"',
+    text: "“I had been searching for hostels in Lahore, but most places didn’t feel secure or comfortable. REHMA changed that completely. The rooms are clean, the staff is supportive, and I finally found a peaceful environment where I can relax and feel at ease. It truly feels like home.”",
     value: 4.5,
     avatar: "",
     name: "Ahmed Hassan",
@@ -31,7 +31,7 @@ const TestCards = [
     uni: "LUMS",
   },
   {
-    text: '"REHMA feels like a home away from home. The professional environment combined with genuine care from the staff makes it perfect for serious students. Highly recommended!"',
+    text: "“As a working professional, I preferred apartments in Lahore over shared hostels. I’m glad I chose REHMA. The furnished rooms, Wi-Fi, and maintenance services are exactly what I needed. It’s rare to find this level of comfort and management at such a reasonable price.”",
     value: 5,
     avatar: "",
     name: "Ahmed Hassan",
@@ -39,7 +39,7 @@ const TestCards = [
     uni: "LUMS",
   },
   {
-    text: '""REHMA feels like a home away from home. The professional environment combined with genuine care from the staff makes it perfect for serious students. Highly recommended!""',
+    text: "“My experience at REHMA’s Girls Hostel in Lahore was wonderful! It felt like a second home, safe, clean, and caring, with delicious food and a welcoming atmosphere.”",
     value: 4,
     avatar: "",
     name: "Ahmed Hassan",
@@ -81,7 +81,7 @@ function Testimonials() {
           }}
         >
           <Chip
-            label="STUDENT TESTIMONIALS"
+            label="TESTIMONIALS"
             variant="outlined"
             sx={{
               bgcolor: "#F1E9E9",
@@ -98,7 +98,7 @@ function Testimonials() {
               py: 2,
             }}
           >
-            Trusted by Students <br />
+            Trusted by Professionals <br />
             <Box component="span" sx={{ color: "#7B2E2E" }}>
               Across Lahore{" "}
             </Box>{" "}
@@ -110,8 +110,8 @@ function Testimonials() {
               width: "60%",
             }}
           >
-            Hear from our community of students and professionals who have found
-            their perfect home at REHMA.{" "}
+            Hear from our community of professionals who have found their
+            perfect home at REHMA.{" "}
           </Typography>
         </Box>
         <motion.div
@@ -174,6 +174,8 @@ function Testimonials() {
                         bgcolor: "#FFFFFF",
                         borderRadius: 1,
                         cursor: "default",
+                        minHeight: "450px",
+                        maxHeight: "450px",
                       }}
                     >
                       <Stack direction={"column"} alignItems={"left"}>
@@ -286,8 +288,7 @@ function Testimonials() {
                       fontSize={"20px"}
                       fontFamily={"Poppins"}
                     >
-                      Join our community of successful students and
-                      professionals
+                      Join our community of successful professionals
                     </Typography>
                     <Button
                       onClick={() => scrollToSection("contact")}
@@ -297,7 +298,8 @@ function Testimonials() {
                         borderRadius: 0.5,
                         py: "10px",
                         px: "15px",
-                        width: "250px",
+                        width: 250,
+                        textWrap: "nowrap",
                         fontWeight: 600,
                         boxShadow: "5px 5px 10px rgba(123, 46, 46, 0.2)",
                         transition: "all 0.3s",

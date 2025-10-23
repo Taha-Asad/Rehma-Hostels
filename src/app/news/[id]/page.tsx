@@ -46,9 +46,9 @@ async function getArticle(id: string): Promise<NewsArticle | null> {
         "https://images.unsplash.com/photo-1593642634315-48f5414c3ad9?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080",
       title: "Campus Renovation Completed",
       content:
-        "The hostel underwent major renovations, offering students a modern and comfortable living environment.",
+        "The hostel underwent major renovations, offering professionals a modern and comfortable living environment.",
       fullContent: `
-        <p>We are thrilled to announce that the comprehensive renovation of our campus facilities has been successfully completed. This major upgrade represents our commitment to providing students with a world-class living and learning environment.</p>
+        <p>We are thrilled to announce that the comprehensive renovation of our campus facilities has been successfully completed. This major upgrade represents our commitment to providing professionals with a world-class living and learning environment.</p>
         
         <h3>Key Improvements Include:</h3>
         <ul>
@@ -58,12 +58,162 @@ async function getArticle(id: string): Promise<NewsArticle | null> {
           <li><strong>Improved Infrastructure:</strong> Updated electrical systems, high-speed internet connectivity, and better ventilation throughout the facility.</li>
         </ul>
         
-        <p>The renovation project, which began in January 2025, was completed ahead of schedule and within budget. We worked closely with student representatives to ensure that the improvements aligned with the needs and preferences of our residents.</p>
+        <p>The renovation project, which began in January 2025, was completed ahead of schedule and within budget. We worked closely with professionals representatives to ensure that the improvements aligned with the needs and preferences of our residents.</p>
         
-        <h3>Student Feedback</h3>
-        <p>"The new facilities are amazing! The study areas are now perfect for both individual study and group projects," says Sarah Ahmed, a third-year engineering student.</p>
+        <h3>Residents Feedback</h3>
+        <p>"The new facilities are amazing! The study areas are now perfect for both individual study and group projects," says Sarah Ahmed, a third-year Software Engineer.</p>
         
-        <p>We invite all current and prospective students to visit and experience the transformed campus. Tours are available daily from 9 AM to 6 PM.</p>
+        <p>We invite all current and prospective residents to visit and experience the transformed campus. Tours are available daily from 9 AM to 6 PM.</p>
+      `,
+      date: "Oct 15, 2025",
+      author: "Admin Team",
+      readTime: "5 min read",
+      category: "Announcements",
+    },
+    {
+      id: 2,
+      image:
+        "https://images.unsplash.com/photo-1593642634315-48f5414c3ad9?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080",
+      title: "Campus Renovation Completed",
+      content:
+        "The hostel underwent major renovations, offering professionals a modern and comfortable living environment.",
+      fullContent: `
+        <p>We are thrilled to announce that the comprehensive renovation of our campus facilities has been successfully completed. This major upgrade represents our commitment to providing professionals with a world-class living and learning environment.</p>
+        
+        <h3>Key Improvements Include:</h3>
+        <ul>
+          <li><strong>Modernized Living Spaces:</strong> All rooms have been renovated with new furniture, improved lighting, and enhanced storage solutions.</li>
+          <li><strong>Upgraded Study Areas:</strong> State-of-the-art study lounges with ergonomic seating and dedicated quiet zones.</li>
+          <li><strong>Enhanced Common Areas:</strong> Redesigned recreational spaces with modern amenities and comfortable seating arrangements.</li>
+          <li><strong>Improved Infrastructure:</strong> Updated electrical systems, high-speed internet connectivity, and better ventilation throughout the facility.</li>
+        </ul>
+        
+        <p>The renovation project, which began in January 2025, was completed ahead of schedule and within budget. We worked closely with professionals representatives to ensure that the improvements aligned with the needs and preferences of our residents.</p>
+        
+        <h3>Residents Feedback</h3>
+        <p>"The new facilities are amazing! The study areas are now perfect for both individual study and group projects," says Sarah Ahmed, a third-year Software Engineer.</p>
+        
+        <p>We invite all current and prospective residents to visit and experience the transformed campus. Tours are available daily from 9 AM to 6 PM.</p>
+      `,
+      date: "Oct 15, 2025",
+      author: "Admin Team",
+      readTime: "5 min read",
+      category: "Announcements",
+    },
+    {
+      id: 3,
+      image:
+        "https://images.unsplash.com/photo-1593642634315-48f5414c3ad9?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080",
+      title: "Campus Renovation Completed",
+      content:
+        "The hostel underwent major renovations, offering professionals a modern and comfortable living environment.",
+      fullContent: `
+        <p>We are thrilled to announce that the comprehensive renovation of our campus facilities has been successfully completed. This major upgrade represents our commitment to providing professionals with a world-class living and learning environment.</p>
+        
+        <h3>Key Improvements Include:</h3>
+        <ul>
+          <li><strong>Modernized Living Spaces:</strong> All rooms have been renovated with new furniture, improved lighting, and enhanced storage solutions.</li>
+          <li><strong>Upgraded Study Areas:</strong> State-of-the-art study lounges with ergonomic seating and dedicated quiet zones.</li>
+          <li><strong>Enhanced Common Areas:</strong> Redesigned recreational spaces with modern amenities and comfortable seating arrangements.</li>
+          <li><strong>Improved Infrastructure:</strong> Updated electrical systems, high-speed internet connectivity, and better ventilation throughout the facility.</li>
+        </ul>
+        
+        <p>The renovation project, which began in January 2025, was completed ahead of schedule and within budget. We worked closely with professionals representatives to ensure that the improvements aligned with the needs and preferences of our residents.</p>
+        
+        <h3>Residents Feedback</h3>
+        <p>"The new facilities are amazing! The study areas are now perfect for both individual study and group projects," says Sarah Ahmed, a third-year Software Engineer.</p>
+        
+        <p>We invite all current and prospective residents to visit and experience the transformed campus. Tours are available daily from 9 AM to 6 PM.</p>
+      `,
+      date: "Oct 15, 2025",
+      author: "Admin Team",
+      readTime: "5 min read",
+      category: "Announcements",
+    },
+    {
+      id: 4,
+      image:
+        "https://images.unsplash.com/photo-1593642634315-48f5414c3ad9?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080",
+      title: "Campus Renovation Completed",
+      content:
+        "The hostel underwent major renovations, offering professionals a modern and comfortable living environment.",
+      fullContent: `
+        <p>We are thrilled to announce that the comprehensive renovation of our campus facilities has been successfully completed. This major upgrade represents our commitment to providing professionals with a world-class living and learning environment.</p>
+        
+        <h3>Key Improvements Include:</h3>
+        <ul>
+          <li><strong>Modernized Living Spaces:</strong> All rooms have been renovated with new furniture, improved lighting, and enhanced storage solutions.</li>
+          <li><strong>Upgraded Study Areas:</strong> State-of-the-art study lounges with ergonomic seating and dedicated quiet zones.</li>
+          <li><strong>Enhanced Common Areas:</strong> Redesigned recreational spaces with modern amenities and comfortable seating arrangements.</li>
+          <li><strong>Improved Infrastructure:</strong> Updated electrical systems, high-speed internet connectivity, and better ventilation throughout the facility.</li>
+        </ul>
+        
+        <p>The renovation project, which began in January 2025, was completed ahead of schedule and within budget. We worked closely with professionals representatives to ensure that the improvements aligned with the needs and preferences of our residents.</p>
+        
+        <h3>Residents Feedback</h3>
+        <p>"The new facilities are amazing! The study areas are now perfect for both individual study and group projects," says Sarah Ahmed, a third-year Software Engineer.</p>
+        
+        <p>We invite all current and prospective residents to visit and experience the transformed campus. Tours are available daily from 9 AM to 6 PM.</p>
+      `,
+      date: "Oct 15, 2025",
+      author: "Admin Team",
+      readTime: "5 min read",
+      category: "Announcements",
+    },
+    {
+      id: 5,
+      image:
+        "https://images.unsplash.com/photo-1593642634315-48f5414c3ad9?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080",
+      title: "Campus Renovation Completed",
+      content:
+        "The hostel underwent major renovations, offering professionals a modern and comfortable living environment.",
+      fullContent: `
+        <p>We are thrilled to announce that the comprehensive renovation of our campus facilities has been successfully completed. This major upgrade represents our commitment to providing professionals with a world-class living and learning environment.</p>
+        
+        <h3>Key Improvements Include:</h3>
+        <ul>
+          <li><strong>Modernized Living Spaces:</strong> All rooms have been renovated with new furniture, improved lighting, and enhanced storage solutions.</li>
+          <li><strong>Upgraded Study Areas:</strong> State-of-the-art study lounges with ergonomic seating and dedicated quiet zones.</li>
+          <li><strong>Enhanced Common Areas:</strong> Redesigned recreational spaces with modern amenities and comfortable seating arrangements.</li>
+          <li><strong>Improved Infrastructure:</strong> Updated electrical systems, high-speed internet connectivity, and better ventilation throughout the facility.</li>
+        </ul>
+        
+        <p>The renovation project, which began in January 2025, was completed ahead of schedule and within budget. We worked closely with professionals representatives to ensure that the improvements aligned with the needs and preferences of our residents.</p>
+        
+        <h3>Residents Feedback</h3>
+        <p>"The new facilities are amazing! The study areas are now perfect for both individual study and group projects," says Sarah Ahmed, a third-year Software Engineer.</p>
+        
+        <p>We invite all current and prospective residents to visit and experience the transformed campus. Tours are available daily from 9 AM to 6 PM.</p>
+      `,
+      date: "Oct 15, 2025",
+      author: "Admin Team",
+      readTime: "5 min read",
+      category: "Announcements",
+    },
+    {
+      id: 6,
+      image:
+        "https://images.unsplash.com/photo-1593642634315-48f5414c3ad9?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080",
+      title: "Campus Renovation Completed",
+      content:
+        "The hostel underwent major renovations, offering professionals a modern and comfortable living environment.",
+      fullContent: `
+        <p>We are thrilled to announce that the comprehensive renovation of our campus facilities has been successfully completed. This major upgrade represents our commitment to providing professionals with a world-class living and learning environment.</p>
+        
+        <h3>Key Improvements Include:</h3>
+        <ul>
+          <li><strong>Modernized Living Spaces:</strong> All rooms have been renovated with new furniture, improved lighting, and enhanced storage solutions.</li>
+          <li><strong>Upgraded Study Areas:</strong> State-of-the-art study lounges with ergonomic seating and dedicated quiet zones.</li>
+          <li><strong>Enhanced Common Areas:</strong> Redesigned recreational spaces with modern amenities and comfortable seating arrangements.</li>
+          <li><strong>Improved Infrastructure:</strong> Updated electrical systems, high-speed internet connectivity, and better ventilation throughout the facility.</li>
+        </ul>
+        
+        <p>The renovation project, which began in January 2025, was completed ahead of schedule and within budget. We worked closely with professionals representatives to ensure that the improvements aligned with the needs and preferences of our residents.</p>
+        
+        <h3>Residents Feedback</h3>
+        <p>"The new facilities are amazing! The study areas are now perfect for both individual study and group projects," says Sarah Ahmed, a third-year Software Engineer.</p>
+        
+        <p>We invite all current and prospective residents to visit and experience the transformed campus. Tours are available daily from 9 AM to 6 PM.</p>
       `,
       date: "Oct 15, 2025",
       author: "Admin Team",
@@ -185,18 +335,19 @@ export default async function BlogPost({ params }: PageProps) {
 
       <Container
         maxWidth="lg"
-        sx={{ mt: 8, mb: 5, position: "relative", zIndex: 1 }}
+        sx={{ mt: 8, pb: 5, position: "relative", zIndex: 1 }}
       >
         <Grid container spacing={4}>
           {/* Main Content */}
           <Grid size={{ xs: 12, md: 8 }}>
             <Paper
-              elevation={0}
+              elevation={16}
               sx={{
-                borderRadius: 3,
-                p: { xs: 3, sm: 4, md: 6 },
-                boxShadow: "0 20px 40px rgba(0,0,0,0.08)",
-                bgcolor: "white",
+                py: 4,
+                pb: 8,
+                px: 2,
+                bgcolor: "#F6F4F4",
+                boxShadow: "0 20px 40px rgba(123,46,46,0.4)",
               }}
             >
               {/* Breadcrumbs */}
@@ -324,13 +475,14 @@ export default async function BlogPost({ params }: PageProps) {
           <Grid size={{ xs: 12, md: 4 }}>
             {/* Author Card */}
             <Paper
-              elevation={0}
+              elevation={16}
               sx={{
-                borderRadius: 3,
-                p: 3,
-                mb: 3,
-                boxShadow: "0 10px 30px rgba(0,0,0,0.08)",
-                bgcolor: "white",
+                py: 4,
+                pb: 8,
+                px: 2,
+                mb: 7,
+                bgcolor: "#F6F4F4",
+                boxShadow: "0 20px 40px rgba(123,46,46,0.4)",
               }}
             >
               <Typography
@@ -372,13 +524,14 @@ export default async function BlogPost({ params }: PageProps) {
 
             {/* CTA Card */}
             <Paper
-              elevation={0}
+              elevation={16}
               sx={{
-                background: "linear-gradient(135deg, #7B2E2E 0%, #5f2424 100%)",
-                borderRadius: 3,
-                p: 4,
-                boxShadow: "0 20px 40px rgba(123,46,46,0.3)",
-                color: "white",
+                pt: 4,
+                pb: 6,
+                px: 2,
+                bgcolor: "#7B2E2E",
+                boxShadow: "0 20px 40px rgba(123,46,46,0.4)",
+                color: "#fff",
                 textAlign: "center",
               }}
             >
@@ -392,21 +545,31 @@ export default async function BlogPost({ params }: PageProps) {
               >
                 Ready to Join REHMA?
               </Typography>
-              <Typography sx={{ mb: 3, opacity: 0.9 }}>
-                Experience premium student accommodation with modern facilities
+              <Typography sx={{ mb: 3, opacity: 0.9, color: "#D4A373" }}>
+                Experience premium professional accommodation with modern
+                facilities
               </Typography>
-              <Stack spacing={2}>
+              <Stack spacing={2} alignItems={"center"}>
                 <Button
                   variant="contained"
                   fullWidth
+                  component={Link}
+                  href="/#contact"
                   sx={{
-                    bgcolor: "white",
-                    color: "#7B2E2E",
+                    bgcolor: "#D4A373",
+                    color: "#FDF9F6",
+                    borderRadius: 0.5,
+                    width: 200,
+                    py: "10px",
+                    px: "15px",
                     fontWeight: 600,
-                    py: 1.5,
+                    border: "1px solid #7B2E2E",
+                    boxShadow: "5px 5px 10px rgba(123, 46, 46, 0.25)",
+                    transition: "all 0.3s",
                     "&:hover": {
-                      bgcolor: "#f5f5f5",
-                      transform: "translateY(-2px)",
+                      bgcolor: "primary.contrastText",
+                      color: "#7B2E2E",
+                      boxShadow: "0 4px 15px rgba(212, 163, 115, 0.4)",
                     },
                   }}
                 >
@@ -415,14 +578,23 @@ export default async function BlogPost({ params }: PageProps) {
                 <Button
                   variant="outlined"
                   fullWidth
+                  component={Link}
+                  href="/#contact"
                   sx={{
-                    borderColor: "white",
-                    color: "white",
+                    bgcolor: "white",
+                    color: "#7B2E2E",
+                    border: "2px solid #7B2E2E",
+                    borderRadius: 0.5,
+                    mb: 2,
+                    py: "10px",
+                    px: "15px",
+                    width: 200,
                     fontWeight: 600,
-                    py: 1.5,
+                    boxShadow: "5px 5px 10px rgba(0,0,0,0.15)",
+                    transition: "all 0.3s",
                     "&:hover": {
-                      borderColor: "white",
-                      bgcolor: "rgba(255,255,255,0.1)",
+                      bgcolor: "#7B2E2E",
+                      color: "white",
                     },
                   }}
                 >

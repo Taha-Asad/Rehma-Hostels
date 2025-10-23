@@ -119,9 +119,8 @@ function Footer() {
                 lineHeight: 1.8,
               }}
             >
-              Professional student accommodation in Lahore providing safe,
-              comfortable, and modern living spaces for academic and
-              professional success.
+              Rehma Hostels ensures comfort, security, and convenience with
+              modern living spaces tailored for today’s professionals in Lahore.
             </Typography>
 
             {/* Social Links */}
@@ -387,7 +386,7 @@ function Footer() {
                 }
               >
                 <Link
-                  href="#"
+                  href="/legal/privacy-policy"
                   sx={{
                     color: "rgba(255, 255, 255, 0.8)",
                     textDecoration: "none",
@@ -398,7 +397,7 @@ function Footer() {
                   Privacy Policy
                 </Link>
                 <Link
-                  href="#"
+                  href="/legal/terms"
                   sx={{
                     color: "rgba(255, 255, 255, 0.8)",
                     textDecoration: "none",
@@ -409,7 +408,7 @@ function Footer() {
                   Terms of Service
                 </Link>
                 <Link
-                  href="#"
+                  href="/legal/refund-policy"
                   sx={{
                     color: "rgba(255, 255, 255, 0.8)",
                     textDecoration: "none",

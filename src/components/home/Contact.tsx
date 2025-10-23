@@ -389,7 +389,7 @@ function Contact() {
                           borderRadius: 0.5,
                           py: "10px",
                           px: "15px",
-                          width: 350,
+                          width: { xs: 250, md: 350 },
                           fontWeight: 600,
                           boxShadow: "5px 5px 10px rgba(123, 46, 46, 0.2)",
                           transition: "all 0.3s",
@@ -455,7 +455,7 @@ function Contact() {
                       fontFamily: "Poppins, sans-serif",
                     }}
                   >
-                    Why Students & Professionals Choose REHMA
+                    Why Professionals Choose REHMA
                   </Typography>
                   <Box sx={{ display: "grid", rowGap: 1.5 }}>
                     {whyPoints.map((point, idx) => (
@@ -490,7 +490,7 @@ function Contact() {
                     value={500}
                     label={"Happy Residents"}
                     suffix={"+"}
-                    height={130}
+                    height={145}
                   />
                 </motion.div>
               </Grid>
@@ -505,7 +505,7 @@ function Contact() {
                     value={4.9}
                     label={"Average Rating"}
                     suffix={"★"}
-                    height={130}
+                    height={145}
                   />
                 </motion.div>
               </Grid>
@@ -521,7 +521,7 @@ function Contact() {
                     label={"Support"}
                     suffixValue={7}
                     suffix={"/"}
-                    height={130}
+                    height={145}
                   />
                 </motion.div>
               </Grid>
@@ -536,7 +536,7 @@ function Contact() {
                     value={100}
                     label={"Satisfaction"}
                     suffix={"%"}
-                    height={130}
+                    height={145}
                   />
                 </motion.div>
               </Grid>

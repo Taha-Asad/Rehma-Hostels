@@ -2,6 +2,7 @@
 import React from "react";
 import { Box, Button, Container, Typography, Chip } from "@mui/material";
 import { Shield, HomeWork, Groups } from "@mui/icons-material";
+import Link from "next/link";
 
 export function Hero() {
   return (
@@ -79,7 +80,7 @@ export function Hero() {
           {/* Eyebrow */}
           <Box sx={{ mb: 4, display: "inline-block" }}>
             <Chip
-              label="Your Home Away From Home"
+              label="Luxury made effortless."
               sx={{
                 backgroundColor: "rgba(255,255,255,0.1)",
                 backdropFilter: "blur(4px)",
@@ -120,7 +121,7 @@ export function Hero() {
                 mt: 1,
               }}
             >
-              Professional Hostel & Apartments
+              Professional Rooms for Rent in Lahore{" "}
             </Box>
           </Typography>
 
@@ -136,9 +137,8 @@ export function Hero() {
               mx: { xs: "auto", lg: 0 },
             }}
           >
-            Experience the perfect blend of comfort, security, and a
-            professional environment designed for students and working
-            professionals.
+            Experience a secure, comfortable, and professional living space
+            designed specifically for working professionals.
           </Typography>
 
           {/* Trust Badges */}
@@ -227,11 +227,8 @@ export function Hero() {
             <Button
               variant="outlined"
               size="large"
-              onClick={() =>
-                document
-                  .getElementById("rooms")
-                  ?.scrollIntoView({ behavior: "smooth" })
-              }
+              component={Link}
+              href="/rooms"
               sx={{
                 borderWidth: 2,
                 borderColor: "rgba(255,255,255,0.6)",

@@ -46,7 +46,7 @@ function StatsSection() {
             </Box>
           </Typography>
           <Typography variant="body1" sx={{ color: "#505A63" }}>
-            Years of trusted hospitality, now focused on students.
+            Years of trusted hospitality, now focused on Professionals.
           </Typography>
         </Box>
 

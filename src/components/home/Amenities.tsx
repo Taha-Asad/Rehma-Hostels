@@ -12,17 +12,23 @@ import {
   Stack,
   Typography,
 } from "@mui/material";
-import { Wifi } from "lucide-react";
+import { Cctv, Wifi } from "lucide-react";
 import React from "react";
 import { motion, Variants } from "framer-motion";
 import { scrollToSection } from "@/utils/scrollToSection";
+import {
+  DinnerDining,
+  Diversity3,
+  Engineering,
+  Weekend,
+} from "@mui/icons-material";
 
 const cards = [
   {
-    icon: <Wifi />,
-    title: "High-Speed WiFi",
+    icon: <Weekend />,
+    title: "Furnished Rooms",
     content:
-      "Unlimited high-speed internet throughout the facility for seamless connectivity",
+      "Enjoy fully furnished rooms with comfortable bedding, essential furniture, and a ready-to-move-in setup.",
   },
   {
     icon: <Wifi />,
@@ -31,28 +37,28 @@ const cards = [
       "Unlimited high-speed internet throughout the facility for seamless connectivity",
   },
   {
-    icon: <Wifi />,
-    title: "High-Speed WiFi",
+    icon: <Cctv />,
+    title: "CCTV Monitoring",
     content:
-      "Unlimited high-speed internet throughout the facility for seamless connectivity",
+      "Live with peace of mind under round-the-clock security and CCTV surveillance across all common areas.",
   },
   {
-    icon: <Wifi />,
-    title: "High-Speed WiFi",
+    icon: <DinnerDining />,
+    title: "Mess Service",
     content:
-      "Unlimited high-speed internet throughout the facility for seamless connectivity",
+      "Healthy, home-style meals served daily, thoughtfully prepared for a balanced and comfortable living experience.",
   },
   {
-    icon: <Wifi />,
-    title: "High-Speed WiFi",
+    icon: <Engineering />,
+    title: "Free Maintenance Services",
     content:
-      "Unlimited high-speed internet throughout the facility for seamless connectivity",
+      "No extra charges for repairs or cleaning, take care of room and facility maintenance for you.",
   },
   {
-    icon: <Wifi />,
-    title: "High-Speed WiFi",
+    icon: <Diversity3 />,
+    title: "Social Interaction",
     content:
-      "Unlimited high-speed internet throughout the facility for seamless connectivity",
+      "Be part of a friendly community where you can connect, share, and grow with like-minded residents.",
   },
 ];
 
@@ -120,8 +126,9 @@ function Amenities() {
               width: { xs: "90%", md: "60%" },
             }}
           >
-            Experience modern amenities designed to support your academic
-            journey and professional growth while providing the comfort of home.
+            Experience modern amenities designed to support your academic Our
+            rooms for rent in Lahore offer essential comforts and services,
+            making everyday living simple, secure, and stress-free.
           </Typography>
         </Box>
 
@@ -140,6 +147,8 @@ function Amenities() {
                     sx={{
                       px: { xs: 2, md: 3 },
                       width: "100%",
+                      minHeight: "300px",
+                      maxHeight: "300px",
                       py: 3,
                       transition: "all 0.3s ease",
                       backgroundColor: "rgba(217,212,209,0.25)",

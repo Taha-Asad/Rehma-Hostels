@@ -14,94 +14,91 @@ import {
   Avatar,
   alpha,
   Paper,
+  Divider,
 } from "@mui/material";
 import {
   ExpandMore,
-  Groups,
-  Receipt,
-  Security,
-  LocationOn,
-  Shield,
-  Visibility,
-  Restaurant,
-  CalendarMonth,
-  Description,
-  PhoneAndroid,
   QuestionAnswer,
   Mail,
   Phone,
+  Wifi,
+  DinnerDining,
+  Engineering,
+  Bed,
+  Man,
+  Woman,
+  Weekend,
+  Diversity3,
 } from "@mui/icons-material";
 import { motion } from "framer-motion";
+import { Cctv } from "lucide-react";
+import { scrollToSection } from "@/utils/scrollToSection";
 
 const faqs = [
   {
-    question: "Can I choose my roommate?",
+    question: "What types of rooms for rent in Lahore do you offer?",
     answer:
-      "Yes! If you have a friend or colleague who also wants to stay at REHMA, you can request to share a twin room together. Simply let us know during the booking process, and we'll make the necessary arrangements to accommodate your preference.",
-    icon: Groups,
+      "We offer fully furnished rooms for rent in Lahore, including private and shared options. Our accommodations are ideal for working professionals looking for comfort, convenience, and a peaceful stay.",
+    icon: Bed,
     color: "#7B2E2E",
   },
   {
-    question: "What is included in the monthly rent?",
+    question: "Do you have separate hostels for girls and boys in Lahore?",
     answer:
-      "Your monthly rent includes accommodation, high-speed WiFi throughout the facility, 24/7 security services, electricity (fair usage), water supply, common area access including study lounges, and basic maintenance services. Meal plans and laundry services are available as optional add-ons.",
-    icon: Receipt,
+      "Yes, Rehma Hostels provides both girls' hostels and boys’ hostels in Lahore. Each facility ensures secure access, privacy, and a safe, peaceful living environment.",
+    icon: () => (
+      <div style={{ display: "flex" }}>
+        <Man sx={{ color: "#6B4B3E", fontSize: "20px" }} />
+        <Divider
+          orientation="vertical"
+          flexItem
+          sx={{ bgcolor: "#6B4B3E", height: 24 }}
+        />
+        <Woman sx={{ color: "#6B4B3E", fontSize: "20px" }} />
+      </div>
+    ),
     color: "#6B4B3E",
   },
   {
-    question: "Is there a security deposit required?",
+    question: "Are your hostels in Lahore furnished?",
     answer:
-      "Yes, we require a refundable security deposit of PKR 10,000 along with the first month's rent at the time of booking. This deposit is fully refundable when you check out, provided there is no damage to the room or property beyond normal wear and tear.",
-    icon: Security,
+      "Absolutely! All our hostels and apartments in Lahore feature fully furnished rooms with beds, wardrobes, and essential amenities to make you feel at home from day one.",
+    icon: Weekend,
     color: "#7B2E2E",
   },
   {
-    question: "How close is REHMA to major universities in Lahore?",
+    question: "Is high-speed internet available for residents?",
     answer:
-      "REHMA is strategically located with excellent connectivity to major universities including LUMS, UET, Punjab University, FCCU, and LSE. Most universities are within 15-30 minutes by public transport, ride-sharing services, or personal vehicle.",
-    icon: LocationOn,
+      "Yes, every resident enjoys reliable high-speed internet perfect for remote work, online studies, and everyday browsing without interruptions.",
+    icon: Wifi,
     color: "#6B4B3E",
   },
   {
-    question: "What security measures are in place?",
+    question: "How secure are your hostels and apartments in Lahore?",
     answer:
-      "Security is our top priority. Our facility features 24/7 CCTV surveillance covering all common areas, biometric access control at entry points, security personnel on duty round the clock, separate sections for male and female residents with dedicated wardens, and comprehensive emergency protocols.",
-    icon: Shield,
+      "Your safety is our top priority. We maintain 24/7 CCTV monitoring and controlled entry to provide a secure, worry-free living experience.",
+    icon: () => <Cctv color="#7B2E2E" />,
     color: "#7B2E2E",
   },
   {
-    question: "Can I visit the facility before booking?",
+    question: "Do you provide a meal service for daily meals?",
     answer:
-      "Absolutely! We encourage prospective residents and their families to visit our facility and take a tour. You can schedule a visit through our website, by phone, or simply walk in. Our tours are available daily from 9:00 AM to 7:00 PM.",
-    icon: Visibility,
+      "Yes, we offer a convenient mess service with fresh, home-style meals prepared daily, ideal for anyone who prefers hassle-free dining at the hostel.",
+    icon: DinnerDining,
     color: "#6B4B3E",
   },
   {
-    question: "What meal plan options are available?",
+    question: "Are there free maintenance services available?",
     answer:
-      "We offer flexible meal plans to suit different preferences: full board (3 meals daily), half board (2 meals daily), or no meal plan if you prefer to manage your own meals. All our meals are prepared fresh with high-quality ingredients in our hygienic kitchen, offering both traditional Pakistani and continental options.",
-    icon: Restaurant,
+      "Yes, we provide free maintenance and cleaning services, including regular room and bathroom cleaning, to keep your space fresh and comfortable.",
+    icon: Engineering,
     color: "#7B2E2E",
   },
   {
-    question: "Is there a minimum booking period?",
+    question: "Is there space for social interaction and community living?",
     answer:
-      "Yes, we require a minimum booking period of 3 months. However, most students and professionals book for a semester (5-6 months) or a full academic year. We offer attractive discounts for longer-term bookings.",
-    icon: CalendarMonth,
-    color: "#6B4B3E",
-  },
-  {
-    question: "What is the cancellation policy?",
-    answer:
-      "If you cancel your booking at least 30 days before your scheduled move-in date, you will receive a full refund minus a small processing fee. Cancellations made within 30 days of move-in may result in the forfeiture of one month's rent. Please refer to our detailed cancellation policy for complete terms and conditions.",
-    icon: Description,
-    color: "#7B2E2E",
-  },
-  {
-    question: "How does the HSM digital management system work?",
-    answer:
-      "HSM (Hostel Smart Management) is our comprehensive digital platform that makes your stay seamless. Through the mobile app or web portal, you can pay rent online, submit and track maintenance requests, communicate directly with management, view your billing history, book common amenities, and stay updated with announcements. You'll receive your login credentials upon check-in.",
-    icon: PhoneAndroid,
+      "Definitely! We promote community living through friendly common areas where residents can relax, connect, and build lasting friendships.",
+    icon: Diversity3,
     color: "#6B4B3E",
   },
 ];
@@ -403,6 +400,7 @@ function FAQs() {
                 >
                   <motion.div variants={fadeInUp}>
                     <Button
+                      onClick={() => scrollToSection("contact")}
                       variant="contained"
                       size="large"
                       startIcon={<Mail />}

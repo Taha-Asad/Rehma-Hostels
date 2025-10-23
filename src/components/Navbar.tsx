@@ -1,4 +1,5 @@
 "use client";
+
 import {
   Box,
   Button,
@@ -40,12 +41,16 @@ import EmailIcon from "@mui/icons-material/Email";
 import TuneIcon from "@mui/icons-material/Tune";
 import HotelIcon from "@mui/icons-material/Hotel";
 import AutoStoriesIcon from "@mui/icons-material/AutoStories";
+import { scrollToSection } from "@/utils/scrollToSection";
+import { ScrollText } from "lucide-react";
+
 const navlinks = [
   { icon: <Home />, title: "Home", url: "/#" },
   { icon: <AutoStoriesIcon />, title: "About Us", url: "/#about" },
   { icon: <TuneIcon />, title: "Amenities", url: "/#amenities" },
   { icon: <HotelIcon />, title: "Rooms", url: "/#rooms" },
   { icon: <RateReview />, title: "Reviews", url: "/#reviews" },
+  { icon: <ScrollText />, title: "News", url: "/#news" },
   { icon: <Phone />, title: "Contact", url: "/#contact" },
 ];
 
@@ -56,7 +61,7 @@ function Navbar() {
   const [openModal, setOpenModal] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
-  const [userType, setUserType] = useState("student");
+  const [userType, setUserType] = useState("resident");
 
   const [visible, setVisible] = useState(true);
   const [lastScrollY, setLastScrollY] = useState(0);
@@ -65,6 +70,7 @@ function Navbar() {
     password: "",
   });
   const isActive = (url: string) => location.pathname === url;
+
   // Load saved user info
   useEffect(() => {
     const savedEmail = localStorage.getItem("email");
@@ -101,6 +107,25 @@ function Navbar() {
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, [lastScrollY]);
+
+  // Prevent body scroll when drawer is open
+  useEffect(() => {
+    if (mobileOpen) {
+      document.body.style.overflow = "hidden";
+      document.body.style.position = "fixed";
+      document.body.style.width = "100%";
+    } else {
+      document.body.style.overflow = "";
+      document.body.style.position = "";
+      document.body.style.width = "";
+    }
+
+    return () => {
+      document.body.style.overflow = "";
+      document.body.style.position = "";
+      document.body.style.width = "";
+    };
+  }, [mobileOpen]);
 
   // Form validation
   const validateForm = () => {
@@ -153,6 +178,10 @@ function Navbar() {
     }
   };
 
+  const handleDrawerClose = () => {
+    setMobileOpen(false);
+  };
+
   return (
     <Box
       component="nav"
@@ -170,6 +199,7 @@ function Navbar() {
         px: { xs: 2, md: 4 },
         zIndex: 1000,
         width: "100%",
+        height: 150, // Fixed height to prevent layout shift
       }}
     >
       <Container
@@ -186,7 +216,7 @@ function Navbar() {
           <Image src={logo} alt="REHMA Hostel" width={150} />
         </Link>
         {/* Desktop Menu */}
-        <Box sx={{ display: { xs: "none", md: "flex" }, gap: 3 }}>
+        <Box sx={{ display: { xs: "none", md: "flex" }, gap: 2 }}>
           {navlinks.map((item) => {
             const active = isActive(item.url);
             return (
@@ -213,7 +243,7 @@ function Navbar() {
                     display: "block",
                     width: "100%",
                     fontSize: "1.2rem",
-                    px: 1.5,
+                    px: 1,
                     py: 1,
                     borderRadius: "inherit",
                     transition: "transform 0.1s ease",
@@ -244,7 +274,7 @@ function Navbar() {
                   <Box
                     sx={{
                       display: "flex",
-                      gap: 2,
+                      gap: 1,
                       alignItems: "center",
                     }}
                   >
@@ -261,6 +291,9 @@ function Navbar() {
         {/* Desktop Buttons */}
         <Box sx={{ display: { xs: "none", md: "flex" }, gap: 2 }}>
           <Button
+            variant="contained"
+            size="large"
+            onClick={() => scrollToSection("contact")}
             sx={{
               bgcolor: "#7B2E2E",
               color: "primary.contrastText",
@@ -313,49 +346,64 @@ function Navbar() {
       <Drawer
         anchor="right"
         open={mobileOpen}
-        onClose={() => setMobileOpen(false)}
-        PaperProps={{
-          sx: {
+        onClose={handleDrawerClose}
+        ModalProps={{
+          keepMounted: true,
+        }}
+        sx={{
+          "& .MuiDrawer-paper": {
             width: 300,
-            position: "fixed",
-            top: 0,
-            right: 0,
-            bgcolor: "#fff",
-            boxShadow: "0 8px 30px rgba(0,0,0,0.12)",
-            borderLeft: "1px solid rgba(0,0,0,0.06)",
-            display: "flex",
-            flexDirection: "column",
-            justifyContent: "flex-start",
-            zIndex: 1400,
+            boxSizing: "border-box",
+            backgroundColor: "#fff",
+            overflowY: "auto",
+            "&::-webkit-scrollbar": {
+              width: "4px",
+            },
+            "&::-webkit-scrollbar-thumb": {
+              backgroundColor: "#7B2E2E",
+              borderRadius: "2px",
+            },
           },
         }}
       >
-        <Box sx={{ display: "flex", justifyContent: "flex-end", p: 2 }}>
-          <IconButton onClick={() => setMobileOpen(false)}>
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "flex-end",
+            p: 1,
+            position: "sticky",
+            top: 0,
+            backgroundColor: "#fff",
+            zIndex: 1,
+            borderBottom: "1px solid #F1E9E9",
+          }}
+        >
+          <IconButton onClick={handleDrawerClose}>
             <Close />
           </IconButton>
         </Box>
 
         <Box
           sx={{
+            flex: 1,
+            overflowY: "auto",
             display: "flex",
             flexDirection: "column",
-            alignItems: "left",
-            gap: 3,
-            pl: 5,
-            pr: 10,
+            gap: 1,
+            px: 3,
+            py: 2,
           }}
         >
           {navlinks.map((item, index) => (
             <Box
               key={index}
               sx={{
-                color: "#3D444B", // base color (children inherit this)
+                color: "#3D444B",
                 borderRadius: 1,
                 transition: "background-color 0.2s ease, color 0.2s ease",
                 "&:hover": {
                   bgcolor: "primary.contrastText",
-                  color: "#7B2E2E", // hover color now applies
+                  color: "#7B2E2E",
                 },
               }}
             >
@@ -364,13 +412,12 @@ function Navbar() {
                 href={item.url}
                 style={{
                   textDecoration: "none",
-                  color: "inherit", // inherit color from parent for hover to work
+                  color: "inherit",
                   fontSize: "1.2rem",
-                  display: "block", // make whole row clickable
+                  display: "block",
                   width: "100%",
                 }}
-                onClick={() => setMobileOpen(false)}
-                // Extra accessibility + interaction polish
+                onClick={handleDrawerClose}
                 sx={{
                   px: 1.5,
                   py: 1,
@@ -407,17 +454,25 @@ function Navbar() {
             justifyContent: "center",
             alignItems: "center",
             gap: 2,
-            pt: 2,
+            p: 3,
+            position: "sticky",
+            bottom: 0,
+            backgroundColor: "#fff",
+            borderTop: "1px solid #F1E9E9",
           }}
         >
           <Button
+            onClick={() => {
+              handleDrawerClose();
+              scrollToSection("contact");
+            }}
             sx={{
               bgcolor: "#7B2E2E",
               color: "primary.contrastText",
               borderRadius: 0.5,
               py: "10px",
               px: "15px",
-              width: "70%",
+              width: "100%",
               fontWeight: 600,
               boxShadow: "5px 5px 10px rgba(123, 46, 46, 0.2)",
               transition: "all 0.3s",
@@ -437,14 +492,17 @@ function Navbar() {
               borderRadius: 0.5,
               py: "10px",
               px: "15px",
-              width: "70%",
+              width: "100%",
               fontWeight: 600,
               border: "1px solid #7B2E2E",
               boxShadow: "5px 5px 10px rgba(123, 46, 46, 0.2)",
               transition: "all 0.3s",
               "&:hover": { bgcolor: "#7B2E2E", color: "#fff" },
             }}
-            onClick={() => setOpenModal(true)}
+            onClick={() => {
+              handleDrawerClose();
+              setOpenModal(true);
+            }}
           >
             Sign In
           </Button>
@@ -458,6 +516,8 @@ function Navbar() {
         onClose={() => setOpenModal(false)}
         component={Paper}
         sx={{
+          overflow: { xs: "auto", md: "hidden" },
+
           "& .MuiDialog-paper": {
             width: "100%",
             maxWidth: 500,
@@ -521,9 +581,9 @@ function Navbar() {
               }) => setUserType(e.target.value)}
             >
               <FormControlLabel
-                value="student"
+                value="resident"
                 control={<Radio />}
-                label="Student"
+                label="resident"
               />
               <FormControlLabel
                 value="admin"
