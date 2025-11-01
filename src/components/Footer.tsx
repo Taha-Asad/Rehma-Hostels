@@ -391,7 +391,7 @@ function Footer() {
                   </Typography>
                 }
               >
-                <Link
+                <RouterLink
                   href="/legal/privacy-policy"
                   sx={{
                     color: "rgba(255, 255, 255, 0.8)",
@@ -401,8 +401,8 @@ function Footer() {
                   }}
                 >
                   Privacy Policy
-                </Link>
-                <Link
+                </RouterLink>
+                <RouterLink
                   href="/legal/terms"
                   sx={{
                     color: "rgba(255, 255, 255, 0.8)",
@@ -412,8 +412,8 @@ function Footer() {
                   }}
                 >
                   Terms of Service
-                </Link>
-                <Link
+                </RouterLink>
+                <RouterLink
                   href="/legal/refund-policy"
                   sx={{
                     color: "rgba(255, 255, 255, 0.8)",
@@ -423,7 +423,7 @@ function Footer() {
                   }}
                 >
                   Refund Policy
-                </Link>
+                </RouterLink>
               </Stack>
             </Stack>
 
