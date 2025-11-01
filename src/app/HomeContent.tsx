@@ -13,6 +13,8 @@ import StatsSection from "@/components/home/StatsSection";
 import Testimonials from "@/components/home/Testimonials";
 import { Box } from "@mui/material";
 import News from "@/components/home/News";
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
 
 export default function HomeContent() {
   useSectionTracking(); // client-side scroll tracking

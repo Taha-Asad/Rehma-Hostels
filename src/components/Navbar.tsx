@@ -313,7 +313,7 @@ function Navbar() {
             Book Now
           </Button>
 
-          <Button
+          {/* <Button
             sx={{
               bgcolor: "primary.contrastText",
               color: "#7B2E2E",
@@ -330,7 +330,7 @@ function Navbar() {
             onClick={() => setOpenModal(true)}
           >
             Sign In
-          </Button>
+          </Button> */}
         </Box>
 
         {/* Hamburger Menu */}
@@ -485,7 +485,7 @@ function Navbar() {
             Book Now
           </Button>
 
-          <Button
+          {/* <Button
             sx={{
               bgcolor: "primary.contrastText",
               color: "#7B2E2E",
@@ -505,7 +505,7 @@ function Navbar() {
             }}
           >
             Sign In
-          </Button>
+          </Button> */}
         </Box>
       </Drawer>
 

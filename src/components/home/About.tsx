@@ -225,7 +225,8 @@ function About() {
                     type: "spring",
                     stiffness: 70,
                   }}
-                  direction={"row"}
+                  direction={{ xs: "column", md: "row" }}
+                  textAlign={{ xs: "center" }}
                   spacing={3}
                   alignItems={"center"}
                   sx={{

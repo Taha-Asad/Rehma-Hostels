@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import {
   Box,
   Container,
@@ -10,9 +10,6 @@ import {
   Typography,
   TextField,
   Button,
-  Select,
-  MenuItem,
-  InputLabel,
   FormControl,
   InputAdornment,
   CircularProgress,
@@ -21,24 +18,25 @@ import {
   Chip,
   Stack,
   Paper,
+  Autocomplete,
 } from "@mui/material";
 import {
   Send as SendIcon,
   Person as PersonIcon,
   Email as EmailIcon,
   Phone as PhoneIcon,
-  School as SchoolIcon,
   CheckCircle as CheckCircleIcon,
   Celebration,
 } from "@mui/icons-material";
 import Stats from "../ui/Stats";
 import { motion, Variants } from "framer-motion";
+import toast from "react-hot-toast";
+import emailjs from "@emailjs/browser";
 
 type FormData = {
   name: string;
   email: string;
   phone: string;
-  university: string;
   roomType: string;
   message: string;
 };
@@ -53,7 +51,7 @@ const roomOptions = [
   { value: "unsure", label: "Not Sure - Need Assistance" },
 ];
 
-// Variants for motion animations
+// Motion variants
 const slideLeft: Variants = {
   hidden: { opacity: 0, x: -100 },
   visible: {
@@ -62,7 +60,6 @@ const slideLeft: Variants = {
     transition: { duration: 0.7, ease: ["easeOut"] },
   },
 };
-
 const slideTop: Variants = {
   hidden: { opacity: 0, y: -100 },
   visible: {
@@ -71,7 +68,14 @@ const slideTop: Variants = {
     transition: { duration: 0.7, ease: ["easeOut"] },
   },
 };
-
+const slideBottom: Variants = {
+  hidden: { opacity: 0, y: 100 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.7, ease: ["easeOut"] },
+  },
+};
 const cardVariants: Variants = {
   hidden: { opacity: 0, y: 50 },
   visible: {
@@ -81,26 +85,17 @@ const cardVariants: Variants = {
   },
 };
 
-const slideBottom: Variants = {
-  hidden: { opacity: 0, y: 100 },
-  visible: {
-    opacity: 1,
-    y: 0,
-    transition: { duration: 0.7, ease: ["easeOut"] },
-  },
-};
-
 function Contact() {
   const [formData, setFormData] = useState<FormData>({
     name: "",
     email: "",
     phone: "",
-    university: "",
     roomType: "",
     message: "",
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [openSuccess, setOpenSuccess] = useState(false);
+  const formRef = useRef<HTMLFormElement>(null);
 
   const handleInputChange = <K extends keyof FormData>(
     field: K,
@@ -109,20 +104,65 @@ function Contact() {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    if (!formRef.current) return;
+
+    // basic validation
+    if (
+      !formData.name.trim() ||
+      !formData.email.trim() ||
+      !formData.phone.trim() ||
+      !formData.roomType.trim() ||
+      !formData.message.trim()
+    ) {
+      toast.error("Please fill in all the required fields before submitting.");
+      return;
+    }
+
     setIsSubmitting(true);
 
-    await new Promise((resolve) => setTimeout(resolve, 2000));
+    const serviceID = "service_34u9stk";
+    const contactTemplateID = "template_7p6a2rc"; // admin template
+    const autoReplyTemplateID = "template_7qzrzo8"; // user template
+    const publicKey = "FaULhAOl8BVQ0LNDL";
 
-    setFormData({
-      name: "",
-      email: "",
-      phone: "",
-      university: "",
-      roomType: "",
-      message: "",
-    });
-    setIsSubmitting(false);
-    setOpenSuccess(true);
+    try {
+      const response = await emailjs.sendForm(
+        serviceID,
+        contactTemplateID,
+        formRef.current,
+        publicKey
+      );
+
+      // only send auto-reply if first email succeeded
+      if (response.status === 200) {
+        await emailjs.sendForm(
+          serviceID,
+          autoReplyTemplateID,
+          formRef.current,
+          publicKey
+        );
+
+        setFormData({
+          name: "",
+          email: "",
+          phone: "",
+          roomType: "",
+          message: "",
+        });
+
+        setOpenSuccess(true);
+        toast.success(
+          "Booking request submitted! Our team will review and confirm shortly."
+        );
+      } else {
+        throw new Error("EmailJS returned non-200 status.");
+      }
+    } catch (error) {
+      console.error("EmailJS error:", error);
+      toast.error("Failed to send message. Please try again later.");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const whyPoints = [
@@ -131,7 +171,6 @@ function Contact() {
     "High-speed WiFi throughout facility",
     "Separate sections for boys and girls",
     "Professional management team",
-    "Close proximity to major universities",
     "Nutritious meal plans available",
     "Smart HSM digital system",
     "Study lounges and common areas",
@@ -167,32 +206,20 @@ function Contact() {
               },
             }}
           />
-          <Typography
-            variant="h2"
-            sx={{
-              color: "#3D444B",
-              py: 2,
-            }}
-          >
+          <Typography variant="h2" sx={{ color: "#3D444B", py: 2 }}>
             Book Your Room <br />
             <Box component="span" sx={{ color: "#7B2E2E" }}>
               With REHMA
-            </Box>{" "}
+            </Box>
           </Typography>
-          <Typography
-            variant="body1"
-            sx={{
-              color: "#505A63",
-              width: "60%",
-            }}
-          >
+          <Typography variant="body1" sx={{ color: "#505A63", width: "60%" }}>
             Complete the form below and our professional team will get back to
-            you within 24 hours to help you find your perfect accommodation
+            you within 24 hours to help you find your perfect accommodation.
           </Typography>
         </Box>
 
         <Grid container spacing={4} alignItems="flex-start">
-          {/* Form slides from left */}
+          {/* Left form */}
           <Grid size={{ xs: 12, md: 6 }}>
             <motion.div
               initial="hidden"
@@ -206,18 +233,15 @@ function Contact() {
                   transition: "all 0.3s ease",
                   backgroundColor: "rgba(217,212,209,0.25)",
                   backdropFilter: "blur(8px)",
-                  boxShadow:
-                    "0 8px 20px rgba(123,46,46,0.25), 0 2px 5px rgba(0,0,0,0.1)",
+                  boxShadow: "0 8px 20px rgba(123,46,46,0.25)",
                   "&:hover": {
                     transform: "translateY(-6px)",
                     boxShadow: "0 20px 40px rgba(123,46,46,0.4)",
                   },
                   bgcolor: "#FFFFFF",
                   borderRadius: 1,
-                  cursor: "default",
                 }}
               >
-                {/* Form content remains exactly as before */}
                 <Box
                   sx={{
                     background: `linear-gradient(90deg, ${primary}, ${primaryDark})`,
@@ -243,12 +267,12 @@ function Contact() {
                 </Box>
 
                 <CardContent sx={{ py: 3, px: 2, pt: 4 }}>
-                  <Box component="form" onSubmit={handleSubmit}>
+                  <Box component="form" ref={formRef} onSubmit={handleSubmit}>
                     <Grid container spacing={2}>
-                      {/* Name */}
                       <Grid size={{ xs: 12 }}>
                         <TextField
-                          label="Full Name "
+                          label="Full Name"
+                          name="name"
                           fullWidth
                           required
                           value={formData.name}
@@ -265,10 +289,10 @@ function Contact() {
                           }}
                         />
                       </Grid>
-                      {/* Email */}
                       <Grid size={{ xs: 12 }}>
                         <TextField
                           label="Email Address "
+                          name="email"
                           type="email"
                           fullWidth
                           required
@@ -286,11 +310,11 @@ function Contact() {
                           }}
                         />
                       </Grid>
-                      {/* Phone */}
                       <Grid size={{ xs: 12 }}>
                         <TextField
-                          label="Phone Number "
+                          label="Phone Number"
                           type="tel"
+                          name="phone"
                           fullWidth
                           required
                           value={formData.phone}
@@ -307,57 +331,54 @@ function Contact() {
                           }}
                         />
                       </Grid>
-                      {/* University */}
-                      <Grid size={{ xs: 12 }}>
-                        <TextField
-                          label="University/College"
-                          fullWidth
-                          value={formData.university}
-                          onChange={(e) =>
-                            handleInputChange("university", e.target.value)
-                          }
-                          placeholder="e.g., UET, PU"
-                          InputProps={{
-                            startAdornment: (
-                              <InputAdornment position="start">
-                                <SchoolIcon sx={{ color: primary }} />
-                              </InputAdornment>
-                            ),
-                          }}
-                        />
-                      </Grid>
-                      {/* Room Type */}
                       <Grid size={{ xs: 12 }}>
                         <FormControl fullWidth>
-                          <InputLabel id="room-type-label">
-                            Preferred Room Type
-                          </InputLabel>
-                          <Select
-                            labelId="room-type-label"
-                            value={formData.roomType}
-                            label="Preferred Room Type"
-                            onChange={(e) =>
+                          <Autocomplete
+                            options={roomOptions}
+                            getOptionLabel={(option) => option.label}
+                            value={
+                              roomOptions.find(
+                                (opt) => opt.label === formData.roomType
+                              ) || null
+                            }
+                            onChange={(_, newValue) =>
                               handleInputChange(
                                 "roomType",
-                                e.target.value as string
+                                newValue ? newValue.label : ""
                               )
                             }
-                          >
-                            <MenuItem value="">
-                              <em>Select room type</em>
-                            </MenuItem>
-                            {roomOptions.map((opt) => (
-                              <MenuItem key={opt.value} value={opt.value}>
-                                {opt.label}
-                              </MenuItem>
-                            ))}
-                          </Select>
+                            renderInput={(params) => (
+                              <TextField
+                                {...params}
+                                label="Preferred Room Type"
+                                placeholder="Select or search a room type"
+                                variant="outlined"
+                                name="roomType"
+                                fullWidth
+                              />
+                            )}
+                            sx={{
+                              "& .MuiOutlinedInput-root": {
+                                borderRadius: "8px",
+                              },
+                              "& .MuiOutlinedInput-notchedOutline": {
+                                borderColor: "rgba(123, 46, 46, 0.3)",
+                              },
+                              "&:hover .MuiOutlinedInput-notchedOutline": {
+                                borderColor: "#7B2E2E",
+                              },
+                              "&.Mui-focused .MuiOutlinedInput-notchedOutline":
+                                {
+                                  borderColor: "#7B2E2E",
+                                },
+                            }}
+                          />
                         </FormControl>
                       </Grid>
-                      {/* Message */}
                       <Grid size={{ xs: 12 }}>
                         <TextField
                           label="Additional Message"
+                          name="message"
                           fullWidth
                           multiline
                           minRows={4}
@@ -368,15 +389,8 @@ function Contact() {
                           placeholder="Any special requirements, questions, or preferences..."
                         />
                       </Grid>
-                      {/* Submit */}
                     </Grid>
-                    <Box
-                      sx={{
-                        display: "grid",
-                        placeItems: "center",
-                        py: 5,
-                      }}
-                    >
+                    <Box sx={{ display: "grid", placeItems: "center", py: 5 }}>
                       <Button
                         type="submit"
                         variant="contained"
@@ -412,23 +426,23 @@ function Contact() {
                           "Send Inquiry"
                         )}
                       </Button>
-                      <Typography
-                        variant="body2"
-                        align="center"
-                        sx={{ color: "#505A63", mt: 3 }}
-                      >
-                        {" "}
-                        By submitting this form, you agree to our privacy policy
-                        and terms of service.{" "}
-                      </Typography>
                     </Box>
                   </Box>
+                  <Typography
+                    variant="body2"
+                    align="center"
+                    sx={{ color: "#505A63", mt: 3 }}
+                  >
+                    {" "}
+                    By submitting this form, you agree to our privacy policy and
+                    terms of service.{" "}
+                  </Typography>
                 </CardContent>
               </Card>
             </motion.div>
           </Grid>
 
-          {/* Right Column slides from top */}
+          {/* Right column */}
           <Grid size={{ xs: 12, md: 6 }}>
             <motion.div
               initial="hidden"
@@ -447,14 +461,7 @@ function Contact() {
                 }}
               >
                 <CardContent sx={{ p: { xs: 3, md: 4 } }}>
-                  <Typography
-                    variant="h6"
-                    sx={{
-                      fontWeight: 700,
-                      mb: 2,
-                      fontFamily: "Poppins, sans-serif",
-                    }}
-                  >
+                  <Typography variant="h6" sx={{ fontWeight: 700, mb: 2 }}>
                     Why Professionals Choose REHMA
                   </Typography>
                   <Box sx={{ display: "grid", rowGap: 1.5 }}>
@@ -477,7 +484,6 @@ function Contact() {
               </Paper>
             </motion.div>
 
-            {/* Stats cards with staggered animation */}
             <Grid container spacing={2}>
               <Grid size={{ xs: 12, sm: 6 }}>
                 <motion.div
@@ -490,7 +496,7 @@ function Contact() {
                     value={500}
                     label={"Happy Residents"}
                     suffix={"+"}
-                    height={145}
+                    height={130}
                   />
                 </motion.div>
               </Grid>
@@ -505,7 +511,7 @@ function Contact() {
                     value={4.9}
                     label={"Average Rating"}
                     suffix={"★"}
-                    height={145}
+                    height={130}
                   />
                 </motion.div>
               </Grid>
@@ -521,7 +527,7 @@ function Contact() {
                     label={"Support"}
                     suffixValue={7}
                     suffix={"/"}
-                    height={145}
+                    height={130}
                   />
                 </motion.div>
               </Grid>
@@ -536,15 +542,13 @@ function Contact() {
                     value={100}
                     label={"Satisfaction"}
                     suffix={"%"}
-                    height={145}
+                    height={130}
                   />
                 </motion.div>
               </Grid>
             </Grid>
           </Grid>
         </Grid>
-
-        {/* Bottom Paper slides from bottom */}
         <motion.div
           initial="hidden"
           whileInView="visible"
@@ -604,18 +608,13 @@ function Contact() {
           </Container>
         </motion.div>
 
-        {/* Success Snackbar */}
         <Snackbar
           open={openSuccess}
           autoHideDuration={4000}
           onClose={() => setOpenSuccess(false)}
           anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
         >
-          <Alert
-            onClose={() => setOpenSuccess(false)}
-            severity="success"
-            sx={{ width: "100%" }}
-          >
+          <Alert severity="success" sx={{ width: "100%" }}>
             Thank you for your inquiry! Our team will contact you within 24
             hours.
           </Alert>

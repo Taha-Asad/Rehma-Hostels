@@ -298,7 +298,7 @@ function Testimonials() {
                         borderRadius: 0.5,
                         py: "10px",
                         px: "15px",
-                        width: 250,
+                        width: { sm: 200, md: 250 },
                         textWrap: "nowrap",
                         fontWeight: 600,
                         boxShadow: "5px 5px 10px rgba(123, 46, 46, 0.2)",

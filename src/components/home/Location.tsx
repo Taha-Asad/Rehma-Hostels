@@ -204,6 +204,7 @@ function Location() {
                               color: "#505A63",
                               alignItems: "center",
                               gap: 1,
+                              textWrap: "wrap",
                               "&:hover": { color: "#7B2E2E" },
                             }}
                           >
@@ -274,7 +275,12 @@ function Location() {
                             cursor: "default",
                           }}
                         >
-                          <Stack direction="row" spacing={2}>
+                          <Stack
+                            direction={{ xs: "column", md: "row" }}
+                            spacing={2}
+                            alignItems={{ xs: "center" }}
+                            textAlign={{ xs: "center" }}
+                          >
                             <CardMedia
                               sx={{
                                 display: "grid",

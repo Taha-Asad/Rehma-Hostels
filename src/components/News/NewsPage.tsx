@@ -13,16 +13,13 @@ import {
   TextField,
   InputAdornment,
   Pagination,
-  Select,
-  MenuItem,
   FormControl,
-  InputLabel,
   Divider,
   ToggleButton,
   ToggleButtonGroup,
-  SelectChangeEvent,
   Breadcrumbs,
   Link as RouterLink,
+  Autocomplete,
 } from "@mui/material";
 import React, { useState, useEffect } from "react";
 import {
@@ -189,6 +186,13 @@ const categories = [
   { name: "Technology", icon: Cpu },
 ];
 
+const sortMenu = [
+  { name: "Latest", icon: Timer },
+  { name: "Featured", icon: Star },
+  { name: "Most Viewed", icon: TrendingUp },
+  { name: "Alphabetical", icon: CaseUpper },
+];
+
 export default function NewsPage() {
   // State management
   const [articles, setArticles] = useState<NewsArticle[]>(allNewsArticles);
@@ -215,16 +219,6 @@ export default function NewsPage() {
     }
   }, [categoryFromUrl]);
 
-  const selectConfig = {
-    MenuProps: {
-      disableScrollLock: true, // This prevents the scrollbar from being removed
-      PaperProps: {
-        style: {
-          maxHeight: 300,
-        },
-      },
-    },
-  };
   // Filter and sort logic
   useEffect(() => {
     let filtered = [...articles];
@@ -409,7 +403,7 @@ export default function NewsPage() {
                 onChange={(e) => setSearchTerm(e.target.value)}
                 sx={{
                   "& .MuiOutlinedInput-root": {
-                    borderRadius: 2,
+                    borderRadius: 1,
                     bgcolor: "#FAFAFA",
                     "&:hover fieldset": {
                       borderColor: "#7B2E2E",
@@ -430,82 +424,137 @@ export default function NewsPage() {
             </Grid>
             <Grid size={{ xs: 6, md: 3 }}>
               <FormControl fullWidth>
-                <InputLabel>Category</InputLabel>
-                <Select
-                  value={selectedCategory}
-                  onChange={(e: SelectChangeEvent) =>
-                    setSelectedCategory(e.target.value)
+                <Autocomplete
+                  disablePortal
+                  options={categories.map((cat) => ({
+                    label: cat.name,
+                    icon: cat.icon,
+                    value: cat.name,
+                  }))}
+                  value={
+                    categories
+                      .map((cat) => ({
+                        label: cat.name,
+                        icon: cat.icon,
+                        value: cat.name,
+                      }))
+                      .find((opt) => opt.value === selectedCategory) || null
                   }
-                  label="Category"
-                  {...selectConfig}
-                  sx={{
-                    borderRadius: 2,
-                    bgcolor: "#FAFAFA",
-                  }}
-                >
-                  {categories.map((item) => {
-                    const IconComponent = item.icon;
+                  onChange={(_, value) =>
+                    setSelectedCategory(value?.value || "")
+                  }
+                  getOptionLabel={(opt) => opt.label}
+                  renderOption={(props, option) => {
+                    const { key, ...rest } = props;
+                    const IconComponent = option.icon;
                     return (
-                      <MenuItem value={item.name} key={item.name}>
-                        <Box
-                          sx={{ display: "flex", alignItems: "center", gap: 1 }}
-                        >
-                          <IconComponent
-                            style={{
-                              fontSize: 18,
-                              color: "#D4A373",
-                            }}
-                          />{" "}
-                          {item.name}{" "}
-                        </Box>
-                      </MenuItem>
+                      <Box
+                        key={key}
+                        component="li"
+                        {...rest}
+                        sx={{ display: "flex", alignItems: "center", gap: 1 }}
+                      >
+                        <IconComponent
+                          style={{ fontSize: 18, color: "#D4A373" }}
+                        />
+                        <Typography variant="body2">{option.label}</Typography>
+                      </Box>
                     );
-                  })}
-                </Select>
+                  }}
+                  renderInput={(params) => {
+                    const IconComponent = categories.find(
+                      (cat) => cat.name === selectedCategory
+                    )?.icon;
+
+                    return (
+                      <TextField
+                        {...params}
+                        placeholder="Category"
+                        variant="outlined"
+                        InputProps={{
+                          ...params.InputProps,
+                          startAdornment: IconComponent ? (
+                            <InputAdornment position="start">
+                              <IconComponent
+                                style={{ fontSize: 20, color: "#D4A373" }}
+                              />
+                            </InputAdornment>
+                          ) : null,
+                        }}
+                      />
+                    );
+                  }}
+                  sx={{
+                    bgcolor: "#FAFAFA",
+                    borderRadius: 1,
+                  }}
+                />
               </FormControl>
             </Grid>
             <Grid size={{ xs: 6, md: 3 }}>
               <FormControl fullWidth>
-                <InputLabel>Sort By</InputLabel>
-                <Select
-                  value={sortBy}
-                  onChange={(e: SelectChangeEvent) => setSortBy(e.target.value)}
-                  label="Sort By"
-                  {...selectConfig}
+                <Autocomplete
+                  disablePortal
+                  options={sortMenu.map((sort) => ({
+                    label: sort.name,
+                    icon: sort.icon,
+                    value: sort.name,
+                  }))}
+                  value={
+                    sortMenu
+                      .map((sort) => ({
+                        label: sort.name,
+                        icon: sort.icon,
+                        value: sort.name,
+                      }))
+                      .find((opt) => opt.value === sortBy) || null
+                  }
+                  onChange={(_, value) => setSortBy(value?.value || "")}
+                  getOptionLabel={(opt) => opt.label}
+                  renderOption={(props, option) => {
+                    const { key, ...rest } = props;
+                    const IconComponent = option.icon;
+                    return (
+                      <Box
+                        key={key}
+                        component="li"
+                        {...rest}
+                        sx={{ display: "flex", alignItems: "center", gap: 1 }}
+                      >
+                        <IconComponent
+                          style={{ fontSize: 18, color: "#D4A373" }}
+                        />
+                        <Typography variant="body2">{option.label}</Typography>
+                      </Box>
+                    );
+                  }}
+                  renderInput={(params) => {
+                    const IconComponent = sortMenu.find(
+                      (sort) => sort.name === sortBy
+                    )?.icon;
+                    return (
+                      <TextField
+                        {...params}
+                        placeholder="Sort by"
+                        variant="outlined"
+                        InputProps={{
+                          ...params.InputProps,
+                          startAdornment: IconComponent ? (
+                            <InputAdornment position="start">
+                              <IconComponent
+                                style={{ fontSize: 20, color: "#D4A373" }}
+                              />
+                            </InputAdornment>
+                          ) : null,
+                        }}
+                      />
+                    );
+                  }}
                   sx={{
                     borderRadius: 2,
                     bgcolor: "#FAFAFA",
                   }}
-                >
-                  <MenuItem value="Latest">
-                    <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-                      <Timer sx={{ fontSize: 18, color: "#D4A373" }} />
-                      Latest
-                    </Box>
-                  </MenuItem>
-                  <MenuItem value="featured">
-                    <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-                      <Star sx={{ fontSize: 18, color: "#D4A373" }} />
-                      Featured
-                    </Box>
-                  </MenuItem>
-                  <MenuItem value="Most Viewed">
-                    <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-                      <TrendingUp sx={{ fontSize: 18, color: "#D4A373" }} />
-                      Most Viewed
-                    </Box>
-                  </MenuItem>
-                  <MenuItem value="Alphabetical">
-                    <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-                      <Box
-                        sx={{ display: "flex", alignItems: "center", gap: 1 }}
-                      >
-                        <CaseUpper style={{ fontSize: 18, color: "#D4A373" }} />
-                        Alphabetical{" "}
-                      </Box>{" "}
-                    </Box>
-                  </MenuItem>
-                </Select>
+                />
               </FormControl>
             </Grid>
             <Grid size={{ xs: 12, md: 3 }}>
@@ -614,7 +663,7 @@ export default function NewsPage() {
                     sx={{
                       height: {
                         xs: 515,
-                        sm: viewMode === "grid" ? 480 : "auto",
+                        sm: viewMode === "grid" ? 600 : "auto",
                       },
                       display: "flex",
                       // Stack on mobile; row only from sm+ when in list mode

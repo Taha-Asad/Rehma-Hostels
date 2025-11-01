@@ -255,6 +255,7 @@ function FAQs() {
                         sx={{
                           display: "flex",
                           alignItems: "center",
+                          flexDirection: { xs: "column", md: "row" },
                           gap: 3,
                           width: "100%",
                         }}

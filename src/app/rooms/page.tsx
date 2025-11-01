@@ -12,9 +12,6 @@ import {
   TextField,
   InputAdornment,
   FormControl,
-  InputLabel,
-  Select,
-  MenuItem,
   Slider,
   Checkbox,
   FormControlLabel,
@@ -29,10 +26,10 @@ import {
   Drawer,
   Badge,
   Pagination,
-  SelectChangeEvent,
   Fade,
   Dialog,
   DialogContent,
+  Autocomplete,
 } from "@mui/material";
 import {
   Search,
@@ -50,6 +47,8 @@ import {
   Kitchen,
   Balcony,
   CheckCircle,
+  TrendingDown,
+  Grade,
 } from "@mui/icons-material";
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
@@ -670,7 +669,28 @@ const serviceIcons: { [key: string]: React.ReactElement } = {
   Kitchen: <Kitchen />,
   "Premium AC": <AcUnit />,
 };
-
+const options = [
+  {
+    value: "featured",
+    label: "Featured",
+    icon: <Star sx={{ color: "#D4A373" }} />,
+  },
+  {
+    value: "priceLow",
+    label: "Price: Low to High",
+    icon: <TrendingUp sx={{ color: "#098698" }} />,
+  },
+  {
+    value: "priceHigh",
+    label: "Price: High to Low",
+    icon: <TrendingDown sx={{ color: "#C0392B" }} />,
+  },
+  {
+    value: "rating",
+    label: "Highest Rated",
+    icon: <Grade sx={{ color: "#F4B400" }} />,
+  },
+];
 export default function RoomsPage() {
   const [rooms] = useState<Room[]>(allRooms);
   const [filteredRooms, setFilteredRooms] = useState<Room[]>(allRooms);
@@ -690,16 +710,16 @@ export default function RoomsPage() {
   // Add modal state
   const [selectedRoom, setSelectedRoom] = useState<Room | null>(null);
   const [modalOpen, setModalOpen] = useState(false);
-  const selectConfig = {
-    MenuProps: {
-      disableScrollLock: true, // This prevents the scrollbar from being removed
-      PaperProps: {
-        style: {
-          maxHeight: 300,
-        },
-      },
-    },
-  };
+  // const selectConfig = {
+  //   MenuProps: {
+  //     disableScrollLock: true, // This prevents the scrollbar from being removed
+  //     PaperProps: {
+  //       style: {
+  //         maxHeight: 300,
+  //       },
+  //     },
+  //   },
+  // };
   useEffect(() => {
     let filtered = [...rooms];
 
@@ -1152,7 +1172,7 @@ export default function RoomsPage() {
                 onChange={(e) => setSearchTerm(e.target.value)}
                 sx={{
                   "& .MuiOutlinedInput-root": {
-                    borderRadius: 2,
+                    borderRadius: 1,
                     bgcolor: "#FAFAFA",
                     "&:hover fieldset": {
                       borderColor: "#7B2E2E",
@@ -1173,32 +1193,42 @@ export default function RoomsPage() {
             </Grid>
             <Grid size={{ xs: 6, md: 3 }}>
               <FormControl fullWidth>
-                <InputLabel>Sort By</InputLabel>
-                <Select
-                  value={sortBy}
-                  onChange={(e: SelectChangeEvent) => setSortBy(e.target.value)}
-                  label="Sort By"
-                  {...selectConfig}
-                  sx={{
-                    borderRadius: 2,
-                    bgcolor: "#FAFAFA",
+                <Autocomplete
+                  disablePortal
+                  options={options}
+                  value={options.find((opt) => opt.value === sortBy) || null}
+                  onChange={(_, value) => setSortBy(value?.value || "")}
+                  getOptionLabel={(opt) => opt.label}
+                  renderOption={(props, option) => {
+                    // remove the `key` property before spreading
+                    const { key, ...rest } = props;
+                    return (
+                      <Box
+                        key={key}
+                        component="li"
+                        {...rest}
+                        sx={{ display: "flex", alignItems: "center", gap: 1 }}
+                      >
+                        {option.icon}
+                        <Typography variant="body2">{option.label}</Typography>
+                      </Box>
+                    );
                   }}
-                >
-                  <MenuItem value="featured">
-                    <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-                      <Star sx={{ fontSize: 18, color: "#D4A373" }} />
-                      Featured
-                    </Box>
-                  </MenuItem>
-                  <MenuItem value="priceLow">
-                    <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-                      <TrendingUp sx={{ fontSize: 18, color: "#098698" }} />
-                      Price: Low to High
-                    </Box>
-                  </MenuItem>
-                  <MenuItem value="priceHigh">Price: High to Low</MenuItem>
-                  <MenuItem value="rating">Highest Rated</MenuItem>
-                </Select>
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      label="Sort By"
+                      variant="outlined"
+                      InputLabelProps={{
+                        shrink: true,
+                      }}
+                    />
+                  )}
+                  sx={{
+                    bgcolor: "#FAFAFA",
+                    borderRadius: 2,
+                  }}
+                />
               </FormControl>
             </Grid>
             <Grid size={{ xs: 6, md: 2 }}>
@@ -1339,7 +1369,7 @@ export default function RoomsPage() {
                       sx={{
                         height: {
                           xs: 570,
-                          sm: viewMode === "grid" ? 480 : "auto",
+                          sm: viewMode === "grid" ? 620 : "auto",
                         },
                         display: "flex",
                         // Stack on mobile; row only from sm+ when in list mode
@@ -1548,58 +1578,61 @@ export default function RoomsPage() {
                           </Typography>
                         </Box>
 
-                        <Divider sx={{ mb: 2, borderColor: "#F1E9E9" }} />
-
-                        <Stack
-                          direction={"column"}
-                          alignItems={"center"}
-                          textAlign={"center"}
+                        <Divider
+                          sx={{
+                            mt: "auto",
+                            mb: "auto",
+                            borderColor: "#F1E9E9",
+                          }}
+                        />
+                        <Box
+                          sx={{
+                            display: "flex",
+                            alignItems: "center",
+                            mt: "auto",
+                            justifyContent: "space-between",
+                          }}
                         >
-                          <Box>
-                            <Typography
-                              variant="h5"
-                              sx={{
-                                color: "#7B2E2E",
-                                fontWeight: 800,
-                                fontFamily: "Poppins, sans-serif",
-                              }}
-                            >
-                              PKR {room.price.toLocaleString()}
-                            </Typography>
-                            <Typography
-                              variant="caption"
-                              color="text.secondary"
-                            >
-                              per month
-                            </Typography>
-                          </Box>
-                          <Button
-                            variant="contained"
-                            disabled={!room.available}
-                            endIcon={<CheckCircle />}
-                            onClick={() => handleOpenModal(room)}
+                          <Typography
+                            variant="h5"
                             sx={{
-                              bgcolor: "#7B2E2E",
-                              color: "primary.contrastText",
-                              borderRadius: 0.5,
-                              py: "10px",
-                              px: "15px",
-                              width: 220,
-                              fontWeight: 600,
-                              boxShadow: "5px 5px 10px rgba(123, 46, 46, 0.2)",
-                              transition: "all 0.3s",
-                              "&:hover": {
-                                bgcolor: "primary.contrastText",
-                                color: "#7B2E2E",
-                              },
-                              "&:disabled": {
-                                bgcolor: "#ccc",
-                              },
+                              color: "#7B2E2E",
+                              fontWeight: 800,
+                              fontFamily: "Poppins, sans-serif",
                             }}
                           >
-                            View Details
-                          </Button>
-                        </Stack>
+                            PKR {room.price.toLocaleString()}
+                          </Typography>
+                          <Typography variant="caption" color="text.secondary">
+                            per month
+                          </Typography>
+                        </Box>
+                        <Button
+                          variant="contained"
+                          disabled={!room.available}
+                          endIcon={<CheckCircle />}
+                          onClick={() => handleOpenModal(room)}
+                          sx={{
+                            bgcolor: "#7B2E2E",
+                            color: "primary.contrastText",
+                            borderRadius: 0.5,
+                            py: "10px",
+                            px: "15px",
+                            width: 220,
+                            fontWeight: 600,
+                            boxShadow: "5px 5px 10px rgba(123, 46, 46, 0.2)",
+                            transition: "all 0.3s",
+                            "&:hover": {
+                              bgcolor: "primary.contrastText",
+                              color: "#7B2E2E",
+                            },
+                            "&:disabled": {
+                              bgcolor: "#ccc",
+                            },
+                          }}
+                        >
+                          View Details
+                        </Button>
                       </CardContent>
                     </Card>
                   </Grid>
