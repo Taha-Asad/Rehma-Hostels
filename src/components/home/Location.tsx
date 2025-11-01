@@ -204,7 +204,6 @@ function Location() {
                               color: "#505A63",
                               alignItems: "center",
                               gap: 1,
-                              textWrap: "wrap",
                               "&:hover": { color: "#7B2E2E" },
                             }}
                           >
@@ -298,7 +297,11 @@ function Location() {
                               {item.icon}
                             </CardMedia>
                             <CardContent sx={{ pt: 0 }}>
-                              <Stack direction="column" spacing={1}>
+                              <Stack
+                                direction="column"
+                                spacing={1}
+                                alignItems={{ xs: "center", md: "left" }}
+                              >
                                 <Typography variant="h3" color="#3D444B">
                                   {item.title}
                                 </Typography>

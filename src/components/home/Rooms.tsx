@@ -26,7 +26,6 @@ import {
   CircleCheckBig,
   Star,
   X,
-  Wifi,
   Users,
   Clock,
   Shield,
@@ -44,17 +43,15 @@ import {
   Refrigerator,
   Zap,
   Gem,
-  MoveLeft,
-  MoveRight,
   CalendarCheck,
 } from "lucide-react";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { motion, Variants } from "framer-motion";
 import Link from "next/link";
 import { scrollToSection } from "@/utils/scrollToSection";
 
 import { Swiper, SwiperSlide } from "swiper/react";
-import { Navigation, Autoplay, Pagination } from "swiper/modules";
+import { Autoplay } from "swiper/modules";
 
 import "swiper/css";
 import "swiper/css/effect-coverflow";
@@ -137,7 +134,7 @@ const cards: Room[] = [
       "LED TV with Cable",
       "Hot Water (Geyser)",
       "Personal Cubed Storage",
-      "High-speed Internet Access",
+      "High-speed Wi-Fi",
       "Secure Parking",
       "Single Bed",
       "Elevator Access",
@@ -164,7 +161,7 @@ const cards: Room[] = [
       { icon: <Cable />, label: "Cable Service" },
       { icon: <HotTub />, label: "Geyser (Hot Water)" },
       { icon: <DoorClosedLocked />, label: "Cubed Storage" },
-      { icon: <Router />, label: "Internet Access" },
+      { icon: <Router />, label: "Wi-Fi" },
       { icon: <CircleParking />, label: "Parking" },
       { icon: <Bed />, label: "Bed" },
       { icon: <Elevator />, label: "Elevator" },
@@ -183,7 +180,7 @@ const cards: Room[] = [
       "LED TV with Cable",
       "Hot Water (Geyser)",
       "Personal Cubed Storage",
-      "High-speed Internet Access",
+      "High-speed Wi-Fi",
       "Secure Parking",
       "Double Bed",
       "Elevator Access",
@@ -208,7 +205,7 @@ const cards: Room[] = [
       { icon: <Cable />, label: "Cable Service" },
       { icon: <HotTub />, label: "Geyser (Hot Water)" },
       { icon: <DoorClosedLocked />, label: "Cubed Storage" },
-      { icon: <Wifi />, label: "Internet Access" },
+      { icon: <Router />, label: "Wi-Fi" },
       { icon: <CircleParking />, label: "Parking" },
       { icon: <Bed />, label: "Double Bed" },
       { icon: <Elevator />, label: "Elevator" },
@@ -218,6 +215,7 @@ const cards: Room[] = [
     ],
     interval: 2000,
   },
+  // I haven't recieved data for this one
   {
     image:
       "https://images.unsplash.com/photo-1589872880544-76e896b0592c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxzdHVkZW50JTIwaG9zdGVsJTIwc3R1ZHklMjBsb3VuZ2V8ZW58MXx8fHwxNzYwNDQ3NjkyfDA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral",
@@ -229,7 +227,7 @@ const cards: Room[] = [
       "LED TV with Cable",
       "Hot Water (Geyser)",
       "Personal Cubed Storage",
-      "High-speed Internet Access",
+      "High-speed Wi-Fi",
       "Secure Parking",
       "Double Bed",
       "Elevator Access",
@@ -242,7 +240,7 @@ const cards: Room[] = [
     duration: "Per Day",
     btnText: "Show Details",
     capacity: 2,
-    size: "Double Room",
+    size: "Office Package",
     availability: "Available",
     rating: 4.8,
     reviews: 42,
@@ -254,7 +252,7 @@ const cards: Room[] = [
       { icon: <Cable />, label: "Cable Service" },
       { icon: <HotTub />, label: "Geyser (Hot Water)" },
       { icon: <DoorClosedLocked />, label: "Cubed Storage" },
-      { icon: <Wifi />, label: "Internet Access" },
+      { icon: <Router />, label: "Wi-Fi" },
       { icon: <CircleParking />, label: "Parking" },
       { icon: <Bed />, label: "Double Bed" },
       { icon: <Elevator />, label: "Elevator" },
@@ -275,7 +273,7 @@ const cards: Room[] = [
       "LED TV with Cable",
       "Hot Water (Geyser)",
       "Personal Cubed Storage",
-      "High-speed Internet Access",
+      "High-speed Wi-Fi",
       "Secure Parking",
       "Single Bed with Mattress",
       "Elevator Access",
@@ -300,7 +298,7 @@ const cards: Room[] = [
       { icon: <Cable />, label: "Cable Service" },
       { icon: <HotTub />, label: "Geyser (Hot Water)" },
       { icon: <DoorClosedLocked />, label: "Cubed Storage" },
-      { icon: <Wifi />, label: "Internet Access" },
+      { icon: <Router />, label: "Wi-Fi" },
       { icon: <CircleParking />, label: "Parking" },
       { icon: <Bed />, label: "Bed with Mattress" },
       { icon: <Elevator />, label: "Elevator" },
@@ -336,6 +334,38 @@ const RoomDetailsModal: React.FC<RoomDetailsModalProps> = ({
   onClose,
   room,
 }) => {
+  useEffect(() => {
+    const scrollContainer =
+      (document.scrollingElement as HTMLElement) ||
+      (document.documentElement as HTMLElement);
+    let scrollY = 0;
+
+    if (open) {
+      scrollY = scrollContainer.scrollTop;
+
+      // Lock scroll
+      scrollContainer.style.overflow = "hidden";
+      scrollContainer.style.position = "fixed";
+      scrollContainer.style.top = `-${scrollY}px`;
+      scrollContainer.style.width = "100%";
+    } else {
+      const top = scrollContainer.style.top;
+
+      // Restore normal flow
+      scrollContainer.style.overflow = "";
+      scrollContainer.style.position = "";
+      scrollContainer.style.top = "";
+      scrollContainer.style.width = "";
+
+      // Smoothly return to previous scroll position
+      requestAnimationFrame(() => {
+        scrollContainer.scrollTo({
+          top: parseInt(top || "0") * -1,
+          behavior: "instant",
+        });
+      });
+    }
+  }, [open]);
   if (!room) return null;
 
   return (
@@ -868,16 +898,7 @@ function Rooms() {
                 disableOnInteraction: false,
                 pauseOnMouseEnter: true,
               }}
-              navigation={{
-                nextEl: ".swiper-button-next",
-                prevEl: ".swiper-button-prev",
-              }}
-              pagination={{
-                el: ".swiper-pagination-custom",
-                clickable: true,
-                dynamicBullets: true,
-              }}
-              modules={[Navigation, Pagination, Autoplay]}
+              modules={[Autoplay]}
               breakpoints={{
                 320: { slidesPerView: 1, spaceBetween: 20 },
                 640: { slidesPerView: 2, spaceBetween: 20 },
@@ -1184,75 +1205,6 @@ function Rooms() {
                 </SwiperSlide>
               ))}
             </Swiper>
-
-            {/* Custom Navigation and Pagination Container */}
-            <Box
-              sx={{
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                gap: { xs: 2, sm: 3, md: 4 },
-                mt: { xs: 3, sm: 4, md: 5 },
-                position: "relative",
-                zIndex: 10,
-              }}
-            >
-              <IconButton
-                className="custom-button-prev"
-                sx={{
-                  color: "#7B2E2E",
-                  bgcolor: "rgba(123,46,46,0.1)",
-                  border: "2px solid #7B2E2E",
-                  "&:hover": {
-                    bgcolor: "#7B2E2E",
-                    color: "white",
-                  },
-                  width: { xs: 40, sm: 45, md: 50 },
-                  height: { xs: 40, sm: 45, md: 50 },
-                }}
-              >
-                <MoveLeft />
-              </IconButton>
-
-              <Box
-                className="custom-pagination"
-                sx={{
-                  "& .swiper-pagination-bullet": {
-                    bgcolor: "#D4A373",
-                    opacity: 0.5,
-                    width: { xs: 8, sm: 10, md: 12 },
-                    height: { xs: 8, sm: 10, md: 12 },
-                    mx: { xs: 0.5, sm: 0.75, md: 1 },
-                  },
-                  "& .swiper-pagination-bullet-active": {
-                    bgcolor: "#7B2E2E",
-                    opacity: 1,
-                    width: { xs: 10, sm: 12, md: 14 },
-                    height: { xs: 10, sm: 12, md: 14 },
-                  },
-                  display: "flex",
-                  alignItems: "center",
-                  gap: { xs: 0.5, sm: 1 },
-                }}
-              />
-
-              <IconButton
-                className="custom-button-next"
-                sx={{
-                  color: "#7B2E2E",
-                  bgcolor: "rgba(123,46,46,0.1)",
-                  border: "2px solid #7B2E2E",
-                  "&:hover": {
-                    bgcolor: "#7B2E2E",
-                    color: "white",
-                  },
-                  width: { xs: 40, sm: 45, md: 50 },
-                  height: { xs: 40, sm: 45, md: 50 },
-                }}
-              >
-                <MoveRight />
-              </IconButton>
-            </Box>
 
             <style jsx global>{`
               .swiper {

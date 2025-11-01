@@ -40,19 +40,35 @@ import {
   FilterAlt,
   TrendingUp,
   LocationOn,
-  Wifi,
   AcUnit,
-  Bathtub,
-  Weekend,
-  Kitchen,
-  Balcony,
   CheckCircle,
   TrendingDown,
   Grade,
+  HotTub,
+  Elevator,
+  Article,
 } from "@mui/icons-material";
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
-import { Clock, MapPin, Shield, Users, X } from "lucide-react";
+import {
+  AirVent,
+  Bed,
+  BedSingle,
+  Cable,
+  CircleParking,
+  Clock,
+  DoorClosedLocked,
+  MapPin,
+  MonitorPlay,
+  PlugZap,
+  Refrigerator,
+  Router,
+  Shield,
+  Users,
+  Utensils,
+  X,
+  Zap,
+} from "lucide-react";
 import { scrollToSection } from "@/utils/scrollToSection";
 // import { motion } from "framer-motion";
 
@@ -328,30 +344,66 @@ const RoomDetailsModal: React.FC<RoomDetailsModalProps> = ({
               </Typography>
               <Grid container spacing={2}>
                 {room.amenities?.map((amenity, index) => (
-                  <Grid size={{ xs: 6, sm: 4 }} key={index}>
+                  <Grid
+                    size={{ xs: 12, sm: 4 }}
+                    sx={{
+                      justifyContent: { xs: "center" },
+                    }}
+                    key={index}
+                  >
                     <Chip
-                      label={amenity.label}
-                      icon={amenity.icon}
+                      label={
+                        <Box
+                          sx={{
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "flex-start",
+                            gap: 1,
+                            width: "100%",
+                            textAlign: "left",
+                          }}
+                        >
+                          <Box
+                            sx={{
+                              color: "#7B2E2E",
+                              display: "flex",
+                              alignItems: "center",
+                              flexShrink: 0,
+                              fontSize: 20,
+                            }}
+                          >
+                            {amenity.icon}
+                          </Box>
+                          <Typography
+                            variant="body2"
+                            sx={{
+                              color: "#3D444B",
+                              fontWeight: 500,
+                              wordWrap: "break-word",
+                              whiteSpace: "normal",
+                            }}
+                          >
+                            {amenity.label}
+                          </Typography>
+                        </Box>
+                      }
                       sx={{
-                        minWidth: "155px",
+                        minWidth: "160px",
+                        maxWidth: "160px",
                         py: 3.5,
-                        px: 1,
-                        maxWidth: "155px",
+                        px: 1.5,
                         borderRadius: 0.5,
+                        boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
                         bgcolor: "#ECE1E1",
-                        "& .MuiChip-icon": {
-                          color: "#7B2E2E",
-                        },
-                        "& .MuiChip-label": {
-                          textWrap: "wrap",
-                        },
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "flex-start",
                       }}
                     />
                   </Grid>
                 ))}
               </Grid>
             </Box>
-
             {/* Pricing */}
             <Paper
               sx={{
@@ -365,8 +417,10 @@ const RoomDetailsModal: React.FC<RoomDetailsModalProps> = ({
               <Box
                 sx={{
                   display: "flex",
+                  flexDirection: { xs: "column", md: "row" },
                   justifyContent: "space-between",
                   alignItems: "center",
+                  textAlign: { xs: "center", md: "left" },
                   mb: 2,
                 }}
               >
@@ -378,7 +432,7 @@ const RoomDetailsModal: React.FC<RoomDetailsModalProps> = ({
                     variant="h4"
                     sx={{ fontWeight: 700, color: "#D4A373" }}
                   >
-                    {room.price}
+                    PKR {room.price}
                   </Typography>
                   <Typography variant="body2" sx={{ opacity: 0.8 }}>
                     {room.duration}
@@ -390,15 +444,18 @@ const RoomDetailsModal: React.FC<RoomDetailsModalProps> = ({
                     bgcolor: "rgba(255,255,255,0.2)",
                     color: "white",
                     border: "1px solid rgba(255,255,255,0.3)",
+                    my: 2,
                   }}
                 />
               </Box>
 
-              <Stack direction="row" spacing={2}>
+              <Stack direction={{ xs: "column", md: "row" }} spacing={2}>
                 <Button
                   onClick={() => {
-                    scrollToSection("contact");
-                    setTimeout(() => onClose(), 100);
+                    onClose();
+                    setTimeout(() => {
+                      scrollToSection("contact");
+                    }, 400);
                   }}
                   variant="contained"
                   size="large"
@@ -406,7 +463,7 @@ const RoomDetailsModal: React.FC<RoomDetailsModalProps> = ({
                     bgcolor: "#D4A373",
                     color: "#FDF9F6",
                     borderRadius: 0.5,
-                    width: 220,
+                    width: { xs: 150, md: 220 },
                     py: "10px",
                     px: "15px",
                     fontWeight: 600,
@@ -425,12 +482,14 @@ const RoomDetailsModal: React.FC<RoomDetailsModalProps> = ({
                 <Button
                   variant="contained"
                   size="large"
-                  href="tel:+923001234567"
+                  href="https://wa.me/923259881310"
+                  target="_blank"
+                  rel="noopener noreferrer"
                   sx={{
                     bgcolor: "primary.contrastText",
                     color: "#7B2E2E",
                     borderRadius: 0.5,
-                    width: 220,
+                    width: { xs: 150, md: 220 },
                     py: "10px",
                     px: "15px",
                     fontWeight: 600,
@@ -479,195 +538,236 @@ const allRooms: Room[] = [
     id: 1,
     image:
       "https://images.unsplash.com/photo-1609587639086-b4cbf85e4355?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080",
-    title: "Single Room",
-    content: "Private sanctuary for focused study and personal space",
-    price: 15000,
-    capacity: 1,
-    size: "120 sq ft",
-    services: ["WiFi", "AC", "Attached Bath", "Study Desk", "Wardrobe"],
-    rating: 4.5,
-    reviews: 32,
-    available: true,
-    description:
-      "A comfortable single room perfect for professionals who value privacy and quiet study time. Features modern amenities and ample storage space.",
-    amenities: [
-      { label: "High-speed WiFi", icon: <Wifi /> },
-      { label: "Air Conditioning", icon: <AcUnit /> },
-      { label: "Private Bathroom", icon: <Bathtub /> },
-      { label: "Study Desk", icon: <Weekend /> },
-      { label: "Wardrobe", icon: <Weekend /> },
+    title: "Package 1: Without AC",
+    content: "Basic stay without AC, electricity bill separate",
+    price: 10000,
+    capacity: 4, // assuming per person
+    size: "Standard",
+    services: [
+      "Mattress",
+      "Cubed storage",
+      "UPS",
+      "Wifi",
+      "Parking",
+      "Mess (Paid)",
     ],
-    duration: "per month",
+    rating: 4.2,
+    reviews: 15,
+    available: true,
+    featured: false, // optional
+    description:
+      "Designed for simplicity and affordability, our non-AC rooms provide a quiet space with dependable power backup and strong connectivity. Perfect for professionals looking for a budget-friendly yet organized stay.",
+    amenities: [
+      { icon: <Router />, label: "Wi-Fi" },
+      { icon: <DoorClosedLocked />, label: "Cubed Storage" },
+      { icon: <PlugZap />, label: "UPS Backup" },
+      { icon: <BedSingle />, label: "Mattress" },
+      { icon: <CircleParking />, label: "Parking" },
+      { icon: <Utensils />, label: "Mess (Paid)" },
+    ],
+    duration: "per person",
     availability: "Available Now",
   },
   {
     id: 2,
     image:
       "https://images.unsplash.com/photo-1697603899008-a4027a95fd95?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080",
-    title: "Twin Room",
-    content: "Shared space with modern amenities and excellent value",
-    price: 10000,
-    capacity: 2,
-    size: "180 sq ft",
-    services: ["WiFi", "AC", "Shared Bath", "2 Study Desks", "2 Wardrobes"],
-    rating: 4.8,
-    reviews: 67,
+    title: "Package 2: With AC",
+    content: "Stay with AC, electricity separate",
+    price: 13000,
+    capacity: 1, // per person
+    size: "Standard",
+    services: [
+      "AC",
+      "LED",
+      "Cable",
+      "Hot Water (Geyser)",
+      "Cubed storage",
+      "Wifi",
+      "Parking",
+      "Bed",
+      "Elevator Access",
+      "Mess (Paid)",
+    ],
+    rating: 4.5,
+    reviews: 20,
     available: true,
     featured: true,
-    description:
-      "Perfect for friends or roommates, this twin room offers shared living with individual study spaces and ample storage.",
+    description: "Electricity separate",
     amenities: [
-      { label: "High-speed WiFi", icon: <Wifi /> },
-      { label: "Air Conditioning", icon: <AcUnit /> },
-      { label: "Shared Bathroom", icon: <Bathtub /> },
-      { label: "Dual Study Desks", icon: <Weekend /> },
-      { label: "Separate Wardrobes", icon: <Weekend /> },
+      { icon: <AirVent />, label: "Air Conditioner" },
+      { icon: <MonitorPlay />, label: "LED TV" },
+      { icon: <Cable />, label: "Cable Service" },
+      { icon: <HotTub />, label: "Geyser (Hot Water)" },
+      { icon: <DoorClosedLocked />, label: "Cubed Storage" },
+      { icon: <Router />, label: "Wi-fi" },
+      { icon: <CircleParking />, label: "Parking" },
+      { icon: <Bed />, label: "Bed" },
+      { icon: <Elevator />, label: "Elevator" },
+      { icon: <Utensils />, label: "Mess (Paid)" },
     ],
-    duration: "per month",
+    duration: "per person",
     availability: "Available Now",
   },
   {
     id: 3,
     image:
       "https://images.unsplash.com/photo-1589872880544-76e896b0592c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080",
-    title: "Deluxe Suite",
-    content: "Premium living with enhanced comfort and luxury",
-    price: 20000,
-    capacity: 1,
-    size: "200 sq ft",
+    title: "Package 3: Luxury Stay",
+    content: "Luxury stay with included electricity bill",
+    price: 5000,
+    capacity: 2, // assuming double bed
+    size: "Luxury",
     services: [
-      "WiFi",
-      "Premium AC",
-      "Premium Bath",
-      "Executive Desk",
-      "King Bed",
-      "Balcony",
-      "Mini Fridge",
+      "AC",
+      "LED",
+      "Cable",
+      "Hot Water (Geyser)",
+      "Cubed storage",
+      "Wifi",
+      "Parking",
+      "Double Bed",
+      "Elevator",
+      "Fridge",
+      "Mess (Paid)",
     ],
     rating: 4.9,
-    reviews: 18,
+    reviews: 30,
     available: true,
-    description:
-      "Experience luxury living with our deluxe suite featuring premium amenities, private balcony, and executive workspace.",
+    featured: true,
+    description: "Electricity bill included",
     amenities: [
-      { label: "Premium WiFi", icon: <Wifi /> },
-      { label: "Premium AC", icon: <AcUnit /> },
-      { label: "Luxury Bathroom", icon: <Bathtub /> },
-      { label: "Executive Desk", icon: <Weekend /> },
-      { label: "Private Balcony", icon: <Balcony /> },
-      { label: "Mini Fridge", icon: <Kitchen /> },
+      { icon: <AirVent />, label: "Air Conditioner" },
+      { icon: <MonitorPlay />, label: "LED TV" },
+      { icon: <Cable />, label: "Cable Service" },
+      { icon: <HotTub />, label: "Geyser (Hot Water)" },
+      { icon: <DoorClosedLocked />, label: "Cubed Storage" },
+      { icon: <Router />, label: "Wi-fi" },
+      { icon: <CircleParking />, label: "Parking" },
+      { icon: <Bed />, label: "Double Bed" },
+      { icon: <Elevator />, label: "Elevator" },
+      { icon: <Refrigerator />, label: "Fridge (Included)" },
+      { icon: <Zap />, label: "Electricity Included" },
+      { icon: <Utensils />, label: "Mess (Paid)" },
     ],
-    duration: "per month",
+    duration: "per day",
     availability: "Available Now",
   },
   {
     id: 4,
     image:
       "https://images.unsplash.com/photo-1555854877-bab0e564b8d5?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080",
-    title: "Triple Room",
-    content: "Economical option for group living",
-    price: 8000,
-    capacity: 3,
-    size: "220 sq ft",
-    services: ["WiFi", "AC", "Shared Bath", "3 Study Desks", "3 Wardrobes"],
-    rating: 4.3,
-    reviews: 45,
-    available: true,
-    description:
-      "Budget-friendly triple sharing room perfect for professionals groups. Includes individual study areas and storage for each occupant.",
-    amenities: [
-      { label: "High-speed WiFi", icon: <Wifi /> },
-      { label: "Air Conditioning", icon: <AcUnit /> },
-      { label: "Shared Bathroom", icon: <Bathtub /> },
-      { label: "Triple Study Desks", icon: <Weekend /> },
-      { label: "Individual Wardrobes", icon: <Weekend /> },
+    title: "Package 4: Per Day Stay",
+    content: "Short stay with included electricity bill",
+    price: 3500,
+    capacity: 1, // assuming per bed
+    size: "Standard",
+    services: [
+      "AC",
+      "LED",
+      "Cable",
+      "Hot Water (Geyser)",
+      "Cubed storage",
+      "Wifi",
+      "Parking",
+      "Bed",
+      "Mattress",
+      "Elevator",
     ],
-    duration: "per month",
+    rating: 4.1,
+    reviews: 8,
+    available: true,
+    featured: false,
+    description: "Electricity bill included",
+    amenities: [
+      { icon: <AirVent />, label: "Air Conditioner" },
+      { icon: <MonitorPlay />, label: "LED TV" },
+      { icon: <Cable />, label: "Cable Service" },
+      { icon: <HotTub />, label: "Geyser (Hot Water)" },
+      { icon: <DoorClosedLocked />, label: "Cubed Storage" },
+      { icon: <Router />, label: "Wi-fi" },
+      { icon: <CircleParking />, label: "Parking" },
+      { icon: <Bed />, label: "Double Bed" },
+      { icon: <Elevator />, label: "Elevator" },
+      { icon: <Refrigerator />, label: "Fridge (Included)" },
+      { icon: <Zap />, label: "Electricity Included" },
+      { icon: <Utensils />, label: "Mess (Paid)" },
+    ],
+    duration: "per day",
     availability: "Available Now",
   },
   {
     id: 5,
     image:
       "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080",
-    title: "Studio Apartment",
-    content: "Complete independent living space",
-    price: 25000,
-    capacity: 2,
-    size: "300 sq ft",
+    title: "Office Room",
+    content: "Comfortable office space for small teams",
+    price: 20000,
+    capacity: 5,
+    size: "Medium",
     services: [
-      "WiFi",
+      "Wifi",
       "AC",
-      "Kitchen",
-      "Private Bath",
-      "Living Area",
-      "Study Area",
+      "Desk",
+      "Chairs",
+      "Projector",
+      "Parking",
+      "Elevator",
     ],
-    rating: 4.7,
+    rating: 4.3,
     reviews: 12,
-    available: false,
-    description:
-      "A fully self-contained studio apartment with kitchenette, living area, and private study space for complete independence.",
-    amenities: [
-      { label: "High-speed WiFi", icon: <Wifi /> },
-      { label: "Air Conditioning", icon: <AcUnit /> },
-      { label: "Private Kitchen", icon: <Kitchen /> },
-      { label: "Private Bathroom", icon: <Bathtub /> },
-      { label: "Living Area", icon: <Weekend /> },
-      { label: "Study Area", icon: <Weekend /> },
-    ],
-    duration: "per month",
-    availability: "Occupied",
-  },
-  {
-    id: 6,
-    image:
-      "https://images.unsplash.com/photo-1522444690501-83e7c313968d?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080",
-    title: "Economy Room",
-    content: "Budget-friendly accommodation",
-    price: 6000,
-    capacity: 1,
-    size: "100 sq ft",
-    services: ["WiFi", "Fan", "Shared Bath", "Study Desk"],
-    rating: 4.0,
-    reviews: 89,
     available: true,
-    description:
-      "Affordable single room with essential amenities for budget-conscious professionals. Comfortable and functional living space.",
+    featured: false,
+    description: "Electricity and internet included",
     amenities: [
-      { label: "WiFi", icon: <Wifi /> },
-      { label: "Ceiling Fan", icon: <AcUnit /> },
-      { label: "Shared Bathroom", icon: <Bathtub /> },
-      { label: "Study Desk", icon: <Weekend /> },
+      { icon: <AirVent />, label: "Air Conditioner" },
+      { icon: <MonitorPlay />, label: "LED TV" },
+      { icon: <Cable />, label: "Cable Service" },
+      { icon: <HotTub />, label: "Geyser (Hot Water)" },
+      { icon: <DoorClosedLocked />, label: "Cubed Storage" },
+      { icon: <Router />, label: "Wi-fi" },
+      { icon: <CircleParking />, label: "Parking" },
+      { icon: <Bed />, label: "Bed with Mattress" },
+      { icon: <Elevator />, label: "Elevator" },
+      { icon: <Zap />, label: "Electricity Included" },
     ],
     duration: "per month",
     availability: "Available Now",
   },
 ];
 
-const serviceOptions = [
-  "WiFi",
+export const serviceOptions = [
+  "Wifi",
+  "UPS",
+  "Parking",
+  "Mess (Paid)",
   "AC",
-  "Attached Bath",
-  "Shared Bath",
-  "Study Desk",
-  "Wardrobe",
-  "Balcony",
-  "Mini Fridge",
-  "Kitchen",
-  "Premium AC",
+  "LED",
+  "Cable",
+  "Hot Water (Geyser)",
+  "Cubed storage",
+  "Bed",
+  "Elevator",
+  "Fridge",
+  "Electricity Included",
+  "Mattress",
 ];
 
 const serviceIcons: { [key: string]: React.ReactElement } = {
-  WiFi: <Wifi />,
+  Wifi: <Router />,
+  UPS: <PlugZap />,
   AC: <AcUnit />,
-  "Attached Bath": <Bathtub />,
-  "Shared Bath": <Bathtub />,
-  "Study Desk": <Weekend />,
-  Wardrobe: <Weekend />,
-  Balcony: <Balcony />,
-  "Mini Fridge": <Kitchen />,
-  Kitchen: <Kitchen />,
-  "Premium AC": <AcUnit />,
+  Parking: <CircleParking />,
+  "Mess (Paid)": <Utensils />,
+  "Cubed storage": <DoorClosedLocked />,
+  "Hot Water (Geyser)": <HotTub />,
+  LED: <MonitorPlay />,
+  Cable: <Cable />,
+  Elevator: <Elevator />,
+  Bed: <BedSingle />,
+  Mattress: <Bed />,
+  Fridge: <Refrigerator />,
+  "Electricity Included": <Article />,
 };
 const options = [
   {
@@ -710,16 +810,7 @@ export default function RoomsPage() {
   // Add modal state
   const [selectedRoom, setSelectedRoom] = useState<Room | null>(null);
   const [modalOpen, setModalOpen] = useState(false);
-  // const selectConfig = {
-  //   MenuProps: {
-  //     disableScrollLock: true, // This prevents the scrollbar from being removed
-  //     PaperProps: {
-  //       style: {
-  //         maxHeight: 300,
-  //       },
-  //     },
-  //   },
-  // };
+
   useEffect(() => {
     let filtered = [...rooms];
 
@@ -779,7 +870,23 @@ export default function RoomsPage() {
     sortBy,
     availabilityFilter,
   ]);
+  useEffect(() => {
+    if (filterDrawerOpen) {
+      document.body.style.overflow = "hidden";
+      document.body.style.position = "fixed";
+      document.body.style.width = "100%";
+    } else {
+      document.body.style.overflow = "";
+      document.body.style.position = "";
+      document.body.style.width = "";
+    }
 
+    return () => {
+      document.body.style.overflow = "";
+      document.body.style.position = "";
+      document.body.style.width = "";
+    };
+  }, [filterDrawerOpen]);
   const totalPages = Math.ceil(filteredRooms.length / itemsPerPage);
   const paginatedRooms = filteredRooms.slice(
     (page - 1) * itemsPerPage,
@@ -1164,7 +1271,7 @@ export default function RoomsPage() {
           }}
         >
           <Grid container spacing={2} alignItems="center">
-            <Grid size={{ xs: 12, md: 4 }}>
+            <Grid size={{ xs: 12, md: 5 }}>
               <TextField
                 fullWidth
                 placeholder="Search rooms..."
@@ -1191,7 +1298,7 @@ export default function RoomsPage() {
                 }}
               />
             </Grid>
-            <Grid size={{ xs: 6, md: 3 }}>
+            <Grid size={{ xs: 12, md: 4 }}>
               <FormControl fullWidth>
                 <Autocomplete
                   disablePortal
@@ -1231,7 +1338,10 @@ export default function RoomsPage() {
                 />
               </FormControl>
             </Grid>
-            <Grid size={{ xs: 6, md: 2 }}>
+            <Grid
+              size={{ xs: 12, md: 2 }}
+              sx={{ display: { xs: "block", md: "none" } }}
+            >
               <Badge
                 badgeContent={activeFiltersCount}
                 sx={{
@@ -1254,7 +1364,7 @@ export default function RoomsPage() {
                     borderRadius: 0.5,
                     py: "10px",
                     px: "15px",
-                    width: "150px",
+                    width: 270,
                     fontWeight: 600,
                     boxShadow: "5px 5px 10px rgba(123, 46, 46, 0.2)",
                     transition: "all 0.3s",
@@ -1268,7 +1378,12 @@ export default function RoomsPage() {
                 </Button>
               </Badge>
             </Grid>
-            <Grid size={{ xs: 12, md: 3 }}>
+            <Grid
+              size={{ xs: 12, md: 3 }}
+              sx={{
+                display: { xs: "none", md: "block" },
+              }}
+            >
               <ToggleButtonGroup
                 value={viewMode}
                 exclusive
@@ -1321,6 +1436,7 @@ export default function RoomsPage() {
                 mb: 4,
                 bgcolor: "#F6F4F4",
                 boxShadow: "0 20px 40px rgba(123,46,46,0.4)",
+                maxHeight: "calc(100% - 100px)",
               }}
             >
               <FilterSidebar />
@@ -1604,7 +1720,7 @@ export default function RoomsPage() {
                             PKR {room.price.toLocaleString()}
                           </Typography>
                           <Typography variant="caption" color="text.secondary">
-                            per month
+                            {room.duration}{" "}
                           </Typography>
                         </Box>
                         <Button
@@ -1722,10 +1838,23 @@ export default function RoomsPage() {
         anchor="right"
         open={filterDrawerOpen}
         onClose={() => setFilterDrawerOpen(false)}
-        PaperProps={{
-          sx: {
-            width: 320,
-            background: "linear-gradient(180deg, #FFFFFF 0%, #FAFAFA 100%)",
+        ModalProps={{
+          keepMounted: true,
+          disableScrollLock: true,
+        }}
+        sx={{
+          "& .MuiDrawer-paper": {
+            width: 300,
+            boxSizing: "border-box",
+            backgroundColor: "#fff",
+            overflowY: "auto",
+            "&::-webkit-scrollbar": {
+              width: "4px",
+            },
+            "&::-webkit-scrollbar-thumb": {
+              backgroundColor: "#7B2E2E",
+              borderRadius: "2px",
+            },
           },
         }}
       >

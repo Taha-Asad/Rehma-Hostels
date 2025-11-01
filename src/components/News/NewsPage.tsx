@@ -422,7 +422,7 @@ export default function NewsPage() {
                 }}
               />
             </Grid>
-            <Grid size={{ xs: 6, md: 3 }}>
+            <Grid size={{ xs: 12, md: 3 }}>
               <FormControl fullWidth>
                 <Autocomplete
                   disablePortal
@@ -491,7 +491,7 @@ export default function NewsPage() {
                 />
               </FormControl>
             </Grid>
-            <Grid size={{ xs: 6, md: 3 }}>
+            <Grid size={{ xs: 12, md: 3 }}>
               <FormControl fullWidth>
                 <Autocomplete
                   disablePortal
@@ -557,7 +557,12 @@ export default function NewsPage() {
                 />
               </FormControl>
             </Grid>
-            <Grid size={{ xs: 12, md: 3 }}>
+            <Grid
+              size={{ xs: 12, md: 3 }}
+              sx={{
+                display: { xs: "none", sm: "block" },
+              }}
+            >
               <ToggleButtonGroup
                 value={viewMode}
                 exclusive

@@ -28,7 +28,6 @@ import {
   NotificationsActive,
   Close,
   Share,
-  BookmarkBorder,
   AccessTime,
   Person,
   OpenInNew,
@@ -240,9 +239,42 @@ const News = () => {
   };
 
   const handleCloseModal = () => {
+    console.log("Close modal called"); // Debug line
     setModalOpen(false);
-    setTimeout(() => setSelectedArticle(null), 300);
+    setSelectedArticle(null);
   };
+  useEffect(() => {
+    const scrollContainer =
+      (document.scrollingElement as HTMLElement) ||
+      (document.documentElement as HTMLElement);
+    let scrollY = 0;
+
+    if (modalOpen) {
+      scrollY = scrollContainer.scrollTop;
+
+      // Lock scroll
+      scrollContainer.style.overflow = "hidden";
+      scrollContainer.style.position = "fixed";
+      scrollContainer.style.top = `-${scrollY}px`;
+      scrollContainer.style.width = "100%";
+    } else {
+      const top = scrollContainer.style.top;
+
+      // Restore normal flow
+      scrollContainer.style.overflow = "";
+      scrollContainer.style.position = "";
+      scrollContainer.style.top = "";
+      scrollContainer.style.width = "";
+
+      // Smoothly return to previous scroll position
+      requestAnimationFrame(() => {
+        scrollContainer.scrollTo({
+          top: parseInt(top || "0") * -1,
+          behavior: "instant",
+        });
+      });
+    }
+  }, [modalOpen]);
 
   const handleShare = async () => {
     if (navigator.share && selectedArticle) {
@@ -587,7 +619,7 @@ const News = () => {
                     <Box
                       sx={{
                         width: { xs: "100%", md: "50%" },
-                        height: { xs: 300, md: "100%" },
+                        height: { xs: 320, md: "100%" },
                         position: "relative",
                         overflow: "hidden",
                       }}
@@ -613,7 +645,7 @@ const News = () => {
                             "linear-gradient(to top, rgba(0,0,0,0.7), transparent)",
                         }}
                       />
-                      {/* Close Button */}
+                      {/* Close Button - Fixed with proper z-index */}
                       <IconButton
                         onClick={handleCloseModal}
                         sx={{
@@ -622,6 +654,7 @@ const News = () => {
                           right: 16,
                           bgcolor: "rgba(255,255,255,0.9)",
                           backdropFilter: "blur(10px)",
+                          zIndex: 9999, // Added high z-index
                           "&:hover": {
                             bgcolor: "white",
                             transform: "scale(1.1)",
@@ -638,6 +671,7 @@ const News = () => {
                           bottom: 0,
                           left: 0,
                           right: 0,
+                          top: { xs: 2, md: 0 },
                           p: { xs: 3, sm: 4 },
                           background:
                             "linear-gradient(to top, rgba(0,0,0,0.9), transparent)",
@@ -757,7 +791,13 @@ const News = () => {
                             mb: 3,
                           }}
                         >
-                          <Box sx={{ display: "flex", gap: 1 }}>
+                          <Box
+                            sx={{
+                              display: "flex",
+                              flexDirection: { xs: "column", md: "row" },
+                              gap: 1,
+                            }}
+                          >
                             {selectedArticle.chips.map((chip, i) => (
                               <Chip
                                 key={i}
@@ -788,16 +828,6 @@ const News = () => {
                               }}
                             >
                               <Share sx={{ fontSize: 20 }} />
-                            </IconButton>
-                            <IconButton
-                              sx={{
-                                border: "1px solid rgba(123,46,46,0.2)",
-                                "&:hover": {
-                                  bgcolor: "rgba(123,46,46,0.05)",
-                                },
-                              }}
-                            >
-                              <BookmarkBorder sx={{ fontSize: 20 }} />
                             </IconButton>
                           </Stack>
                         </Box>
@@ -856,7 +886,6 @@ const News = () => {
                             variant="outlined"
                             onClick={handleCloseModal}
                             size="large"
-                            href="tel:+923001234567"
                             sx={{
                               bgcolor: "primary.contrastText",
                               color: "#7B2E2E",
