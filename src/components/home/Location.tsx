@@ -278,8 +278,8 @@ function Location() {
                           <Stack
                             direction={{ xs: "column", md: "row" }}
                             spacing={2}
-                            alignItems={{ xs: "center" }}
-                            textAlign={{ xs: "center" }}
+                            alignItems={{ xs: "center", sm: "left" }}
+                            textAlign={{ xs: "center", sm: "left" }}
                           >
                             <CardMedia
                               sx={{

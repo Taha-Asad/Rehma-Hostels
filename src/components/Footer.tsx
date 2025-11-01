@@ -9,7 +9,7 @@ import {
   TextField,
   Button,
   IconButton,
-  Link,
+  Link as RouterLink,
   Stack,
   SpeedDial,
   SpeedDialAction,
@@ -27,7 +27,7 @@ import {
   FiberManualRecord as DotIcon,
 } from "@mui/icons-material";
 import Image from "next/image";
-
+import Link from "next/link";
 import logoImage from "../../public/Images/Logo.jpg";
 import ShareIcon from "@mui/icons-material/Share";
 function Footer() {
@@ -161,7 +161,7 @@ function Footer() {
 
             <Stack spacing={1.5}>
               {quickLinks.map((link, index) => (
-                <Link
+                <RouterLink
                   key={index}
                   href={link.href}
                   underline="none"
@@ -177,7 +177,7 @@ function Footer() {
                 >
                   <DotIcon sx={{ fontSize: 8, mr: 1, opacity: 0.6 }} />
                   {link.label}
-                </Link>
+                </RouterLink>
               ))}
             </Stack>
           </Grid>
@@ -231,30 +231,36 @@ function Footer() {
                   sx={{ fontSize: 20, color: "rgba(255, 255, 255, 0.8)" }}
                 />
                 <Box>
-                  <Link
-                    href="tel:+923001234567"
+                  <RouterLink
+                    component={Link}
+                    href="tel:+923001122334"
+                    underline="hover"
                     sx={{
+                      fontSize: "17px",
+                      display: "flex",
+                      alignItems: "center",
+                      gap: 1,
                       color: "rgba(255, 255, 255, 0.9)",
-                      textDecoration: "none",
-                      fontSize: "0.875rem",
-                      display: "block",
-                      "&:hover": { color: "white" },
                     }}
                   >
                     +92 300 123 4567
-                  </Link>
-                  <Link
-                    href="tel:+923211234567"
+                  </RouterLink>
+                  <RouterLink
+                    component={Link}
+                    href="https://wa.me/923001122334"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    underline="hover"
                     sx={{
+                      fontSize: "17px",
+                      display: "flex",
+                      alignItems: "center",
+                      gap: 1,
                       color: "rgba(255, 255, 255, 0.9)",
-                      textDecoration: "none",
-                      fontSize: "0.875rem",
-                      display: "block",
-                      "&:hover": { color: "white" },
                     }}
                   >
                     +92 321 123 4567
-                  </Link>
+                  </RouterLink>
                 </Box>
               </Box>
 
@@ -262,7 +268,7 @@ function Footer() {
                 <EmailIcon
                   sx={{ fontSize: 20, color: "rgba(255, 255, 255, 0.8)" }}
                 />
-                <Link
+                <RouterLink
                   href="mailto:info@rehmahotel.com"
                   sx={{
                     color: "rgba(255, 255, 255, 0.9)",
@@ -272,7 +278,7 @@ function Footer() {
                   }}
                 >
                   info@rehmahotel.com
-                </Link>
+                </RouterLink>
               </Box>
             </Stack>
           </Grid>
