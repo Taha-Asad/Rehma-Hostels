@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import {
   Box,
   Container,
@@ -30,6 +30,9 @@ import Image from "next/image";
 import Link from "next/link";
 import logoImage from "../../public/Images/Logo.jpg";
 import ShareIcon from "@mui/icons-material/Share";
+import toast from "react-hot-toast";
+import emailjs from "@emailjs/browser";
+
 function Footer() {
   const currentYear = new Date().getFullYear();
 
@@ -75,7 +78,57 @@ function Footer() {
       link: "https://wa.me/923001234567",
     },
   ];
+  const [email, setEmail] = useState("");
+  const [subscribing, setSubscribing] = useState(false);
+  const handleSubscribe = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (!email) return;
 
+    setSubscribing(true);
+
+    const serviceID = "service_x6ueh7n";
+    const templateID = "template_5wdb3l7";
+    const publicKey = "NFRagpznVWX4p1nBF";
+
+    try {
+      // Extract name from email
+      const getNameFromEmail = (email: string) => {
+        const namePart = email.split("@")[0];
+        return namePart.charAt(0).toUpperCase() + namePart.slice(1);
+      };
+
+      // Correct template parameters - EmailJS needs specific field names
+      const templateParams = {
+        to_email: email, // This might be the issue
+        user_email: email, // Try this instead
+        email: email, // Or this
+        reply_to: email, // Sometimes needed
+        name: getNameFromEmail(email),
+        unsubscribe_link: "https://rehma-hostels-gtbz.vercel.app/unsubscribe",
+        from_name: "REHMA Hostel",
+        message: "Welcome to REHMA Hostel newsletter!",
+      };
+
+      const response = await emailjs.send(
+        serviceID,
+        templateID,
+        templateParams,
+        publicKey
+      );
+
+      if (response.status === 200) {
+        toast.success("Welcome to REHMA! Check your inbox for confirmation.");
+        setEmail("");
+      } else {
+        throw new Error("EmailJS returned non-200 status.");
+      }
+    } catch (error) {
+      console.error("EmailJS error:", error);
+      toast.error("Subscription failed. Please try again later.");
+    } finally {
+      setSubscribing(false);
+    }
+  };
   return (
     <Box
       component="footer"
@@ -307,10 +360,13 @@ function Footer() {
               offers
             </Typography>
 
-            <Stack spacing={2}>
+            <Stack spacing={2} component="form" onSubmit={handleSubscribe}>
               <TextField
+                placeholder="Enter your email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
                 type="email"
-                placeholder="Your email address"
+                required
                 fullWidth
                 sx={{
                   "& .MuiInputBase-root": {
@@ -334,22 +390,31 @@ function Footer() {
               />
 
               <Button
-                variant="contained"
-                fullWidth
+                type="submit"
+                disabled={subscribing}
                 sx={{
-                  bgcolor: "white",
-                  color: "#7B2E2E",
+                  bgcolor: "#D4A373",
+                  color: "white",
+                  borderRadius: 1,
+                  px: 4,
+                  py: 1.2,
                   fontWeight: 600,
-                  py: 1.5,
-                  boxShadow: 3,
+                  boxShadow: "0 4px 15px rgba(212,163,115,0.3)",
+                  transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
                   "&:hover": {
-                    bgcolor: "rgba(255, 255, 255, 0.9)",
-                    boxShadow: 5,
+                    bgcolor: "#c89660",
+                    transform: "translateY(-2px)",
+                    boxShadow: "0 8px 25px rgba(212,163,115,0.4)",
                   },
-                  transition: "all 0.3s",
+                  "&:active": {
+                    transform: "translateY(0)",
+                  },
+                  "&:disabled": {
+                    opacity: 0.7,
+                  },
                 }}
               >
-                Subscribe
+                {subscribing ? "Subscribing..." : "Subscribe"}
               </Button>
             </Stack>
           </Grid>

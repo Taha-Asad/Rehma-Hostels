@@ -34,6 +34,8 @@ import {
   Circle,
 } from "@mui/icons-material";
 import Link from "next/link";
+import toast from "react-hot-toast";
+import emailjs from "@emailjs/browser";
 
 interface NewsChip {
   icon: React.ReactElement;
@@ -185,6 +187,58 @@ const News = () => {
   );
   const [modalOpen, setModalOpen] = useState(false);
 
+  const handleSubscribe = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (!email) return;
+
+    setSubscribing(true);
+
+    const serviceID = "service_x6ueh7n";
+    const templateID = "template_5wdb3l7";
+    const publicKey = "NFRagpznVWX4p1nBF";
+
+    try {
+      // Extract name from email
+      const getNameFromEmail = (email: string) => {
+        const namePart = email.split("@")[0];
+        return namePart.charAt(0).toUpperCase() + namePart.slice(1);
+      };
+
+      // Correct template parameters - EmailJS needs specific field names
+      const templateParams = {
+        to_email: email, // This might be the issue
+        user_email: email, // Try this instead
+        email: email, // Or this
+        reply_to: email, // Sometimes needed
+        name: getNameFromEmail(email),
+        unsubscribe_link: "https://rehma-hostels-gtbz.vercel.app/unsubscribe",
+        from_name: "REHMA Hostel",
+        message: "Welcome to REHMA Hostel newsletter!",
+      };
+
+      const response = await emailjs.send(
+        serviceID,
+        templateID,
+        templateParams,
+        publicKey
+      );
+
+      if (response.status === 200) {
+        toast.success(
+          "🎉 Welcome to REHMA! Check your inbox for confirmation."
+        );
+        setEmail("");
+      } else {
+        throw new Error("EmailJS returned non-200 status.");
+      }
+    } catch (error) {
+      console.error("EmailJS error:", error);
+      toast.error("Subscription failed. Please try again later.");
+    } finally {
+      setSubscribing(false);
+    }
+  };
+
   useEffect(() => {
     fetchNewsData();
   }, []);
@@ -220,17 +274,6 @@ const News = () => {
   const circleStyle = {
     fontSize: "10px",
     color: "rgba(255,255,255,0.7)",
-  };
-
-  const handleSubscribe = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    if (!email) return;
-
-    setSubscribing(true);
-    setTimeout(() => {
-      setSubscribing(false);
-      setEmail("");
-    }, 1500);
   };
 
   const handleOpenModal = (article: NewsArticle) => {
