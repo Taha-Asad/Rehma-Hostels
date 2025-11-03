@@ -23,6 +23,7 @@ export default function MapCard() {
       sx={{
         px: { xs: 2, md: 3 },
         width: "100%",
+        height: 735,
         py: 2,
         pt: 4.5,
         transition: "all 0.3s ease",

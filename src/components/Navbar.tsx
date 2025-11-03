@@ -41,11 +41,11 @@ import EmailIcon from "@mui/icons-material/Email";
 import TuneIcon from "@mui/icons-material/Tune";
 import HotelIcon from "@mui/icons-material/Hotel";
 import AutoStoriesIcon from "@mui/icons-material/AutoStories";
-import { scrollToSection } from "@/utils/scrollToSection";
 import { ScrollText } from "lucide-react";
+import { useRouter, usePathname } from "next/navigation";
 
 const navlinks = [
-  { icon: <Home />, title: "Home", url: "/#" },
+  { icon: <Home />, title: "Home", url: "/#home" },
   { icon: <AutoStoriesIcon />, title: "About Us", url: "/#about" },
   { icon: <TuneIcon />, title: "Amenities", url: "/#amenities" },
   { icon: <HotelIcon />, title: "Rooms", url: "/#rooms" },
@@ -70,6 +70,8 @@ function Navbar() {
     password: "",
   });
   const isActive = (url: string) => location.pathname === url;
+  const router = useRouter();
+  const pathname = usePathname();
 
   // Load saved user info
   useEffect(() => {
@@ -81,6 +83,34 @@ function Navbar() {
     if (savedType) setUserType(savedType);
     if (savedRemember) setRememberMe(true);
   }, []);
+
+  // Check for hash on page load and scroll to section
+  useEffect(() => {
+    const handleHashScroll = () => {
+      const hash = window.location.hash;
+      if (hash) {
+        const sectionId = hash.replace("#", "");
+        setTimeout(() => {
+          const element = document.getElementById(sectionId);
+          if (element) {
+            const top =
+              element.getBoundingClientRect().top + window.scrollY - 50;
+            window.scrollTo({
+              top,
+              behavior: "smooth",
+            });
+          }
+        }, 100);
+      }
+    };
+
+    handleHashScroll();
+    window.addEventListener("hashchange", handleHashScroll);
+
+    return () => {
+      window.removeEventListener("hashchange", handleHashScroll);
+    };
+  }, [pathname]);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -168,13 +198,38 @@ function Navbar() {
     }
   };
 
-  const handleScroll = (id: string) => {
-    const section = document.getElementById(id);
-    if (section) {
-      section.scrollIntoView({
-        behavior: "smooth",
-        block: "start",
-      });
+  const handleNavClick = (url: string) => {
+    if (pathname === "/") {
+      // If already on home page, just scroll
+      const sectionId = url.replace("/#", "");
+      const element = document.getElementById(sectionId);
+      if (element) {
+        const top = element.getBoundingClientRect().top + window.scrollY - 100;
+        window.scrollTo({
+          top,
+          behavior: "smooth",
+        });
+      }
+    } else {
+      // Navigate to home with hash
+      router.push(url);
+    }
+  };
+
+  const handleBookNow = () => {
+    if (pathname === "/") {
+      // If on home page, scroll directly
+      const element = document.getElementById("contact");
+      if (element) {
+        const top = element.getBoundingClientRect().top + window.scrollY - 100;
+        window.scrollTo({
+          top,
+          behavior: "smooth",
+        });
+      }
+    } else {
+      // Navigate to home with contact hash
+      router.push("/#contact");
     }
   };
 
@@ -196,18 +251,18 @@ function Navbar() {
         bgcolor: "#fff",
         justifyContent: "space-between",
         alignItems: "center",
-        px: { xs: 2, md: 4 },
+        px: { xs: 2, md: 2, lg: 4 },
         zIndex: 1000,
         width: "100%",
         height: 150, // Fixed height to prevent layout shift
       }}
     >
       <Container
-        maxWidth="xl"
         sx={{
           display: "flex",
           justifyContent: "space-between",
           alignItems: "center",
+          width: "100%",
         }}
       >
         {/* Logo */}
@@ -216,7 +271,7 @@ function Navbar() {
           <Image src={logo} alt="REHMA Hostel" width={150} />
         </Link>
         {/* Desktop Menu */}
-        <Box sx={{ display: { xs: "none", md: "flex" }, gap: 2 }}>
+        <Box sx={{ display: { xs: "none", lg: "flex" }, gap: 2 }}>
           {navlinks.map((item) => {
             const active = isActive(item.url);
             return (
@@ -269,7 +324,10 @@ function Navbar() {
                     "&:hover::after": { width: "70%" },
                   }}
                   aria-current={active ? "page" : undefined}
-                  onClick={() => handleScroll(item.url)}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    handleNavClick(item.url);
+                  }}
                 >
                   <Box
                     sx={{
@@ -289,11 +347,11 @@ function Navbar() {
         </Box>
 
         {/* Desktop Buttons */}
-        <Box sx={{ display: { xs: "none", md: "flex" }, gap: 2 }}>
+        <Box sx={{ display: { xs: "none", lg: "flex" }, gap: 2 }}>
           <Button
             variant="contained"
             size="large"
-            onClick={() => scrollToSection("contact")}
+            onClick={handleBookNow}
             sx={{
               bgcolor: "#7B2E2E",
               color: "primary.contrastText",
@@ -312,31 +370,12 @@ function Navbar() {
           >
             Book Now
           </Button>
-
-          {/* <Button
-            sx={{
-              bgcolor: "primary.contrastText",
-              color: "#7B2E2E",
-              borderRadius: 0.5,
-              py: "10px",
-              px: "15px",
-              width: "130px",
-              fontWeight: 600,
-              border: "1px solid #7B2E2E",
-              boxShadow: "5px 5px 10px rgba(123, 46, 46, 0.2)",
-              transition: "all 0.3s",
-              "&:hover": { bgcolor: "#7B2E2E", color: "#fff" },
-            }}
-            onClick={() => setOpenModal(true)}
-          >
-            Sign In
-          </Button> */}
         </Box>
 
         {/* Hamburger Menu */}
         <IconButton
           onClick={() => setMobileOpen(true)}
-          sx={{ display: { xs: "flex", md: "none" }, color: "#3D444B" }}
+          sx={{ display: { xs: "flex", lg: "none" }, color: "#3D444B" }}
         >
           <MenuIcon fontSize="large" />
         </IconButton>
@@ -417,7 +456,11 @@ function Navbar() {
                   display: "block",
                   width: "100%",
                 }}
-                onClick={handleDrawerClose}
+                onClick={(e) => {
+                  e.preventDefault();
+                  handleDrawerClose();
+                  handleNavClick(item.url);
+                }}
                 sx={{
                   px: 1.5,
                   py: 1,
@@ -464,7 +507,7 @@ function Navbar() {
           <Button
             onClick={() => {
               handleDrawerClose();
-              scrollToSection("contact");
+              handleBookNow();
             }}
             sx={{
               bgcolor: "#7B2E2E",
@@ -484,32 +527,9 @@ function Navbar() {
           >
             Book Now
           </Button>
-
-          {/* <Button
-            sx={{
-              bgcolor: "primary.contrastText",
-              color: "#7B2E2E",
-              borderRadius: 0.5,
-              py: "10px",
-              px: "15px",
-              width: "100%",
-              fontWeight: 600,
-              border: "1px solid #7B2E2E",
-              boxShadow: "5px 5px 10px rgba(123, 46, 46, 0.2)",
-              transition: "all 0.3s",
-              "&:hover": { bgcolor: "#7B2E2E", color: "#fff" },
-            }}
-            onClick={() => {
-              handleDrawerClose();
-              setOpenModal(true);
-            }}
-          >
-            Sign In
-          </Button> */}
         </Box>
       </Drawer>
 
-      {/* Sign In Modal */}
       <Dialog
         open={openModal}
         fullScreen={fullScreen}
@@ -570,7 +590,6 @@ function Navbar() {
             }}
           />
 
-          {/* User Type */}
           <FormControl fullWidth margin="normal">
             <FormLabel>User Type</FormLabel>
             <RadioGroup
@@ -593,7 +612,6 @@ function Navbar() {
             </RadioGroup>
           </FormControl>
 
-          {/* Remember Me */}
           <FormControlLabel
             control={
               <Checkbox

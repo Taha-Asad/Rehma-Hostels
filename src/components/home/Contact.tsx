@@ -19,6 +19,7 @@ import {
   Stack,
   Paper,
   Autocomplete,
+  Avatar,
 } from "@mui/material";
 import {
   Send as SendIcon,
@@ -26,7 +27,7 @@ import {
   Email as EmailIcon,
   Phone as PhoneIcon,
   CheckCircle as CheckCircleIcon,
-  Celebration,
+  Campaign,
 } from "@mui/icons-material";
 import Stats from "../ui/Stats";
 import { motion, Variants } from "framer-motion";
@@ -555,7 +556,7 @@ function Contact() {
           viewport={{ once: true }}
           variants={slideBottom}
         >
-          <Container maxWidth={"md"} sx={{ py: 4 }}>
+          <Container maxWidth={"sm"} sx={{ py: 4 }}>
             <Paper
               elevation={16}
               sx={{
@@ -569,8 +570,17 @@ function Contact() {
               }}
             >
               <Stack direction={"column"} sx={{ p: { xs: 3, md: 4 } }}>
-                <Box sx={{ display: "grid", placeItems: "center", pb: 3 }}>
-                  <Celebration
+                <Avatar
+                  sx={{
+                    width: 80,
+                    height: 80,
+                    bgcolor: "rgba(255,255,255,0.1)",
+                    border: "2px solid rgba(255,255,255,0.2)",
+                    mx: "auto",
+                    mb: 3,
+                  }}
+                >
+                  <Campaign
                     sx={{
                       fontSize: 48,
                       color: "#D4A373",
@@ -582,7 +592,7 @@ function Contact() {
                       },
                     }}
                   />
-                </Box>
+                </Avatar>
                 <Typography
                   variant="h6"
                   sx={{

@@ -1,5 +1,5 @@
 "use client";
-import { Elevator, HotTub } from "@mui/icons-material";
+import { Campaign, Elevator, HotTub } from "@mui/icons-material";
 import {
   Box,
   Button,
@@ -21,6 +21,7 @@ import {
   IconButton,
   Divider,
   Rating,
+  Avatar,
 } from "@mui/material";
 import {
   CircleCheckBig,
@@ -376,24 +377,24 @@ const RoomDetailsModal: React.FC<RoomDetailsModalProps> = ({
       fullWidth
       PaperProps={{
         sx: {
-          overflow: { xs: "auto", md: "hidden" },
-          height: { xs: "auto", md: "85vh" },
-          maxHeight: { xs: "90vh", md: "85vh" },
+          overflow: { xs: "auto", lg: "hidden" },
+          height: { xs: "auto", lg: "85vh" },
+          maxHeight: { xs: "90vh", lg: "85vh" },
         },
       }}
     >
       <Box
         sx={{
           display: "flex",
-          flexDirection: { xs: "column", md: "row" },
+          flexDirection: { xs: "column", lg: "row" },
           height: "100%",
         }}
       >
         {/* Left Side - Image */}
         <Box
           sx={{
-            width: { xs: "100%", md: "50%" },
-            height: { xs: 300, md: "100%" },
+            width: { xs: "100%", lg: "50%" },
+            height: { xs: 300, lg: "100%" },
             position: "relative",
             overflow: "hidden",
           }}
@@ -459,7 +460,7 @@ const RoomDetailsModal: React.FC<RoomDetailsModalProps> = ({
         {/* Right Side - Details */}
         <Box
           sx={{
-            width: { xs: "100%", md: "50%" },
+            width: { xs: "100%", lg: "50%" },
             height: "100%",
             display: "flex",
             flexDirection: "column",
@@ -468,7 +469,7 @@ const RoomDetailsModal: React.FC<RoomDetailsModalProps> = ({
           <DialogContent
             sx={{
               flex: 1,
-              p: { xs: 3, md: 4 },
+              p: { xs: 3, lg: 4 },
               overflow: "hidden",
               scrollbarWidth: "thin", // Firefox
               scrollbarColor: "#7B2E2E transparent",
@@ -618,7 +619,7 @@ const RoomDetailsModal: React.FC<RoomDetailsModalProps> = ({
                   <Grid
                     size={{ xs: 12, sm: 4 }}
                     sx={{
-                      justifyContent: { xs: "center" },
+                      placeItems: "center",
                     }}
                     key={index}
                   >
@@ -677,108 +678,116 @@ const RoomDetailsModal: React.FC<RoomDetailsModalProps> = ({
             </Box>
 
             {/* Pricing */}
-            <Paper
-              sx={{
-                p: 3,
-                bgcolor: "#7B2E2E",
-                background: "linear-gradient(135deg, #7B2E2E 0%, #5F2424 100%)",
-                boxShadow: "0 20px 40px rgba(123,46,46,0.4)",
-                color: "white",
-              }}
-            >
-              <Box
+            <Container maxWidth={"sm"}>
+              <Paper
                 sx={{
-                  display: "flex",
-                  flexDirection: { xs: "column", md: "row" },
-                  justifyContent: "space-between",
-                  alignItems: "center",
-                  textAlign: { xs: "center" },
-                  mb: 2,
+                  p: 3,
+                  bgcolor: "#7B2E2E",
+                  background:
+                    "linear-gradient(135deg, #7B2E2E 0%, #5F2424 100%)",
+                  boxShadow: "0 20px 40px rgba(123,46,46,0.4)",
+                  color: "white",
                 }}
               >
-                <Box>
-                  <Typography variant="body2" sx={{ opacity: 0.9 }}>
-                    Monthly Rent
-                  </Typography>
-                  <Typography
-                    variant="h4"
-                    sx={{ fontWeight: 700, color: "#D4A373" }}
-                  >
-                    {room.price}
-                  </Typography>
-                  <Typography variant="body2" sx={{ opacity: 0.8 }}>
-                    {room.duration}
-                  </Typography>
+                <Box
+                  sx={{
+                    display: "flex",
+                    flexDirection: { xs: "column", sm: "row" },
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                    textAlign: { xs: "center", sm: "left" },
+                    mb: 2,
+                  }}
+                >
+                  <Box>
+                    <Typography variant="body2" sx={{ opacity: 0.9 }}>
+                      Monthly Rent
+                    </Typography>
+                    <Typography
+                      variant="h4"
+                      sx={{ fontWeight: 700, color: "#D4A373" }}
+                    >
+                      {room.price}
+                    </Typography>
+                    <Typography variant="body2" sx={{ opacity: 0.8 }}>
+                      {room.duration}
+                    </Typography>
+                  </Box>
+                  <Chip
+                    label={room.availability}
+                    sx={{
+                      bgcolor: "rgba(255,255,255,0.2)",
+                      color: "white",
+                      border: "1px solid rgba(255,255,255,0.3)",
+                      my: 2,
+                    }}
+                  />
                 </Box>
-                <Chip
-                  label={room.availability}
-                  sx={{
-                    bgcolor: "rgba(255,255,255,0.2)",
-                    color: "white",
-                    border: "1px solid rgba(255,255,255,0.3)",
-                    my: 2,
-                  }}
-                />
-              </Box>
 
-              <Stack direction={{ xs: "column", md: "row" }} spacing={2}>
-                <Button
-                  onClick={() => {
-                    onClose();
-                    setTimeout(() => {
-                      scrollToSection("contact");
-                    }, 400);
-                  }}
-                  variant="contained"
-                  size="large"
-                  sx={{
-                    bgcolor: "#D4A373",
-                    color: "#FDF9F6",
-                    borderRadius: 0.5,
-                    width: { xs: 150, md: 220 },
-                    py: "10px",
-                    px: "15px",
-                    fontWeight: 600,
-                    border: "1px solid #7B2E2E",
-                    boxShadow: "5px 5px 10px rgba(123, 46, 46, 0.25)",
-                    transition: "all 0.3s",
-                    "&:hover": {
+                <Stack
+                  direction={{ xs: "column", sm: "row" }}
+                  spacing={2}
+                  justifyContent={"center"}
+                  alignItems={"center"}
+                >
+                  <Button
+                    onClick={() => {
+                      onClose();
+                      setTimeout(() => {
+                        scrollToSection("contact");
+                      }, 400);
+                    }}
+                    variant="contained"
+                    size="large"
+                    sx={{
+                      bgcolor: "#D4A373",
+                      color: "#FDF9F6",
+                      borderRadius: 0.5,
+                      width: { xs: 150, sm: 250 },
+                      py: "10px",
+                      px: "15px",
+                      fontWeight: 600,
+                      border: "1px solid #7B2E2E",
+                      boxShadow: "5px 5px 10px rgba(123, 46, 46, 0.25)",
+                      transition: "all 0.3s",
+                      "&:hover": {
+                        bgcolor: "primary.contrastText",
+                        color: "#7B2E2E",
+                        boxShadow: "0 4px 15px rgba(212, 163, 115, 0.4)",
+                      },
+                    }}
+                  >
+                    Book Now
+                  </Button>
+                  <Button
+                    variant="contained"
+                    size="large"
+                    href="https://wa.me/923259881310"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    sx={{
                       bgcolor: "primary.contrastText",
                       color: "#7B2E2E",
-                      boxShadow: "0 4px 15px rgba(212, 163, 115, 0.4)",
-                    },
-                  }}
-                >
-                  Book Now
-                </Button>
-                <Button
-                  variant="contained"
-                  size="large"
-                  href="https://wa.me/923259881310"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  sx={{
-                    bgcolor: "primary.contrastText",
-                    color: "#7B2E2E",
-                    borderRadius: 0.5,
-                    width: { xs: 150, md: 220 },
-                    py: "10px",
-                    px: "15px",
-                    fontWeight: 600,
-                    border: "1px solid #7B2E2E",
-                    boxShadow: "5px 5px 10px rgba(123, 46, 46, 0.2)",
-                    transition: "all 0.3s",
-                    "&:hover": {
-                      color: "#D9D4D1",
-                      bgcolor: "#D4A373",
-                      boxShadow: "0 4px 15px rgba(212, 163, 115, 0.4)",
-                    },
-                  }}
-                >
-                  Contact
-                </Button>
-              </Stack>
-            </Paper>
+                      borderRadius: 0.5,
+                      width: { xs: 150, sm: 250 },
+                      py: "10px",
+                      px: "15px",
+                      fontWeight: 600,
+                      border: "1px solid #7B2E2E",
+                      boxShadow: "5px 5px 10px rgba(123, 46, 46, 0.2)",
+                      transition: "all 0.3s",
+                      "&:hover": {
+                        color: "#D9D4D1",
+                        bgcolor: "#D4A373",
+                        boxShadow: "0 4px 15px rgba(212, 163, 115, 0.4)",
+                      },
+                    }}
+                  >
+                    Contact
+                  </Button>
+                </Stack>
+              </Paper>
+            </Container>
           </DialogContent>
         </Box>
       </Box>
@@ -853,34 +862,6 @@ function Rooms() {
             py: 4,
           }}
         >
-          <Box
-            sx={{
-              position: "absolute",
-              top: 0,
-              left: 0,
-              height: { xs: "70%", md: "100%" },
-              width: { xs: "50px", sm: "100px" },
-              background:
-                "linear-gradient(to right, rgba(255,255,255,1), rgba(255,255,255,0))",
-              zIndex: 2,
-              pointerEvents: "none",
-            }}
-          />
-
-          {/* Right gradient fade */}
-          <Box
-            sx={{
-              position: "absolute",
-              top: 0,
-              right: 0,
-              height: { xs: "70%", md: "100%" },
-              width: { xs: "50px", sm: "100px" },
-              background:
-                "linear-gradient(to left, rgba(255,255,255,1), rgba(255,255,255,0))",
-              zIndex: 2,
-              pointerEvents: "none",
-            }}
-          />
           <motion.div
             variants={containerVariants}
             initial="hidden"
@@ -935,10 +916,9 @@ function Rooms() {
                         transform: "translateY(-6px)",
                         boxShadow: "0 20px 40px rgba(123,46,46,0.4)",
                       },
-                      bgcolor: "#FFFFFF",
                       borderRadius: 1,
                       cursor: "default",
-                      height: { xs: 900, sm: 800 },
+                      height: { xs: 900, sm: 850 },
                     }}
                   >
                     <Stack
@@ -1252,6 +1232,29 @@ function Rooms() {
                     }}
                   >
                     <Stack direction={"column"}>
+                      <Avatar
+                        sx={{
+                          width: 80,
+                          height: 80,
+                          bgcolor: "rgba(255,255,255,0.1)",
+                          border: "2px solid rgba(255,255,255,0.2)",
+                          mx: "auto",
+                          mb: 3,
+                        }}
+                      >
+                        <Campaign
+                          sx={{
+                            fontSize: 48,
+                            color: "#D4A373",
+                            animation: "pulse 2s infinite",
+                            "@keyframes pulse": {
+                              "0%": { transform: "scale(1)" },
+                              "50%": { transform: "scale(1.1)" },
+                              "100%": { transform: "scale(1)" },
+                            },
+                          }}
+                        />
+                      </Avatar>
                       <Typography
                         variant="h6"
                         sx={{

@@ -242,7 +242,7 @@ export default async function BlogPost({ params }: PageProps) {
       <Box
         sx={{
           position: "relative",
-          height: { xs: 350, md: 500 },
+          height: { xs: 450, md: 500 },
           background: `linear-gradient(180deg, rgba(123,46,46,0.8) 0%, rgba(0,0,0,0.9) 100%), url(${article.image})`,
           backgroundSize: "cover",
           backgroundPosition: "center",
@@ -254,6 +254,7 @@ export default async function BlogPost({ params }: PageProps) {
           component={Link}
           href="/news"
           sx={{
+            display: { xs: "none", sm: "block" },
             position: "absolute",
             top: 100,
             left: { xs: 20, md: 40 },

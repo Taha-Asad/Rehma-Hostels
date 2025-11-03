@@ -160,8 +160,12 @@ function Testimonials() {
                     <Card
                       sx={{
                         px: { xs: 1, md: 3 },
-                        width: "100%",
                         py: 3,
+                        width: "100%",
+                        height: { md: 480, lg: 420 },
+                        display: "flex", // make Card itself a flex container
+                        flexDirection: "column",
+                        justifyContent: "space-between", // ensures top and bottom are spaced
                         transition: "all 0.3s ease",
                         backgroundColor: "rgba(217,212,209,0.25)",
                         backdropFilter: "blur(8px)",
@@ -173,37 +177,39 @@ function Testimonials() {
                         },
                         bgcolor: "#FFFFFF",
                         borderRadius: 1,
-                        cursor: "default",
-                        minHeight: "450px",
-                        maxHeight: "450px",
                       }}
                     >
-                      <Stack direction={"column"} alignItems={"left"}>
-                        <CardMedia>
-                          <Quote size={"30px"} style={{ marginLeft: "5px" }} />
-                        </CardMedia>
-                        <CardContent>
-                          <Typography variant="body1" fontSize={"15px"}>
-                            {items.text}
-                          </Typography>
+                      <CardMedia>
+                        <Quote size={"30px"} style={{ marginLeft: "5px" }} />
+                      </CardMedia>
 
-                          <Rating
-                            value={items.value}
-                            precision={0.5}
-                            sx={{
-                              mt: 2,
-                              "& .MuiRating-iconFilled": {
-                                color: "#7B2E2E",
-                              },
-                              "& .MuiRating-iconEmpty": {
-                                color: "#BAB1AD",
-                              },
-                            }}
-                          />
-                          <Divider sx={{ mt: 2, mb: 2 }} />
+                      <CardContent
+                        sx={{
+                          flexGrow: 1, // fills available vertical space
+                          display: "flex",
+                          flexDirection: "column",
+                        }}
+                      >
+                        <Typography variant="body1" fontSize="15px">
+                          {items.text}
+                        </Typography>
+
+                        <Rating
+                          value={items.value}
+                          precision={0.5}
+                          sx={{
+                            mt: 2,
+                            "& .MuiRating-iconFilled": { color: "#7B2E2E" },
+                            "& .MuiRating-iconEmpty": { color: "#BAB1AD" },
+                          }}
+                        />
+
+                        {/* Bottom section sticks to bottom */}
+                        <Box sx={{ mt: "auto" }}>
+                          <Divider sx={{ mb: 2 }} />
                           <Stack
-                            direction={"row"}
-                            alignItems={"center"}
+                            direction="row"
+                            alignItems="center"
                             spacing={2}
                           >
                             <Avatar
@@ -226,38 +232,26 @@ function Testimonials() {
                                   .split(" ")
                                   .map((n) => n[0])
                                   .join("")}
-                            </Avatar>{" "}
+                            </Avatar>
+
                             <Box>
-                              <Stack
-                                direction={"column"}
-                                alignItems={"flex-start"}
+                              <Typography
+                                fontWeight="bold"
+                                fontSize="14px"
+                                color="#1A1A1A"
                               >
-                                <Typography
-                                  fontWeight={"bold"}
-                                  fontFamily={"Inter"}
-                                  fontSize={"14px"}
-                                  color="#1A1A1A"
-                                >
-                                  {items.name}
-                                </Typography>
-                                <Typography
-                                  fontFamily={"Inter"}
-                                  fontSize={"13px"}
-                                >
-                                  {items.major}
-                                </Typography>
-                                <Typography
-                                  fontFamily={"Inter"}
-                                  fontSize={"13px"}
-                                  color="#7B2E2E"
-                                >
-                                  {items.uni}
-                                </Typography>
-                              </Stack>
+                                {items.name}
+                              </Typography>
+                              <Typography fontSize="13px">
+                                {items.major}
+                              </Typography>
+                              <Typography fontSize="13px" color="#7B2E2E">
+                                {items.uni}
+                              </Typography>
                             </Box>
                           </Stack>
-                        </CardContent>
-                      </Stack>
+                        </Box>
+                      </CardContent>
                     </Card>
                   </motion.div>
                 </Grid>
@@ -265,7 +259,7 @@ function Testimonials() {
             </Grid>
           </Box>
           <Box>
-            <Container maxWidth={"md"} sx={{ py: 4 }}>
+            <Container maxWidth={"sm"} sx={{ py: 4 }}>
               <motion.div variants={cardVariants}>
                 <Paper
                   elevation={16}
@@ -283,6 +277,29 @@ function Testimonials() {
                     justifyContent={"center"}
                     spacing={3}
                   >
+                    <Avatar
+                      sx={{
+                        width: 80,
+                        height: 80,
+                        bgcolor: "#ECE1E1",
+                        border: "2px solid rgba(255,255,255,0.2)",
+                        mx: "auto",
+                        mb: 3,
+                      }}
+                    >
+                      <People
+                        sx={{
+                          fontSize: 48,
+                          color: "#7B2E2E",
+                          animation: "pulse 2s infinite",
+                          "@keyframes pulse": {
+                            "0%": { transform: "scale(1)" },
+                            "50%": { transform: "scale(1.1)" },
+                            "100%": { transform: "scale(1)" },
+                          },
+                        }}
+                      />
+                    </Avatar>
                     <Typography
                       variant="body1"
                       fontSize={"20px"}

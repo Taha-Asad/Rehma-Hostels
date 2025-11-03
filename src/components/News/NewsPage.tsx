@@ -278,15 +278,17 @@ export default function NewsPage() {
       sx={{
         bgcolor: "#FAFAFA",
         minHeight: "100vh",
-        pt: 12,
+        pt: 18,
         width: "100%",
         overflow: "hidden",
       }}
     >
       <Box
         sx={{
-          mt: 20,
-          mb: 12,
+          position: "relative",
+          height: { xs: "75vh", md: "100vh" },
+          mb: { xs: 10, sm: 2 },
+          overflow: "hidden",
         }}
       >
         {/* Background Image with Overlay */}
@@ -338,7 +340,10 @@ export default function NewsPage() {
             backgroundSize: "40px 40px",
           }}
         />
-        <Container maxWidth="lg" sx={{ position: "relative", zIndex: 1 }}>
+        <Container
+          maxWidth="lg"
+          sx={{ position: "relative", zIndex: 1, pt: { xs: 1.5, sm: 5 } }}
+        >
           <Typography
             variant="h1"
             sx={{
@@ -367,7 +372,6 @@ export default function NewsPage() {
           <Typography
             variant="h5"
             sx={{
-              fontSize: { xs: "1.25rem", md: "1.5rem" },
               color: "grey.200",
               mb: 5,
               lineHeight: 1.6,

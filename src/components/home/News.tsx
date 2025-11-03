@@ -17,6 +17,7 @@ import {
   DialogContent,
   IconButton,
   Divider,
+  Avatar,
 } from "@mui/material";
 import React, { useState, useEffect } from "react";
 import { motion, Variants } from "framer-motion";
@@ -982,18 +983,16 @@ const News = () => {
               )}
             </Dialog>
 
-            <Container maxWidth="md" sx={{ mt: 8 }}>
+            <Container maxWidth="sm" sx={{ py: 4 }}>
               <motion.div variants={cardVariants}>
                 <Paper
                   elevation={16}
                   sx={{
-                    background:
-                      "linear-gradient(135deg, #7B2E2E 0%, #5f2424 100%)",
-                    py: 2,
-                    pb: 4,
-                    position: "relative",
-                    overflow: "hidden",
-                    boxShadow: "0 20px 40px rgba(123,46,46,0.3)",
+                    py: 4,
+                    pb: 8,
+                    px: 2,
+                    bgcolor: "#F6F4F4",
+                    boxShadow: "0 20px 40px rgba(123,46,46,0.4)",
                   }}
                 >
                   <Stack
@@ -1002,24 +1001,35 @@ const News = () => {
                     alignItems="center"
                     position="relative"
                   >
-                    <NotificationsActive
+                    <Avatar
                       sx={{
-                        fontSize: 48,
-                        color: "#D4A373",
-                        animation: "pulse 2s infinite",
-                        "@keyframes pulse": {
-                          "0%": { transform: "scale(1)" },
-                          "50%": { transform: "scale(1.1)" },
-                          "100%": { transform: "scale(1)" },
-                        },
+                        width: 80,
+                        height: 80,
+                        bgcolor: "#ECE1E1",
+                        border: "2px solid rgba(255,255,255,0.2)",
+                        mx: "auto",
+                        mb: 3,
                       }}
-                    />
+                    >
+                      <NotificationsActive
+                        sx={{
+                          fontSize: 48,
+                          color: "#7B2E2E",
+                          animation: "pulse 2s infinite",
+                          "@keyframes pulse": {
+                            "0%": { transform: "scale(1)" },
+                            "50%": { transform: "scale(1.1)" },
+                            "100%": { transform: "scale(1)" },
+                          },
+                        }}
+                      />
+                    </Avatar>
 
                     <Typography
                       variant="h4"
                       sx={{
                         fontWeight: 700,
-                        color: "white",
+                        color: "#7B2E2E",
                         fontFamily: "Poppins, sans-serif",
                         textAlign: "center",
                       }}
@@ -1030,7 +1040,7 @@ const News = () => {
                     <Typography
                       variant="body1"
                       sx={{
-                        color: "#D4A373",
+                        color: "#505A63",
                         textAlign: "center",
                         maxWidth: 500,
                       }}
@@ -1042,7 +1052,7 @@ const News = () => {
                     <Typography
                       variant="body2"
                       sx={{
-                        color: "rgba(255,255,255,0.8)",
+                        color: "#098698",
                         textAlign: "center",
                       }}
                     >
@@ -1057,6 +1067,7 @@ const News = () => {
                         display: "flex",
                         gap: 2,
                         justifyContent: "center",
+                        alignItems: "center",
                         width: "100%",
                         maxWidth: 500,
                         px: 2,
@@ -1085,24 +1096,19 @@ const News = () => {
                         type="submit"
                         disabled={subscribing}
                         sx={{
-                          bgcolor: "#D4A373",
-                          color: "white",
-                          borderRadius: 1,
-                          px: 4,
-                          py: 1.2,
+                          bgcolor: "#7B2E2E",
+                          color: "primary.contrastText",
+                          borderRadius: 0.5,
+                          py: "10px",
+                          px: "15px",
+                          width: { sm: 200, md: 200 },
+                          textWrap: "nowrap",
                           fontWeight: 600,
-                          boxShadow: "0 4px 15px rgba(212,163,115,0.3)",
-                          transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+                          boxShadow: "5px 5px 10px rgba(123, 46, 46, 0.2)",
+                          transition: "all 0.3s",
                           "&:hover": {
-                            bgcolor: "#c89660",
-                            transform: "translateY(-2px)",
-                            boxShadow: "0 8px 25px rgba(212,163,115,0.4)",
-                          },
-                          "&:active": {
-                            transform: "translateY(0)",
-                          },
-                          "&:disabled": {
-                            opacity: 0.7,
+                            bgcolor: "primary.contrastText",
+                            color: "#7B2E2E",
                           },
                         }}
                       >

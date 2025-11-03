@@ -253,12 +253,13 @@ function Location() {
                       ),
                     },
                   ].map((item, i) => (
-                    <Grid size={{ xs: 12 }} key={i}>
+                    <Grid size={{ xs: 12, sm: 6, md: 12 }} key={i}>
                       <motion.div variants={fadeInRight}>
                         <Card
                           sx={{
                             px: { xs: 2, md: 3 },
                             width: "100%",
+                            height: { sm: 250, md: 170 },
                             pt: 2,
                             transition: "all 0.3s ease",
                             backgroundColor: "rgba(217,212,209,0.25)",
@@ -277,8 +278,6 @@ function Location() {
                           <Stack
                             direction={{ xs: "column", md: "row" }}
                             spacing={2}
-                            alignItems={{ xs: "center", sm: "left" }}
-                            textAlign={{ xs: "center", sm: "left" }}
                           >
                             <CardMedia
                               sx={{
@@ -297,11 +296,7 @@ function Location() {
                               {item.icon}
                             </CardMedia>
                             <CardContent sx={{ pt: 0 }}>
-                              <Stack
-                                direction="column"
-                                spacing={1}
-                                alignItems={{ xs: "center", md: "left" }}
-                              >
+                              <Stack direction="column" spacing={1}>
                                 <Typography variant="h3" color="#3D444B">
                                   {item.title}
                                 </Typography>

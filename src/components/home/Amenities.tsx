@@ -1,5 +1,6 @@
 "use client";
 import {
+  Avatar,
   Box,
   Button,
   Card,
@@ -20,6 +21,7 @@ import {
   DinnerDining,
   Diversity3,
   Engineering,
+  Explore,
   Weekend,
 } from "@mui/icons-material";
 
@@ -147,8 +149,8 @@ function Amenities() {
                     sx={{
                       px: { xs: 2, md: 3 },
                       width: "100%",
-                      minHeight: "300px",
-                      maxHeight: "300px",
+                      minHeight: { xs: "80%", sm: "300px" },
+                      maxHeight: { xs: "80%", sm: "300px" },
                       py: 3,
                       transition: "all 0.3s ease",
                       backgroundColor: "rgba(217,212,209,0.25)",
@@ -200,7 +202,7 @@ function Amenities() {
                           <Typography
                             variant="h3"
                             fontWeight="bold"
-                            sx={{ py: 1 }}
+                            sx={{ py: { xs: 2, sm: 1 }, mb: { xs: "auto" } }}
                           >
                             {items.title}
                           </Typography>
@@ -217,7 +219,7 @@ function Amenities() {
 
         {/* Quote Section */}
         <Box>
-          <Container maxWidth="md" sx={{ py: 4 }}>
+          <Container maxWidth="sm" sx={{ py: 4 }}>
             <Paper
               elevation={16}
               sx={{
@@ -235,6 +237,29 @@ function Amenities() {
                 textAlign="center"
                 spacing={3}
               >
+                <Avatar
+                  sx={{
+                    width: 80,
+                    height: 80,
+                    bgcolor: "#ECE1E1",
+                    border: "2px solid rgba(255,255,255,0.2)",
+                    mx: "auto",
+                    mb: 3,
+                  }}
+                >
+                  <Explore
+                    sx={{
+                      fontSize: 48,
+                      color: "#7B2E2E",
+                      animation: "pulse 2s infinite",
+                      "@keyframes pulse": {
+                        "0%": { transform: "scale(1)" },
+                        "50%": { transform: "scale(1.1)" },
+                        "100%": { transform: "scale(1)" },
+                      },
+                    }}
+                  />
+                </Avatar>
                 <Typography variant="h3" fontFamily="Poppins">
                   &quot;At REHMA, we believe in providing more than just
                   accommodation — we offer a{" "}

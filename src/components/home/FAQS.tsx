@@ -330,7 +330,7 @@ function FAQs() {
           whileInView="visible"
           viewport={{ once: true, amount: 0.2 }}
         >
-          <Container maxWidth="md" sx={{ py: 4 }}>
+          <Container maxWidth="sm" sx={{ py: 4 }}>
             <Paper
               elevation={16}
               sx={{
@@ -359,13 +359,24 @@ function FAQs() {
                     mb: 3,
                   }}
                 >
-                  <QuestionAnswer sx={{ fontSize: 40, color: "white" }} />
+                  <QuestionAnswer
+                    sx={{
+                      fontSize: 48,
+                      color: "#D4A373",
+                      animation: "pulse 2s infinite",
+                      "@keyframes pulse": {
+                        "0%": { transform: "scale(1)" },
+                        "50%": { transform: "scale(1.1)" },
+                        "100%": { transform: "scale(1)" },
+                      },
+                    }}
+                  />
                 </Avatar>
 
                 <Typography
                   variant="h2"
                   sx={{
-                    color: "white",
+                    color: "#D4A373",
                     fontWeight: 700,
                     fontFamily: "Poppins, sans-serif",
                     mb: 2,

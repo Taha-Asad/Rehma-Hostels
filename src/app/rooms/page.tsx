@@ -26,7 +26,6 @@ import {
   Drawer,
   Badge,
   Pagination,
-  Fade,
   Dialog,
   DialogContent,
   Autocomplete,
@@ -68,8 +67,6 @@ import {
   X,
   Zap,
 } from "lucide-react";
-import { scrollToSection } from "@/utils/scrollToSection";
-// import { motion } from "framer-motion";
 
 interface RoomDetailsModalProps {
   open: boolean;
@@ -346,7 +343,7 @@ const RoomDetailsModal: React.FC<RoomDetailsModalProps> = ({
                   <Grid
                     size={{ xs: 12, sm: 4 }}
                     sx={{
-                      justifyContent: { xs: "center" },
+                      placeItems: "center",
                     }}
                     key={index}
                   >
@@ -404,108 +401,112 @@ const RoomDetailsModal: React.FC<RoomDetailsModalProps> = ({
               </Grid>
             </Box>
             {/* Pricing */}
-            <Paper
-              sx={{
-                p: 3,
-                bgcolor: "#7B2E2E",
-                background: "linear-gradient(135deg, #7B2E2E 0%, #5F2424 100%)",
-                boxShadow: "0 20px 40px rgba(123,46,46,0.4)",
-                color: "white",
-              }}
-            >
-              <Box
+            <Container maxWidth={"sm"}>
+              <Paper
                 sx={{
-                  display: "flex",
-                  flexDirection: { xs: "column", md: "row" },
-                  justifyContent: "space-between",
-                  alignItems: "center",
-                  textAlign: { xs: "center", md: "left" },
-                  mb: 2,
+                  p: 3,
+                  bgcolor: "#7B2E2E",
+                  background:
+                    "linear-gradient(135deg, #7B2E2E 0%, #5F2424 100%)",
+                  boxShadow: "0 20px 40px rgba(123,46,46,0.4)",
+                  color: "white",
                 }}
               >
-                <Box>
-                  <Typography variant="body2" sx={{ opacity: 0.9 }}>
-                    Monthly Rent
-                  </Typography>
-                  <Typography
-                    variant="h4"
-                    sx={{ fontWeight: 700, color: "#D4A373" }}
-                  >
-                    PKR {room.price}
-                  </Typography>
-                  <Typography variant="body2" sx={{ opacity: 0.8 }}>
-                    {room.duration}
-                  </Typography>
+                <Box
+                  sx={{
+                    display: "flex",
+                    flexDirection: { xs: "column", sm: "row" },
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                    textAlign: { xs: "center", sm: "left" },
+                    mb: 2,
+                  }}
+                >
+                  <Box>
+                    <Typography variant="body2" sx={{ opacity: 0.9 }}>
+                      Monthly Rent
+                    </Typography>
+                    <Typography
+                      variant="h4"
+                      sx={{ fontWeight: 700, color: "#D4A373" }}
+                    >
+                      {room.price}
+                    </Typography>
+                    <Typography variant="body2" sx={{ opacity: 0.8 }}>
+                      {room.duration}
+                    </Typography>
+                  </Box>
+                  <Chip
+                    label={room.availability}
+                    sx={{
+                      bgcolor: "rgba(255,255,255,0.2)",
+                      color: "white",
+                      border: "1px solid rgba(255,255,255,0.3)",
+                      my: 2,
+                    }}
+                  />
                 </Box>
-                <Chip
-                  label={room.availability}
-                  sx={{
-                    bgcolor: "rgba(255,255,255,0.2)",
-                    color: "white",
-                    border: "1px solid rgba(255,255,255,0.3)",
-                    my: 2,
-                  }}
-                />
-              </Box>
 
-              <Stack direction={{ xs: "column", md: "row" }} spacing={2}>
-                <Button
-                  onClick={() => {
-                    onClose();
-                    setTimeout(() => {
-                      scrollToSection("contact");
-                    }, 400);
-                  }}
-                  variant="contained"
-                  size="large"
-                  sx={{
-                    bgcolor: "#D4A373",
-                    color: "#FDF9F6",
-                    borderRadius: 0.5,
-                    width: { xs: 150, md: 220 },
-                    py: "10px",
-                    px: "15px",
-                    fontWeight: 600,
-                    border: "1px solid #7B2E2E",
-                    boxShadow: "5px 5px 10px rgba(123, 46, 46, 0.25)",
-                    transition: "all 0.3s",
-                    "&:hover": {
+                <Stack
+                  direction={{ xs: "column", sm: "row" }}
+                  spacing={2}
+                  justifyContent={"center"}
+                  alignItems={"center"}
+                >
+                  <Button
+                    component={Link}
+                    href="/#contact"
+                    variant="contained"
+                    size="large"
+                    sx={{
+                      bgcolor: "#D4A373",
+                      color: "#FDF9F6",
+                      borderRadius: 0.5,
+                      width: { xs: 150, sm: 250 },
+                      py: "10px",
+                      px: "15px",
+                      fontWeight: 600,
+                      border: "1px solid #7B2E2E",
+                      boxShadow: "5px 5px 10px rgba(123, 46, 46, 0.25)",
+                      transition: "all 0.3s",
+                      "&:hover": {
+                        bgcolor: "primary.contrastText",
+                        color: "#7B2E2E",
+                        boxShadow: "0 4px 15px rgba(212, 163, 115, 0.4)",
+                      },
+                    }}
+                  >
+                    Book Now
+                  </Button>
+                  <Button
+                    variant="contained"
+                    size="large"
+                    href="https://wa.me/923259881310"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    sx={{
                       bgcolor: "primary.contrastText",
                       color: "#7B2E2E",
-                      boxShadow: "0 4px 15px rgba(212, 163, 115, 0.4)",
-                    },
-                  }}
-                >
-                  Book Now
-                </Button>
-                <Button
-                  variant="contained"
-                  size="large"
-                  href="https://wa.me/923259881310"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  sx={{
-                    bgcolor: "primary.contrastText",
-                    color: "#7B2E2E",
-                    borderRadius: 0.5,
-                    width: { xs: 150, md: 220 },
-                    py: "10px",
-                    px: "15px",
-                    fontWeight: 600,
-                    border: "1px solid #7B2E2E",
-                    boxShadow: "5px 5px 10px rgba(123, 46, 46, 0.2)",
-                    transition: "all 0.3s",
-                    "&:hover": {
-                      color: "#D9D4D1",
-                      bgcolor: "#D4A373",
-                      boxShadow: "0 4px 15px rgba(212, 163, 115, 0.4)",
-                    },
-                  }}
-                >
-                  Contact
-                </Button>
-              </Stack>
-            </Paper>
+                      borderRadius: 0.5,
+                      width: { xs: 150, sm: 250 },
+                      py: "10px",
+                      px: "15px",
+                      fontWeight: 600,
+                      border: "1px solid #7B2E2E",
+                      boxShadow: "5px 5px 10px rgba(123, 46, 46, 0.2)",
+                      transition: "all 0.3s",
+                      "&:hover": {
+                        color: "#D9D4D1",
+                        bgcolor: "#D4A373",
+                        boxShadow: "0 4px 15px rgba(212, 163, 115, 0.4)",
+                      },
+                    }}
+                  >
+                    Contact
+                  </Button>
+                </Stack>
+              </Paper>
+            </Container>
           </DialogContent>
         </Box>
       </Box>
@@ -1159,68 +1160,115 @@ export default function RoomsPage() {
   );
 
   return (
-    <Box sx={{ bgcolor: "#FAFAFA", minHeight: "100vh", pt: 12 }}>
+    <Box
+      sx={{
+        bgcolor: "#FAFAFA",
+        minHeight: "100vh",
+        pt: 18,
+        width: "100%",
+        overflow: "hidden",
+      }}
+    >
       <Box
         sx={{
-          background: "linear-gradient(135deg, #7B2E2E 0%, #5f2424 100%)",
-          py: { xs: 8, md: 12 },
-          color: "white",
           position: "relative",
+          height: { xs: "100vh", md: "100vh" },
+          mb: { xs: 10, sm: 2 },
           overflow: "hidden",
         }}
       >
+        {/* Background Image with Overlay */}
         <Box
           sx={{
             position: "absolute",
-            top: -100,
-            right: -100,
-            width: 300,
-            height: 300,
-            borderRadius: "50%",
-            background: "rgba(212, 163, 115, 0.2)",
+            inset: 0,
+            zIndex: 0,
           }}
-        />
+        >
+          <Box
+            component="img"
+            src="https://images.unsplash.com/photo-1589872880544-76e896b0592c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxzdHVkZW50JTIwaG9zdGVsJTIwc3R1ZHklMjBsb3VuZ2V8ZW58MXx8fHwxNzYwNDQ3NjkyfDA&ixlib=rb-4.1.0&q=80&w=1080"
+            alt="REHMA Hostel"
+            sx={{
+              width: "100%",
+              height: "100%",
+              objectFit: "cover",
+            }}
+          />
+          {/* Sophisticated overlay */}
+          <Box
+            sx={{
+              position: "absolute",
+              inset: 0,
+              background:
+                "linear-gradient(to right, rgba(61,68,75,0.95), rgba(61,68,75,0.85), rgba(61,68,75,0.75))",
+            }}
+          />
+          <Box
+            sx={{
+              position: "absolute",
+              inset: 0,
+              background:
+                "linear-gradient(to bottom, transparent, transparent, rgba(123,46,46,0.3))",
+            }}
+          />
+        </Box>
+
+        {/* Subtle pattern overlay */}
         <Box
           sx={{
             position: "absolute",
-            bottom: -50,
-            left: -50,
-            width: 200,
-            height: 200,
-            borderRadius: "50%",
-            background: "rgba(255,255,255,0.1)",
+            inset: 0,
+            zIndex: 0,
+            opacity: 0.05,
+            backgroundImage:
+              "radial-gradient(circle at 1px 1px, white 1px, transparent 0)",
+            backgroundSize: "40px 40px",
           }}
         />
-        <Container maxWidth="lg" sx={{ position: "relative", zIndex: 1 }}>
-          <Fade in timeout={800}>
-            <Typography
-              variant="h1"
+        <Container
+          maxWidth="lg"
+          sx={{ position: "relative", zIndex: 1, pt: { xs: 1.5, sm: 5 } }}
+        >
+          <Typography
+            variant="h1"
+            sx={{
+              fontSize: { xs: "2rem", md: "3rem", lg: "3.5rem" },
+              fontWeight: 700,
+              color: "white",
+              mb: 3,
+              lineHeight: 1.1,
+              fontFamily: "Poppins, sans-serif",
+            }}
+          >
+            Apartments for Rent in Lahore
+            <Box
+              component="span"
               sx={{
-                fontWeight: 800,
-                fontFamily: "Poppins, sans-serif",
-                mb: 2,
-                textAlign: "center",
-                textShadow: "0 2px 10px rgba(0,0,0,0.2)",
+                display: "block",
+                color: "#D9D4D1",
+                mt: 1,
               }}
             >
-              Our Rooms
-            </Typography>
-          </Fade>
-          <Fade in timeout={1000}>
-            <Typography
-              variant="h6"
-              sx={{
-                textAlign: "center",
-                opacity: 0.95,
-                maxWidth: 600,
-                mx: "auto",
-                lineHeight: 1.6,
-              }}
-            >
-              Find your perfect accommodation from our range of comfortable and
-              affordable rooms
-            </Typography>
-          </Fade>
+              Explore Listings, Prices & Locations
+            </Box>
+          </Typography>
+
+          {/* Subtext */}
+          <Typography
+            variant="h5"
+            sx={{
+              color: "grey.200",
+              mb: 5,
+              lineHeight: 1.6,
+              maxWidth: { lg: "42rem" },
+              mx: { xs: "auto", lg: 0 },
+            }}
+          >
+            Discover expert insights, local guides, and the latest updates on
+            Lahore rentals — everything you need to find your next home with
+            confidence.
+          </Typography>
         </Container>
       </Box>
 
@@ -1306,7 +1354,7 @@ export default function RoomsPage() {
             </Grid>
             <Grid
               size={{ xs: 12, md: 2 }}
-              sx={{ display: { xs: "block", md: "none" } }}
+              sx={{ display: { xs: "grid", md: "none" }, placeItems: "center" }}
             >
               <Badge
                 badgeContent={activeFiltersCount}
@@ -1330,7 +1378,7 @@ export default function RoomsPage() {
                     borderRadius: 0.5,
                     py: "10px",
                     px: "15px",
-                    width: 270,
+                    width: { xs: 210, sm: 270 },
                     fontWeight: 600,
                     boxShadow: "5px 5px 10px rgba(123, 46, 46, 0.2)",
                     transition: "all 0.3s",
