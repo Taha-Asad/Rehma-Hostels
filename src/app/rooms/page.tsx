@@ -40,14 +40,13 @@ import {
   FilterAlt,
   TrendingUp,
   LocationOn,
-  AcUnit,
   CheckCircle,
   TrendingDown,
   Grade,
   HotTub,
   Elevator,
-  Article,
 } from "@mui/icons-material";
+import { serviceOptions, serviceIcons } from "../../utils/ServiceOptions";
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import {
@@ -736,39 +735,6 @@ const allRooms: Room[] = [
   },
 ];
 
-export const serviceOptions = [
-  "Wifi",
-  "UPS",
-  "Parking",
-  "Mess (Paid)",
-  "AC",
-  "LED",
-  "Cable",
-  "Hot Water (Geyser)",
-  "Cubed storage",
-  "Bed",
-  "Elevator",
-  "Fridge",
-  "Electricity Included",
-  "Mattress",
-];
-
-const serviceIcons: { [key: string]: React.ReactElement } = {
-  Wifi: <Router />,
-  UPS: <PlugZap />,
-  AC: <AcUnit />,
-  Parking: <CircleParking />,
-  "Mess (Paid)": <Utensils />,
-  "Cubed storage": <DoorClosedLocked />,
-  "Hot Water (Geyser)": <HotTub />,
-  LED: <MonitorPlay />,
-  Cable: <Cable />,
-  Elevator: <Elevator />,
-  Bed: <BedSingle />,
-  Mattress: <Bed />,
-  Fridge: <Refrigerator />,
-  "Electricity Included": <Article />,
-};
 const options = [
   {
     value: "featured",
