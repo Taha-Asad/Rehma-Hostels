@@ -37,7 +37,8 @@ import {
 import Link from "next/link";
 import toast from "react-hot-toast";
 import emailjs from "@emailjs/browser";
-
+import DOMPurify from "dompurify";
+import Image from "next/image";
 interface NewsChip {
   icon: React.ReactElement;
   label: string;
@@ -233,8 +234,7 @@ const News = () => {
         throw new Error("EmailJS returned non-200 status.");
       }
     } catch (error) {
-      console.error("EmailJS error:", error);
-      toast.error("Subscription failed. Please try again later.");
+      toast.error(`Subscription failed. Please try again later.${error}`);
     } finally {
       setSubscribing(false);
     }
@@ -253,7 +253,7 @@ const News = () => {
         setLoading(false);
       }, 1000);
     } catch (error) {
-      console.error("Error fetching news:", error);
+      toast.error(`Error fetching news:, ${error}`);
       setLoading(false);
     }
   };
@@ -283,7 +283,6 @@ const News = () => {
   };
 
   const handleCloseModal = () => {
-    console.log("Close modal called"); // Debug line
     setModalOpen(false);
     setSelectedArticle(null);
   };
@@ -329,7 +328,7 @@ const News = () => {
           url: window.location.href,
         });
       } catch (error) {
-        console.error("Error sharing:", error);
+        toast.error(`Error fetching news:, ${error}`);
       }
     }
   };
@@ -448,15 +447,26 @@ const News = () => {
                           >
                             <Box sx={{ position: "relative" }}>
                               <CardMedia
-                                component="img"
-                                src={item.image}
-                                alt={item.title}
+                                component="div"
                                 sx={{
                                   width: "100%",
                                   height: 250,
                                   objectFit: "cover",
+                                  overflow: "hidden",
                                 }}
-                              />
+                              >
+                                <Image
+                                  src={item.image}
+                                  alt={item.title}
+                                  fill
+                                  style={{
+                                    objectFit: "cover",
+                                    width: "100%",
+                                    height: "100%",
+                                  }}
+                                  loading="lazy"
+                                />
+                              </CardMedia>
 
                               {/* Chips on image */}
                               {item.chips.map((chip, i) => (
@@ -668,13 +678,12 @@ const News = () => {
                         overflow: "hidden",
                       }}
                     >
-                      <Box
-                        component="img"
+                      <Image
+                        loading="lazy"
                         src={selectedArticle.image}
                         alt={selectedArticle.title}
-                        sx={{
-                          width: "100%",
-                          height: "100%",
+                        fill
+                        style={{
                           objectFit: "cover",
                         }}
                       />
@@ -881,7 +890,9 @@ const News = () => {
                         {/* Article Content */}
                         <Box
                           dangerouslySetInnerHTML={{
-                            __html: selectedArticle.fullContent,
+                            __html: selectedArticle?.fullContent
+                              ? DOMPurify.sanitize(selectedArticle.fullContent)
+                              : "",
                           }}
                           sx={{
                             "& h3": {

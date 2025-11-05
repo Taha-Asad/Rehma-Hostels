@@ -1,21 +1,15 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 import React from "react";
-import { Card, CardContent, Button, Typography, Box } from "@mui/material";
-import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
+import {
+  Card,
+  CardContent,
+  Button,
+  Typography,
+  Box,
+  CardMedia,
+} from "@mui/material";
 import { MapPin, Navigation } from "lucide-react";
-import L from "leaflet";
-import "leaflet/dist/leaflet.css";
-
-delete (L.Icon.Default as any).prototype._getIconUrl;
-L.Icon.Default.mergeOptions({
-  iconRetinaUrl:
-    "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png",
-  iconUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png",
-  shadowUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png",
-});
-
-const position: [number, number] = [31.5611293, 74.3371308];
+import Image from "next/image";
 
 export default function MapCard() {
   return (
@@ -40,81 +34,83 @@ export default function MapCard() {
         overflow: "hidden",
       }}
     >
-      <CardContent sx={{ p: 0 }}>
-        {/* Map Container */}
-        <Box sx={{ position: "relative", height: 500 }}>
-          <MapContainer
-            center={position}
-            zoom={15}
-            scrollWheelZoom={false}
-            style={{ height: "100%", width: "100%", borderRadius: "4px" }}
-          >
-            <TileLayer
-              url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-              attribution='&copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors'
-            />
-            <Marker position={position}>
-              <Popup>
-                Relax Inn Hotel <br />
-                Near MM Alam Road, Lahore
-              </Popup>
-            </Marker>
-          </MapContainer>
-
-          {/* Decorative gradient overlay */}
-          <Box
-            sx={{
-              position: "absolute",
-              inset: 0,
-              background:
-                "linear-gradient(to bottom right, rgba(217,212,209,0.25), transparent, rgba(217,212,209,0.25))",
-              pointerEvents: "none",
+      <Box sx={{ position: "relative", height: 500 }}>
+        <CardMedia
+          component={"div"}
+          sx={{
+            position: "relative",
+            width: "100%",
+            height: "100%",
+            objectFit: "cover",
+            overflow: "hidden",
+          }}
+        >
+          <Image
+            src={"/Images/map-placeholder.png"}
+            alt="map"
+            fill
+            style={{
+              objectFit: "cover",
             }}
+            loading="lazy"
           />
+        </CardMedia>
+        {/* Decorative gradient overlay */}
+        <Box
+          sx={{
+            position: "absolute",
+            inset: 0,
+            background:
+              "linear-gradient(to bottom right, rgba(217,212,209,0.25), transparent, rgba(217,212,209,0.25))",
+            pointerEvents: "none",
+          }}
+        />
 
-          {/* Address label */}
+        {/* Address label */}
+        <Box
+          sx={{
+            position: "absolute",
+            bottom: 0,
+            left: 0,
+            right: 0,
+            background:
+              "linear-gradient(to top, rgba(123,46,46,0.95), transparent)",
+            p: 3,
+            display: "flex",
+            alignItems: "center",
+            gap: 2,
+          }}
+        >
           <Box
             sx={{
-              position: "absolute",
-              bottom: 0,
-              left: 0,
-              right: 0,
-              background:
-                "linear-gradient(to top, rgba(123,46,46,0.95), transparent)",
-              p: 3,
+              bgcolor: "white",
+              borderRadius: "50%",
+              p: 1,
               display: "flex",
               alignItems: "center",
-              gap: 2,
+              justifyContent: "center",
             }}
           >
-            <Box
-              sx={{
-                bgcolor: "white",
-                borderRadius: "50%",
-                p: 1,
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-              }}
+            <MapPin size={20} color="#7B2E2E" />
+          </Box>
+          <Box>
+            <Typography
+              variant="subtitle1"
+              sx={{ color: "white", fontWeight: "bold" }}
             >
-              <MapPin size={20} color="#7B2E2E" />
-            </Box>
-            <Box>
-              <Typography
-                variant="subtitle1"
-                sx={{ color: "white", fontWeight: "bold" }}
-              >
-                Relax Inn Hotel
-              </Typography>
-              <Typography
-                variant="body2"
-                sx={{ color: "rgba(255,255,255,0.85)" }}
-              >
-                Near MM Alam Road, Lahore
-              </Typography>
-            </Box>
+              Relax Inn Hotel
+            </Typography>
+            <Typography
+              variant="body2"
+              sx={{ color: "rgba(255,255,255,0.85)" }}
+            >
+              Near MM Alam Road, Lahore
+            </Typography>
           </Box>
         </Box>
+      </Box>
+      <CardContent sx={{ p: 0 }}>
+        {/* Map Container */}
 
         {/* Directions Button */}
         <Box

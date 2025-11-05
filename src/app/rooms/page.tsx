@@ -67,6 +67,7 @@ import {
   X,
   Zap,
 } from "lucide-react";
+import Image from "next/image";
 
 interface RoomDetailsModalProps {
   open: boolean;
@@ -111,13 +112,11 @@ const RoomDetailsModal: React.FC<RoomDetailsModalProps> = ({
             overflow: "hidden",
           }}
         >
-          <Box
-            component="img"
+          <Image
             src={room.image}
             alt={room.title}
-            sx={{
-              width: "100%",
-              height: "100%",
+            fill={true}
+            style={{
               objectFit: "cover",
             }}
           />
@@ -1185,13 +1184,12 @@ export default function RoomsPage() {
             zIndex: 0,
           }}
         >
-          <Box
-            component="img"
+          <Image
+            loading="lazy"
             src="https://images.unsplash.com/photo-1589872880544-76e896b0592c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxzdHVkZW50JTIwaG9zdGVsJTIwc3R1ZHklMjBsb3VuZ2V8ZW58MXx8fHwxNzYwNDQ3NjkyfDA&ixlib=rb-4.1.0&q=80&w=1080"
             alt="REHMA Hostel"
-            sx={{
-              width: "100%",
-              height: "100%",
+            fill
+            style={{
               objectFit: "cover",
             }}
           />
@@ -1543,18 +1541,15 @@ export default function RoomsPage() {
                         }}
                       >
                         <CardMedia
-                          component="img"
-                          image={room.image}
-                          alt={room.title}
+                          component="div"
                           sx={{
                             display: "block",
                             width: "100%",
                             height: {
-                              xs: 220, // taller on mobile so it doesn't feel cramped
+                              xs: 220,
                               sm: 240,
                               md: viewMode === "grid" ? 250 : 220,
                             },
-                            objectFit: "cover",
                             borderBottom: {
                               xs: "1px solid rgba(0,0,0,0.08)",
                               sm: "none",
@@ -1566,12 +1561,24 @@ export default function RoomsPage() {
                                   ? "none"
                                   : "1px solid rgba(0,0,0,0.08)",
                             },
+                            overflow: "hidden", // needed for hover scale
                             transition: "transform 0.3s ease",
-                            "&:hover": {
+                            "&:hover img": {
                               transform: "scale(1.05)",
                             },
                           }}
-                        />
+                        >
+                          <Image
+                            src={room.image}
+                            alt={room.title}
+                            fill // fills the CardMedia
+                            style={{
+                              objectFit: "cover",
+                              transition: "transform 0.3s ease",
+                            }}
+                            loading="lazy"
+                          />
+                        </CardMedia>
                         <Box
                           sx={{
                             position: "absolute",

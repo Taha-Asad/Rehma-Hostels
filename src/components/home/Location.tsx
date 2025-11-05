@@ -21,15 +21,16 @@ import {
 import DialpadIcon from "@mui/icons-material/Dialpad";
 import Link from "next/link";
 import React from "react";
-import MapCard from "../ui/MapCard";
 import { motion, Variants } from "framer-motion";
-
+import dynamic from "next/dynamic";
 const containerVariants: Variants = {
   hidden: {},
   visible: {
     transition: { staggerChildren: 0.2, delayChildren: 0.1 },
   },
 };
+
+const MapCard = dynamic(() => import("../ui/MapCard"), { ssr: false });
 
 const fadeInLeft: Variants = {
   hidden: { opacity: 0, x: -200 },

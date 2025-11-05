@@ -57,6 +57,7 @@ import { Autoplay } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/effect-coverflow";
 import "swiper/css/navigation";
+import Image from "next/image";
 
 interface RoomChip {
   icon: React.ReactElement;
@@ -399,13 +400,11 @@ const RoomDetailsModal: React.FC<RoomDetailsModalProps> = ({
             overflow: "hidden",
           }}
         >
-          <Box
-            component="img"
+          <Image
             src={room.image}
             alt={room.title}
-            sx={{
-              width: "100%",
-              height: "100%",
+            fill={true}
+            style={{
               objectFit: "cover",
             }}
           />
@@ -928,9 +927,7 @@ function Rooms() {
                       }}
                     >
                       <CardMedia
-                        component="img"
-                        src={items.image}
-                        alt={`Room ${index + 1}`}
+                        component="div" // switch from 'img' to 'div' to nest <Image>
                         sx={{
                           width: "100%",
                           maxHeight: "260px",
@@ -939,8 +936,22 @@ function Rooms() {
                           borderTopLeftRadius: "4px",
                           borderTopRightRadius: "4px",
                           display: "block",
+                          overflow: "hidden",
+                          position: "relative",
                         }}
-                      />
+                      >
+                        <Image
+                          src={items.image}
+                          alt={`Room ${index + 1}`}
+                          fill // fills the CardMedia container
+                          style={{
+                            objectFit: "cover",
+                            width: "100%",
+                            height: "100%",
+                          }}
+                          loading="lazy"
+                        />
+                      </CardMedia>
 
                       {items.chips.map((chip, i) => (
                         <Chip

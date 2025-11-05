@@ -159,7 +159,7 @@ function Contact() {
         throw new Error("EmailJS returned non-200 status.");
       }
     } catch (error) {
-      console.error("EmailJS error:", error);
+      toast.error(`Error EmailJs ${error}`);
       toast.error("Failed to send message. Please try again later.");
     } finally {
       setIsSubmitting(false);

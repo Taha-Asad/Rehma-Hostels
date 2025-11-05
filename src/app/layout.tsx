@@ -1,20 +1,21 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Poppins, Inter } from "next/font/google";
 import "./globals.css";
 import { AppRouterCacheProvider } from "@mui/material-nextjs/v13-appRouter";
-import Navbar from "@/components/Navbar";
-import "leaflet/dist/leaflet.css";
+import Navbar from "@/components/Navbar/Navbar";
 import ClientThemeProvider from "@/components/ClientThemeProvider";
 import { Toaster } from "react-hot-toast";
 import Footer from "@/components/Footer";
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const poppins = Poppins({
   subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
+  display: "swap",
 });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
+const inter = Inter({
   subsets: ["latin"],
+  weight: ["400", "500", "600"],
+  display: "swap",
 });
 
 export const metadata: Metadata = {
@@ -29,11 +30,12 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" style={{ overflow: "overlay" }}>
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-        suppressHydrationWarning
-      >
+    <html
+      lang="en"
+      style={{ overflow: "overlay" }}
+      className={`${poppins.className} ${inter.className}`}
+    >
+      <body suppressHydrationWarning>
         <AppRouterCacheProvider>
           <ClientThemeProvider>
             <Navbar />

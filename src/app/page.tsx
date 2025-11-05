@@ -1,4 +1,3 @@
-// app/page.tsx — SERVER component
 import type { Metadata } from "next";
 import HomeContent from "./HomeContent";
 

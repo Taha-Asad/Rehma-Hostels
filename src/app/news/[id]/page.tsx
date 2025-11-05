@@ -24,7 +24,6 @@ import {
 } from "@mui/icons-material";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-
 interface NewsArticle {
   id: number;
   image: string;
@@ -36,7 +35,11 @@ interface NewsArticle {
   readTime: string;
   category: string;
 }
+import { JSDOM } from "jsdom";
+import createDOMPurify from "dompurify";
 
+const window = new JSDOM("").window; // create a virtual window
+const DOMPurify = createDOMPurify(window);
 // Mock function - replace with actual API call
 async function getArticle(id: string): Promise<NewsArticle | null> {
   const articles: NewsArticle[] = [
@@ -235,6 +238,7 @@ export default async function BlogPost({ params }: PageProps) {
   if (!article) {
     notFound();
   }
+  const clean = DOMPurify.sanitize(article.fullContent);
 
   return (
     <Box sx={{ bgcolor: "#FAFAFA", minHeight: "100vh", pt: 10 }}>
@@ -254,7 +258,7 @@ export default async function BlogPost({ params }: PageProps) {
           component={Link}
           href="/news"
           sx={{
-            display: { xs: "none", sm: "block" },
+            display: { xs: "none", sm: "grid" },
             position: "absolute",
             top: 100,
             left: { xs: 20, md: 40 },
@@ -265,6 +269,7 @@ export default async function BlogPost({ params }: PageProps) {
               transform: "scale(1.1)",
             },
           }}
+          aria-label="arrow-back"
         >
           <ArrowBack />
         </IconButton>
@@ -370,7 +375,7 @@ export default async function BlogPost({ params }: PageProps) {
 
               {/* Article Content */}
               <Box
-                dangerouslySetInnerHTML={{ __html: article.fullContent }}
+                dangerouslySetInnerHTML={{ __html: clean }}
                 sx={{
                   "& h3": {
                     fontFamily: "Poppins, sans-serif",
@@ -437,6 +442,7 @@ export default async function BlogPost({ params }: PageProps) {
                       color: "white",
                       "&:hover": { bgcolor: "#5f2424" },
                     }}
+                    aria-label="Facebook Link"
                   >
                     <Facebook />
                   </IconButton>

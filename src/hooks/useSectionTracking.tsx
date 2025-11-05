@@ -10,7 +10,6 @@ export default function useSectionTracking() {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
             history.replaceState(null, "", `#${entry.target.id}`);
-            console.log("tracking", entry.target.id);
           }
         });
       },
@@ -18,7 +17,6 @@ export default function useSectionTracking() {
     );
 
     sections.forEach((section) => {
-      console.log("observing", section.id);
       observer.observe(section);
     });
     sections.forEach((sec) => observer.observe(sec));

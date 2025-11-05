@@ -1,31 +1,27 @@
 "use client";
 
 import React, { useState } from "react";
-import {
-  Box,
-  Container,
-  Grid,
-  Typography,
-  TextField,
-  Button,
-  IconButton,
-  Link as RouterLink,
-  Stack,
-  SpeedDial,
-  SpeedDialAction,
-} from "@mui/material";
-import {
-  Facebook,
-  Instagram,
-  Twitter,
-  LinkedIn,
-  YouTube,
-  Email as EmailIcon,
-  Phone as PhoneIcon,
-  LocationOn as LocationIcon,
-  WhatsApp as WhatsAppIcon,
-  FiberManualRecord as DotIcon,
-} from "@mui/icons-material";
+import Box from "@mui/material/Box";
+import Container from "@mui/material/Container";
+import Grid from "@mui/material/Grid";
+import Typography from "@mui/material/Typography";
+import TextField from "@mui/material/TextField";
+import Button from "@mui/material/Button";
+import IconButton from "@mui/material/IconButton";
+import Stack from "@mui/material/Stack";
+import SpeedDialAction from "@mui/material/SpeedDialAction";
+import SpeedDial from "@mui/material/SpeedDial";
+import { Link as RouterLink } from "@mui/material";
+import Facebook from "@mui/icons-material/Facebook";
+import Instagram from "@mui/icons-material/Instagram";
+import Twitter from "@mui/icons-material/Twitter";
+import YouTube from "@mui/icons-material/YouTube";
+import Email from "@mui/icons-material/Email";
+import Phone from "@mui/icons-material/Phone";
+import LocationOn from "@mui/icons-material/LocationOn";
+import WhatsApp from "@mui/icons-material/WhatsApp";
+import FiberManualRecord from "@mui/icons-material/FiberManualRecord";
+
 import Image from "next/image";
 import Link from "next/link";
 import logoImage from "../../public/Images/Logo.jpg";
@@ -45,35 +41,37 @@ function Footer() {
   ];
 
   const socialLinks = [
-    { icon: <Facebook />, href: "#", label: "Facebook" },
-    { icon: <Instagram />, href: "#", label: "Instagram" },
+    {
+      icon: <Facebook />,
+      href: "https://facebook.com/profile.php?id=61582018123399",
+      label: "Facebook",
+    },
+    {
+      icon: <Instagram />,
+      href: "https://instagram.com/rehmaprofessionalhostels?utm_source=ig_web_button_share_sheet&igsh=ZDNIZDcOMzIxNw",
+      label: "Instagram",
+    },
     { icon: <Twitter />, href: "#", label: "Twitter" },
     { icon: <YouTube />, href: "#", label: "YouTube" },
-    { icon: <LinkedIn />, href: "#", label: "LinkedIn" },
   ];
   const actions = [
     {
       icon: <Facebook />,
       name: "Facebook",
-      link: "https://facebook.com",
+      link: "https://facebook.com/profile.php?id=61582018123399",
     },
     {
       icon: <Instagram />,
       name: "Instagram",
-      link: "https://instagram.com",
+      link: "https://instagram.com/rehmaprofessionalhostels?utm_source=ig_web_button_share_sheet&igsh=ZDNIZDcOMzIxNw",
     },
     {
-      icon: <LinkedIn />,
-      name: "LinkedIn",
-      link: "https://linkedin.com",
-    },
-    {
-      icon: <EmailIcon />,
+      icon: <Email />,
       name: "Email",
-      link: "mailto:example@example.com",
+      link: "mailto:info@rehmahostels.com",
     },
     {
-      icon: <WhatsAppIcon />,
+      icon: <WhatsApp />,
       name: "WhatsApp",
       link: "https://wa.me/923001234567",
     },
@@ -86,9 +84,15 @@ function Footer() {
 
     setSubscribing(true);
 
-    const serviceID = "service_x6ueh7n";
-    const templateID = "template_5wdb3l7";
-    const publicKey = "NFRagpznVWX4p1nBF";
+    const serviceID = process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID_1;
+    if (!serviceID)
+      throw new Error("Server Side Error: Missing Form Credentials");
+    const templateID = process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID_1;
+    if (!templateID)
+      throw new Error("Server Side Error: Missing Form Credentials");
+    const publicKey = process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY_1;
+    if (!publicKey)
+      throw new Error("Server Side Error: Missing Form Credentials");
 
     try {
       // Extract name from email
@@ -123,7 +127,7 @@ function Footer() {
         throw new Error("EmailJS returned non-200 status.");
       }
     } catch (error) {
-      console.error("EmailJS error:", error);
+      toast.error(`EmailJS error:, ${error}`);
       toast.error("Subscription failed. Please try again later.");
     } finally {
       setSubscribing(false);
@@ -159,6 +163,8 @@ function Footer() {
             <Box sx={{ mb: 3 }}>
               <Image
                 src={logoImage}
+                loading="lazy"
+                priority={false}
                 alt="REHMA Professional Hostel & Apartments"
                 width={120}
               />
@@ -228,7 +234,9 @@ function Footer() {
                     transition: "color 0.2s",
                   }}
                 >
-                  <DotIcon sx={{ fontSize: 8, mr: 1, opacity: 0.6 }} />
+                  <FiberManualRecord
+                    sx={{ fontSize: 8, mr: 1, opacity: 0.6 }}
+                  />
                   {link.label}
                 </RouterLink>
               ))}
@@ -250,7 +258,7 @@ function Footer() {
 
             <Stack spacing={2}>
               <Box sx={{ display: "flex", alignItems: "flex-start", gap: 1.5 }}>
-                <LocationIcon
+                <LocationOn
                   sx={{
                     fontSize: 20,
                     color: "rgba(255, 255, 255, 0.8)",
@@ -280,7 +288,7 @@ function Footer() {
               </Box>
 
               <Box sx={{ display: "flex", alignItems: "center", gap: 1.5 }}>
-                <PhoneIcon
+                <Phone
                   sx={{ fontSize: 20, color: "rgba(255, 255, 255, 0.8)" }}
                 />
                 <Box>
@@ -318,7 +326,7 @@ function Footer() {
               </Box>
 
               <Box sx={{ display: "flex", alignItems: "center", gap: 1.5 }}>
-                <EmailIcon
+                <Email
                   sx={{ fontSize: 20, color: "rgba(255, 255, 255, 0.8)" }}
                 />
                 <RouterLink
@@ -330,7 +338,7 @@ function Footer() {
                     "&:hover": { color: "white" },
                   }}
                 >
-                  info@rehmahotel.com
+                  info@rehmahostels.com
                 </RouterLink>
               </Box>
             </Stack>

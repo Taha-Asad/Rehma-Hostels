@@ -3,6 +3,7 @@ import React from "react";
 import { Box, Button, Container, Typography, Chip } from "@mui/material";
 import { Shield, HomeWork, Groups } from "@mui/icons-material";
 import Link from "next/link";
+import Image from "next/image";
 
 export function Hero() {
   return (
@@ -24,13 +25,11 @@ export function Hero() {
           zIndex: 0,
         }}
       >
-        <Box
-          component="img"
+        <Image
           src="https://images.unsplash.com/photo-1589872880544-76e896b0592c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxzdHVkZW50JTIwaG9zdGVsJTIwc3R1ZHklMjBsb3VuZ2V8ZW58MXx8fHwxNzYwNDQ3NjkyfDA&ixlib=rb-4.1.0&q=80&w=1080"
           alt="REHMA Hostel"
-          sx={{
-            width: "100%",
-            height: "100%",
+          fill
+          style={{
             objectFit: "cover",
           }}
         />

@@ -46,6 +46,7 @@ import {
   Megaphone,
   Wrench,
 } from "lucide-react";
+import Image from "next/image";
 
 // Types
 interface NewsChip {
@@ -299,13 +300,12 @@ export default function NewsPage() {
             zIndex: 0,
           }}
         >
-          <Box
-            component="img"
+          <Image
+            loading="lazy"
             src="https://images.unsplash.com/photo-1589872880544-76e896b0592c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxzdHVkZW50JTIwaG9zdGVsJTIwc3R1ZHklMjBsb3VuZ2V8ZW58MXx8fHwxNzYwNDQ3NjkyfDA&ixlib=rb-4.1.0&q=80&w=1080"
             alt="REHMA Hostel"
-            sx={{
-              width: "100%",
-              height: "100%",
+            fill
+            style={{
               objectFit: "cover",
             }}
           />
@@ -715,15 +715,14 @@ export default function NewsPage() {
                         },
                       }}
                     >
+                      ;
                       <CardMedia
-                        component="img"
-                        image={news.image}
-                        alt={news.title}
+                        component="div"
                         sx={{
                           display: "block",
                           width: "100%",
                           height: {
-                            xs: 220, // taller on mobile so it doesn't feel cramped
+                            xs: 220,
                             sm: 240,
                             md: viewMode === "grid" ? 250 : 220,
                           },
@@ -739,13 +738,23 @@ export default function NewsPage() {
                                 ? "none"
                                 : "1px solid rgba(0,0,0,0.08)",
                           },
+                          overflow: "hidden", // needed for hover scale
                           transition: "transform 0.3s ease",
-                          "&:hover": {
+                          "&:hover img": {
                             transform: "scale(1.05)",
                           },
                         }}
-                      />
-
+                      >
+                        <Image
+                          src={news.image}
+                          alt={news.title}
+                          fill // fills the CardMedia completely
+                          style={{
+                            objectFit: "cover",
+                            transition: "transform 0.3s ease",
+                          }}
+                        />
+                      </CardMedia>
                       <Box
                         sx={{
                           position: "absolute",
@@ -754,7 +763,6 @@ export default function NewsPage() {
                             "linear-gradient(to top, rgba(0,0,0,0.5) 0%, transparent 50%)",
                         }}
                       />
-
                       {news.featured && (
                         <Chip
                           icon={<Star />}
@@ -771,7 +779,6 @@ export default function NewsPage() {
                           }}
                         />
                       )}
-
                       {news.chips.map((item, index) => (
                         <Chip
                           key={index}
