@@ -42,9 +42,9 @@ export default function RootLayout({
             <Navbar />
             {children}
             <Footer />
+            <SpeedInsights />
           </ClientThemeProvider>
           <Toaster />
-          <SpeedInsights />
         </AppRouterCacheProvider>
       </body>
     </html>
