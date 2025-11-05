@@ -195,9 +195,15 @@ const News = () => {
 
     setSubscribing(true);
 
-    const serviceID = "service_x6ueh7n";
-    const templateID = "template_5wdb3l7";
-    const publicKey = "NFRagpznVWX4p1nBF";
+    const serviceID = process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID_1;
+    if (!serviceID)
+      throw new Error("Server Side Error: Missing Form Credentials");
+    const templateID = process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID_1;
+    if (!templateID)
+      throw new Error("Server Side Error: Missing Form Credentials");
+    const publicKey = process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY_1;
+    if (!publicKey)
+      throw new Error("Server Side Error: Missing Form Credentials");
 
     try {
       // Extract name from email

@@ -121,10 +121,19 @@ function Contact() {
 
     setIsSubmitting(true);
 
-    const serviceID = "service_34u9stk";
-    const contactTemplateID = "template_7p6a2rc"; // admin template
-    const autoReplyTemplateID = "template_7qzrzo8"; // user template
-    const publicKey = "FaULhAOl8BVQ0LNDL";
+    const serviceID = process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID_2;
+    if (!serviceID)
+      throw new Error("Server Side Error: Missing Form Credentials");
+    const contactTemplateID = process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID_2; // admin template
+    if (!contactTemplateID)
+      throw new Error("Server Side Error: Missing Form Credentials");
+    const autoReplyTemplateID =
+      process.env.NEXT_PUBLIC_EMAILJS_AUTO_TEMPLATE_ID_; // user template
+    if (!autoReplyTemplateID)
+      throw new Error("Server Side Error: Missing Form Credentials");
+    const publicKey = process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY_2;
+    if (!publicKey)
+      throw new Error("Server Side Error: Missing Form Credentials");
 
     try {
       const response = await emailjs.sendForm(

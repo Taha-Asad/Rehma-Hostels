@@ -18,6 +18,7 @@
     "@mui/material": "^7.3.4",
     "@mui/material-nextjs": "^7.3.3",
     "@next/bundle-analyzer": "^16.0.1",
+    "@vercel/speed-insights": "^1.2.0",
     "dompurify": "^3.3.0",
     "framer-motion": "^12.23.24",
     "jsdom": "^27.1.0",
