@@ -5,8 +5,7 @@ import { AppRouterCacheProvider } from "@mui/material-nextjs/v13-appRouter";
 import Navbar from "@/components/Navbar/Navbar";
 import ClientThemeProvider from "@/components/ClientThemeProvider";
 import { Toaster } from "react-hot-toast";
-import Footer from "@/components/Footer";
-import { SpeedInsights } from "@vercel/speed-insights/next";
+import { Footer } from "@/components/Footer/Footer";
 const poppins = Poppins({
   subsets: ["latin"],
   weight: ["400", "500", "600", "700"],
@@ -42,7 +41,6 @@ export default function RootLayout({
             <Navbar />
             {children}
             <Footer />
-            <SpeedInsights />
           </ClientThemeProvider>
           <Toaster />
         </AppRouterCacheProvider>

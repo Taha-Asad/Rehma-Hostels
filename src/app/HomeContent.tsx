@@ -1,20 +1,31 @@
 // app/HomeContent.tsx
 "use client";
+const Hero = dynamic(() => import("@/components/home/Hero"), { ssr: false });
+import dynamic from "next/dynamic";
+const About = dynamic(() => import("@/components/home/About"), { ssr: false });
+const StatsSection = dynamic(() => import("@/components/home/StatsSection"), {
+  ssr: false,
+});
+const Amenities = dynamic(() => import("@/components/home/Amenities"), {
+  ssr: false,
+});
+const Rooms = dynamic(() => import("@/components/home/Rooms"), { ssr: false });
 
+const Testimonials = dynamic(() => import("@/components/home/Testimonials"), {
+  ssr: false,
+});
+const FAQS = dynamic(() => import("@/components/home/FAQS"), { ssr: false });
+const News = dynamic(() => import("@/components/home/News"), { ssr: false });
+const Location = dynamic(() => import("@/components/home/Location"), {
+  ssr: false,
+});
+
+const Contact = dynamic(() => import("@/components/home/Contact"), {
+  ssr: false,
+});
+
+import Box from "@mui/material/Box";
 import useSectionTracking from "@/hooks/useSectionTracking";
-import About from "@/components/home/About";
-import Amenities from "@/components/home/Amenities";
-import Contact from "@/components/home/Contact";
-import FAQS from "@/components/home/FAQS";
-import { Hero } from "@/components/home/Hero";
-import Location from "@/components/home/Location";
-import Rooms from "@/components/home/Rooms";
-import StatsSection from "@/components/home/StatsSection";
-import Testimonials from "@/components/home/Testimonials";
-import { Box } from "@mui/material";
-import News from "@/components/home/News";
-import "slick-carousel/slick/slick.css";
-import "slick-carousel/slick/slick-theme.css";
 
 export default function HomeContent() {
   useSectionTracking(); // client-side scroll tracking

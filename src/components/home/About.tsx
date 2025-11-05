@@ -212,74 +212,72 @@ function About() {
               </Typography>
             </Box>
           </Container>
-          <Grid container spacing={2}>
-            {aboutUs.map((items, index) => (
-              <Grid size={{ xs: 12, sm: 12, md: 6 }} key={index}>
-                <Stack
-                  component={motion.div}
-                  initial={{ opacity: 0, y: 24 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true, amount: 0.2 }}
-                  transition={{
-                    delay: index * 0.12,
-                    type: "spring",
-                    stiffness: 70,
-                  }}
-                  direction={{ xs: "column", md: "row" }}
-                  textAlign={{ xs: "center" }}
-                  spacing={3}
-                  alignItems={"center"}
-                  sx={{
-                    transition: "all 0.3s ease",
-                    cursor: "pointer",
-                    mt: `${index * 1.5}px`,
-                    "&:hover > :nth-of-type(1)": {
-                      transform: "translateY(-5px)",
-                      boxShadow: "0 8px 20px rgba(0,0,0,0.25)",
-                      transition: "all 0.3s ease",
-                    },
-                    "&:hover > :nth-of-type(2) > :nth-of-type(1)": {
-                      transition: "all 0.4s ease",
-                      color: "#7B2E2E",
-                    },
-                  }}
-                >
-                  <Box
+          <motion.section
+            initial={{ opacity: 0, y: 40 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+          >
+            <Grid container spacing={2}>
+              {aboutUs.map((items, index) => (
+                <Grid size={{ xs: 12, sm: 12, md: 6 }} key={index}>
+                  <Stack
+                    direction={{ xs: "column", md: "row" }}
+                    textAlign={{ xs: "center" }}
+                    spacing={3}
+                    alignItems={"center"}
                     sx={{
-                      display: "grid",
-                      border: "1px solid transparent",
-                      color: "#7B2E2E",
-                      bgcolor: "#E8DDDC",
-                      borderRadius: 1,
-                      height: "50px",
-                      minWidth: "55px",
-                      placeItems: "center",
+                      transition: "all 0.3s ease",
+                      cursor: "pointer",
+                      mt: `${index * 1.5}px`,
+                      "&:hover > :nth-of-type(1)": {
+                        transform: "translateY(-5px)",
+                        boxShadow: "0 8px 20px rgba(0,0,0,0.25)",
+                        transition: "all 0.3s ease",
+                      },
+                      "&:hover > :nth-of-type(2) > :nth-of-type(1)": {
+                        transition: "all 0.4s ease",
+                        color: "#7B2E2E",
+                      },
                     }}
                   >
-                    {items.icon}
-                  </Box>
-                  <Stack direction={"column"}>
-                    <Typography
-                      variant="body1"
-                      fontWeight={"bold"}
-                      color="#3D444B"
-                      fontFamily={"Poppins"}
-                      fontSize={"16px"}
+                    <Box
+                      sx={{
+                        display: "grid",
+                        border: "1px solid transparent",
+                        color: "#7B2E2E",
+                        bgcolor: "#E8DDDC",
+                        borderRadius: 1,
+                        height: "50px",
+                        minWidth: "55px",
+                        placeItems: "center",
+                      }}
                     >
-                      {items.title}
-                    </Typography>
-                    <Typography
-                      variant="body1"
-                      color="#505A63"
-                      fontSize={"14px"}
-                    >
-                      {items.content}
-                    </Typography>
+                      {items.icon}
+                    </Box>
+                    <Stack direction={"column"}>
+                      <Typography
+                        variant="body1"
+                        fontWeight={"bold"}
+                        color="#3D444B"
+                        fontFamily={"Poppins"}
+                        fontSize={"16px"}
+                      >
+                        {items.title}
+                      </Typography>
+                      <Typography
+                        variant="body1"
+                        color="#505A63"
+                        fontSize={"14px"}
+                      >
+                        {items.content}
+                      </Typography>
+                    </Stack>
                   </Stack>
-                </Stack>
-              </Grid>
-            ))}
-          </Grid>
+                </Grid>
+              ))}
+            </Grid>
+          </motion.section>
         </Paper>
       </Container>
     </Box>

@@ -5,7 +5,7 @@ import { Shield, HomeWork, Groups } from "@mui/icons-material";
 import Link from "next/link";
 import Image from "next/image";
 
-export function Hero() {
+function Hero() {
   return (
     <Box
       sx={{
@@ -102,12 +102,9 @@ export function Hero() {
         <Typography
           variant="h1"
           sx={{
-            fontSize: { xs: "2rem", md: "3rem", lg: "3.5rem" },
             fontWeight: 700,
             color: "white",
             mb: 3,
-            lineHeight: 1.1,
-            fontFamily: "Poppins, sans-serif",
           }}
         >
           Welcome to REHMA
@@ -263,3 +260,5 @@ export function Hero() {
     </Box>
   );
 }
+
+export default Hero;
