@@ -6,6 +6,7 @@ import Navbar from "@/components/Navbar/Navbar";
 import ClientThemeProvider from "@/components/ClientThemeProvider";
 import { Toaster } from "react-hot-toast";
 import Footer from "@/components/Footer";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 const poppins = Poppins({
   subsets: ["latin"],
   weight: ["400", "500", "600", "700"],
@@ -43,6 +44,7 @@ export default function RootLayout({
             <Footer />
           </ClientThemeProvider>
           <Toaster />
+          <SpeedInsights />
         </AppRouterCacheProvider>
       </body>
     </html>
