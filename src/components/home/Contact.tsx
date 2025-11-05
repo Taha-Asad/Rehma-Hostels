@@ -128,7 +128,7 @@ function Contact() {
     if (!contactTemplateID)
       throw new Error("Server Side Error: Missing Form Credentials");
     const autoReplyTemplateID =
-      process.env.NEXT_PUBLIC_EMAILJS_AUTO_TEMPLATE_ID_; // user template
+      process.env.NEXT_PUBLIC_EMAILJS_AUTO_TEMPLATE_ID_2; // user template
     if (!autoReplyTemplateID)
       throw new Error("Server Side Error: Missing Form Credentials");
     const publicKey = process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY_2;
