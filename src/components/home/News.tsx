@@ -81,7 +81,7 @@ const initialCards: NewsArticle[] = [
   {
     id: 1,
     image:
-      "https://images.unsplash.com/photo-1593642634315-48f5414c3ad9?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080",
+      "https://images.unsplash.com/photo-1695204905741-9d099a5989ce?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8N3x8aG9zdGVsfGVufDB8fDB8fHww&auto=format&fit=crop&q=60&w=500",
     title: "Campus Renovation Completed",
     content:
       "The hostel underwent major renovations, offering professionals a modern and comfortable living environment.",
@@ -151,7 +151,7 @@ const initialCards: NewsArticle[] = [
   {
     id: 3,
     image:
-      "https://images.unsplash.com/photo-1593642634315-48f5414c3ad9?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080",
+      "https://images.unsplash.com/photo-1490645935967-10de6ba17061?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8bnV0cml0aW9ufGVufDB8fDB8fHww&auto=format&fit=crop&q=60&w=500",
     title: "Nutrition Plans Launched",
     content:
       "Healthy and tasty meal plans tailored for Professionals are now offered at the hostel.",

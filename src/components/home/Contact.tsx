@@ -46,9 +46,13 @@ const primary = "#7B2E2E";
 const primaryDark = "#5f2424";
 
 const roomOptions = [
-  { value: "single", label: "Single Room (PKR 15,000)" },
-  { value: "twin", label: "Twin Room (PKR 10,000/person)" },
-  { value: "deluxe", label: "Deluxe Suite (PKR 20,000)" },
+  { value: "Non-AC", label: "Standard Non-AC Room (PKR 10,000 per person)" },
+  {
+    value: "Standard",
+    label: "Standard Room (With AC) (PKR 13,000 per person)",
+  },
+  { value: "Daily", label: "Standard Daily Stay (PKR 3,500 per day)" },
+  { value: "Luxury", label: "Luxury Stay (PKR 5,000 per day)" },
   { value: "unsure", label: "Not Sure - Need Assistance" },
 ];
 
