@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useRef } from "react";
+import React, { useState } from "react";
 import {
   Box,
   Container,
@@ -32,15 +32,7 @@ import {
 import Stats from "../ui/Stats";
 import { motion, Variants } from "framer-motion";
 import toast from "react-hot-toast";
-import emailjs from "@emailjs/browser";
-
-type FormData = {
-  name: string;
-  email: string;
-  phone: string;
-  roomType: string;
-  message: string;
-};
+import { contactForm } from "@/actions/email.action";
 
 const primary = "#7B2E2E";
 const primaryDark = "#5f2424";
@@ -91,88 +83,41 @@ const cardVariants: Variants = {
 };
 
 function Contact() {
-  const [formData, setFormData] = useState<FormData>({
-    name: "",
-    email: "",
-    phone: "",
-    roomType: "",
-    message: "",
-  });
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
+  const [roomType, setRoomType] = useState("");
+  const [message, setMessage] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [openSuccess, setOpenSuccess] = useState(false);
-  const formRef = useRef<HTMLFormElement>(null);
-
-  const handleInputChange = <K extends keyof FormData>(
-    field: K,
-    value: FormData[K]
-  ) => setFormData((prev) => ({ ...prev, [field]: value }));
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (!formRef.current) return;
-
-    // basic validation
     if (
-      !formData.name.trim() ||
-      !formData.email.trim() ||
-      !formData.phone.trim() ||
-      !formData.roomType.trim() ||
-      !formData.message.trim()
+      !name.trim() ||
+      !email.trim() ||
+      !phone.trim() ||
+      !roomType.trim() ||
+      !message.trim()
     ) {
       toast.error("Please fill in all the required fields before submitting.");
       return;
     }
-
     setIsSubmitting(true);
-
-    const serviceID = process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID_2;
-    if (!serviceID)
-      throw new Error("Server Side Error: Missing Form Credentials");
-    const contactTemplateID = process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID_2; // admin template
-    if (!contactTemplateID)
-      throw new Error("Server Side Error: Missing Form Credentials");
-    const autoReplyTemplateID =
-      process.env.NEXT_PUBLIC_EMAILJS_AUTO_TEMPLATE_ID_2; // user template
-    if (!autoReplyTemplateID)
-      throw new Error("Server Side Error: Missing Form Credentials");
-    const publicKey = process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY_2;
-    if (!publicKey)
-      throw new Error("Server Side Error: Missing Form Credentials");
-
     try {
-      const response = await emailjs.sendForm(
-        serviceID,
-        contactTemplateID,
-        formRef.current,
-        publicKey
-      );
-
-      // only send auto-reply if first email succeeded
-      if (response.status === 200) {
-        await emailjs.sendForm(
-          serviceID,
-          autoReplyTemplateID,
-          formRef.current,
-          publicKey
-        );
-
-        setFormData({
-          name: "",
-          email: "",
-          phone: "",
-          roomType: "",
-          message: "",
-        });
-
-        setOpenSuccess(true);
+      const result = await contactForm(name, email, phone, roomType, message);
+      if (result?.success) {
+        setName("");
+        setEmail("");
+        setPhone("");
+        setRoomType("");
+        setMessage("");
         toast.success(
           "Booking request submitted! Our team will review and confirm shortly."
         );
-      } else {
-        throw new Error("EmailJS returned non-200 status.");
       }
     } catch (error) {
-      toast.error(`Error EmailJs ${error}`);
+      console.log("Error in submitting contact form", error);
       toast.error("Failed to send message. Please try again later.");
     } finally {
       setIsSubmitting(false);
@@ -281,7 +226,7 @@ function Contact() {
                 </Box>
 
                 <CardContent sx={{ py: 3, px: 2, pt: 4 }}>
-                  <Box component="form" ref={formRef} onSubmit={handleSubmit}>
+                  <Box component="form" onSubmit={handleSubmit}>
                     <Grid container spacing={2}>
                       <Grid size={{ xs: 12 }}>
                         <TextField
@@ -289,10 +234,8 @@ function Contact() {
                           name="name"
                           fullWidth
                           required
-                          value={formData.name}
-                          onChange={(e) =>
-                            handleInputChange("name", e.target.value)
-                          }
+                          value={name}
+                          onChange={(e) => setName(e.target.value)}
                           placeholder="Enter your full name"
                           InputProps={{
                             startAdornment: (
@@ -310,10 +253,8 @@ function Contact() {
                           type="email"
                           fullWidth
                           required
-                          value={formData.email}
-                          onChange={(e) =>
-                            handleInputChange("email", e.target.value)
-                          }
+                          value={email}
+                          onChange={(e) => setEmail(e.target.value)}
                           placeholder="your.email@example.com"
                           InputProps={{
                             startAdornment: (
@@ -331,10 +272,8 @@ function Contact() {
                           name="phone"
                           fullWidth
                           required
-                          value={formData.phone}
-                          onChange={(e) =>
-                            handleInputChange("phone", e.target.value)
-                          }
+                          value={phone}
+                          onChange={(e) => setPhone(e.target.value)}
                           placeholder="+92 300 1234567"
                           InputProps={{
                             startAdornment: (
@@ -352,14 +291,11 @@ function Contact() {
                             getOptionLabel={(option) => option.label}
                             value={
                               roomOptions.find(
-                                (opt) => opt.label === formData.roomType
+                                (opt) => opt.label === roomType
                               ) || null
                             }
                             onChange={(_, newValue) =>
-                              handleInputChange(
-                                "roomType",
-                                newValue ? newValue.label : ""
-                              )
+                              setRoomType(newValue ? newValue.label : "")
                             }
                             renderInput={(params) => (
                               <TextField
@@ -396,10 +332,8 @@ function Contact() {
                           fullWidth
                           multiline
                           minRows={4}
-                          value={formData.message}
-                          onChange={(e) =>
-                            handleInputChange("message", e.target.value)
-                          }
+                          value={message}
+                          onChange={(e) => setMessage(e.target.value)}
                           placeholder="Any special requirements, questions, or preferences..."
                         />
                       </Grid>

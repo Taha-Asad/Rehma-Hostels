@@ -14,6 +14,7 @@ import Instagram from "@mui/icons-material/Instagram";
 import Email from "@mui/icons-material/Email";
 import WhatsApp from "@mui/icons-material/WhatsApp";
 import toast from "react-hot-toast";
+import { subscriptionField } from "@/actions/email.action";
 
 export default function FooterClient() {
   const [email, setEmail] = useState("");
@@ -49,26 +50,25 @@ export default function FooterClient() {
     },
   ];
 
-  const handleSubscribe = async (e: React.FormEvent) => {
+  const handleSubscribe = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!email) return;
+
     setSubscribing(true);
+
     try {
-      const { default: emailjs } = await import("@emailjs/browser");
-      const res = await emailjs.send(
-        process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID_1!,
-        process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID_1!,
-        { email },
-        process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY_1!
-      );
-      if (res.status === 200) {
-        toast.success("Subscribed successfully!");
+      const result = await subscriptionField(email);
+      if (result?.success) {
         setEmail("");
+        toast.success("Newsletter Subscribed successfully");
       } else {
-        toast.error("Subscription failed. Try again later.");
+        setEmail("");
+        toast.error(
+          result?.message || `Subscription failed. Please try again later`
+        );
       }
-    } catch (err) {
-      toast.error(`Failed to subscribe. Please try again. ${err}`);
+    } catch (error) {
+      toast.error(`Subscription failed. Please try again later.${error}`);
     } finally {
       setSubscribing(false);
     }

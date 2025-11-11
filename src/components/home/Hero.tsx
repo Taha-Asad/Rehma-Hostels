@@ -4,7 +4,7 @@ import { Box, Button, Container, Typography, Chip } from "@mui/material";
 import { Shield, HomeWork, Groups } from "@mui/icons-material";
 import Link from "next/link";
 import Image from "next/image";
-
+import HeroImage from "../../../public/Images/Hero.jpeg";
 function Hero() {
   return (
     <Box
@@ -26,7 +26,7 @@ function Hero() {
         }}
       >
         <Image
-          src="https://images.unsplash.com/photo-1589872880544-76e896b0592c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxzdHVkZW50JTIwaG9zdGVsJTIwc3R1ZHklMjBsb3VuZ2V8ZW58MXx8fHwxNzYwNDQ3NjkyfDA&ixlib=rb-4.1.0&q=80&w=1080"
+          src={HeroImage}
           alt="REHMA Hostel"
           fill
           style={{

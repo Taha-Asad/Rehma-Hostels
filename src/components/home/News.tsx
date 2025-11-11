@@ -36,9 +36,9 @@ import {
 } from "@mui/icons-material";
 import Link from "next/link";
 import toast from "react-hot-toast";
-import emailjs from "@emailjs/browser";
 import DOMPurify from "dompurify";
 import Image from "next/image";
+import { subscriptionField } from "@/actions/email.action";
 interface NewsChip {
   icon: React.ReactElement;
   label: string;
@@ -195,49 +195,16 @@ const News = () => {
 
     setSubscribing(true);
 
-    const serviceID = process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID_1;
-    if (!serviceID)
-      throw new Error("Server Side Error: Missing Form Credentials");
-    const templateID = process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID_1;
-    if (!templateID)
-      throw new Error("Server Side Error: Missing Form Credentials");
-    const publicKey = process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY_1;
-    if (!publicKey)
-      throw new Error("Server Side Error: Missing Form Credentials");
-
     try {
-      // Extract name from email
-      const getNameFromEmail = (email: string) => {
-        const namePart = email.split("@")[0];
-        return namePart.charAt(0).toUpperCase() + namePart.slice(1);
-      };
-
-      // Correct template parameters - EmailJS needs specific field names
-      const templateParams = {
-        to_email: email, // This might be the issue
-        user_email: email, // Try this instead
-        email: email, // Or this
-        reply_to: email, // Sometimes needed
-        name: getNameFromEmail(email),
-        unsubscribe_link: "https://rehma-hostels-gtbz.vercel.app/unsubscribe",
-        from_name: "REHMA Hostel",
-        message: "Welcome to REHMA Hostel newsletter!",
-      };
-
-      const response = await emailjs.send(
-        serviceID,
-        templateID,
-        templateParams,
-        publicKey
-      );
-
-      if (response.status === 200) {
-        toast.success(
-          "🎉 Welcome to REHMA! Check your inbox for confirmation."
-        );
+      const result = await subscriptionField(email);
+      if (result?.success) {
         setEmail("");
+        toast.success("Newsletter Subscribed successfully");
       } else {
-        throw new Error("EmailJS returned non-200 status.");
+        setEmail("");
+        toast.error(
+          result?.message || `Subscription failed. Please try again later`
+        );
       }
     } catch (error) {
       toast.error(`Subscription failed. Please try again later.${error}`);

@@ -9,7 +9,7 @@ import {
   Typography,
 } from "@mui/material";
 import Image from "next/image";
-import hero from "../../../public/Images/Hero.jpeg";
+import about from "../../../public/Images/about.jpeg";
 import {
   AutoAwesomeRounded,
   People,
@@ -115,18 +115,33 @@ function About() {
                     borderRadius: "20px",
                     display: "grid",
                     placeItems: "center",
-                    boxShadow: "0 20px 40px rgba(123,46,46,0.4)",
+                    overflow: "hidden",
+                    boxShadow: "0 20px 40px rgba(123,46,46,0.25)", // maroon shadow tone
                   }}
                 >
                   <Box
                     component={Image}
-                    src={hero}
+                    src={about}
                     alt="About Section"
                     sx={{
                       borderRadius: "20px",
                       width: "100%",
                       height: "auto",
                       objectFit: "cover",
+                      opacity: 0.5, // soft but visible
+                      filter: `
+        brightness(0.9)
+        contrast(1.05)
+        sepia(0.25)
+        hue-rotate(-10deg)
+        saturate(1.1)
+      `,
+                      backgroundColor: "#F1E9E9", // blends with your section background
+                      transform: "scale(1.02)",
+                      transition: "transform 0.5s ease",
+                      "&:hover": {
+                        transform: "scale(1.04)",
+                      },
                     }}
                   />
                 </Box>
