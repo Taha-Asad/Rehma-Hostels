@@ -67,7 +67,13 @@ import {
   X,
   Zap,
 } from "lucide-react";
-import Image from "next/image";
+import Image, { StaticImageData } from "next/image";
+import package1 from "../../../public/Images/package1.jpeg";
+import package2 from "../../../public/Images/package2.jpeg";
+import package3 from "../../../public/Images/package3.jpeg";
+import package4 from "../../../public/Images/package4.jpeg";
+import package5 from "../../../public/Images/package4.jpeg";
+import roomHero from "../../../public/Images/roomHero.png";
 
 interface RoomDetailsModalProps {
   open: boolean;
@@ -107,7 +113,7 @@ const RoomDetailsModal: React.FC<RoomDetailsModalProps> = ({
         <Box
           sx={{
             width: { xs: "100%", md: "50%" },
-            height: { xs: 300, md: "100%" },
+            height: { xs: 700, md: "100%" },
             position: "relative",
             overflow: "hidden",
           }}
@@ -118,6 +124,8 @@ const RoomDetailsModal: React.FC<RoomDetailsModalProps> = ({
             fill={true}
             style={{
               objectFit: "cover",
+              filter: "brightness(0.70)",
+              transition: "transform 0.3s ease, filter 0.3s ease",
             }}
           />
           <Box
@@ -515,7 +523,7 @@ const RoomDetailsModal: React.FC<RoomDetailsModalProps> = ({
 
 interface Room {
   id: number;
-  image: string;
+  image: string | StaticImageData;
   title: string;
   content: string;
   price: number;
@@ -535,8 +543,7 @@ interface Room {
 const allRooms: Room[] = [
   {
     id: 1,
-    image:
-      "https://images.unsplash.com/photo-1609587639086-b4cbf85e4355?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080",
+    image: package1,
     title: "Package 1: Without AC",
     content: "Basic stay without AC, electricity bill separate",
     price: 10000,
@@ -569,8 +576,7 @@ const allRooms: Room[] = [
   },
   {
     id: 2,
-    image:
-      "https://images.unsplash.com/photo-1697603899008-a4027a95fd95?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080",
+    image: package2,
     title: "Package 2: With AC",
     content: "Stay with AC, electricity separate",
     price: 13000,
@@ -610,8 +616,7 @@ const allRooms: Room[] = [
   },
   {
     id: 3,
-    image:
-      "https://images.unsplash.com/photo-1589872880544-76e896b0592c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080",
+    image: package3,
     title: "Package 3: Luxury Stay",
     content: "Luxury stay with included electricity bill",
     price: 5000,
@@ -654,8 +659,7 @@ const allRooms: Room[] = [
   },
   {
     id: 4,
-    image:
-      "https://images.unsplash.com/photo-1555854877-bab0e564b8d5?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080",
+    image: package4,
     title: "Package 4: Per Day Stay",
     content: "Short stay with included electricity bill",
     price: 3500,
@@ -697,8 +701,7 @@ const allRooms: Room[] = [
   },
   {
     id: 5,
-    image:
-      "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080",
+    image: package5,
     title: "Office Room",
     content: "Comfortable office space for small teams",
     price: 20000,
@@ -1185,10 +1188,11 @@ export default function RoomsPage() {
           }}
         >
           <Image
-            loading="lazy"
-            src="https://images.unsplash.com/photo-1589872880544-76e896b0592c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxzdHVkZW50JTIwaG9zdGVsJTIwc3R1ZHklMjBsb3VuZ2V8ZW58MXx8fHwxNzYwNDQ3NjkyfDA&ixlib=rb-4.1.0&q=80&w=1080"
+            src={roomHero}
             alt="REHMA Hostel"
             fill
+            priority
+            sizes="100vw"
             style={{
               objectFit: "cover",
             }}
@@ -1572,6 +1576,7 @@ export default function RoomsPage() {
                             src={room.image}
                             alt={room.title}
                             fill // fills the CardMedia
+                            sizes="(max-width: 768px) 100vw, 400px"
                             style={{
                               objectFit: "cover",
                               transition: "transform 0.3s ease",

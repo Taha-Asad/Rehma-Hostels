@@ -115,6 +115,10 @@ function Contact() {
         toast.success(
           "Booking request submitted! Our team will review and confirm shortly."
         );
+      } else {
+        toast.error(
+          result?.message || "Failed to send message. Please try again later."
+        );
       }
     } catch (error) {
       console.log("Error in submitting contact form", error);
@@ -273,7 +277,21 @@ function Contact() {
                           fullWidth
                           required
                           value={phone}
-                          onChange={(e) => setPhone(e.target.value)}
+                          onChange={(e) => {
+                            let val = e.target.value;
+
+                            // Only allow +, digits, and spaces
+                            val = val.replace(/[^+\d ]/g, "");
+
+                            // Enforce starting with +92
+                            if (!val.startsWith("+92")) val = "+92";
+
+                            // Limit total digits after +92 to 10
+                            const digits = val.replace(/\D/g, "").slice(0, 12); // +92 + 10 digits = 12 digits
+                            val = "+" + digits;
+
+                            setPhone(val);
+                          }}
                           placeholder="+92 300 1234567"
                           InputProps={{
                             startAdornment: (

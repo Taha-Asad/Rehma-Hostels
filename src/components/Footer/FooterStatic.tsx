@@ -148,7 +148,7 @@ export default function FooterStatic() {
               </Stack>
               <Stack direction="row" alignItems="center" spacing={1.5}>
                 <Phone sx={{ opacity: 0.8, fontSize: 20 }} />
-                <Typography variant="body2">+92 300 123 4567</Typography>
+                <Typography variant="body2">+92 305 5088887</Typography>
               </Stack>
               <Stack direction="row" alignItems="center" spacing={1.5}>
                 <Email sx={{ opacity: 0.8, fontSize: 20 }} />

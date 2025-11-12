@@ -46,7 +46,7 @@ export default function FooterClient() {
     {
       icon: <WhatsApp />,
       name: "WhatsApp",
-      link: "https://wa.me/923001234567",
+      link: "https://wa.me/923055088887",
     },
   ];
 

@@ -1,5 +1,12 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
-import { Campaign, Elevator, HotTub } from "@mui/icons-material";
+import {
+  ArrowLeft,
+  ArrowRight,
+  Campaign,
+  Elevator,
+  HotTub,
+} from "@mui/icons-material";
 import {
   Box,
   Button,
@@ -46,18 +53,22 @@ import {
   Gem,
   CalendarCheck,
 } from "lucide-react";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { motion, Variants } from "framer-motion";
 import Link from "next/link";
 import { scrollToSection } from "@/utils/scrollToSection";
 
 import { Swiper, SwiperSlide } from "swiper/react";
-import { Autoplay } from "swiper/modules";
+import { Autoplay, FreeMode, Navigation, Pagination } from "swiper/modules";
+import package1 from "../../../public/Images/package1.png";
+import package2 from "../../../public/Images/package2.png";
+import package3 from "../../../public/Images/package3.png";
+import package4 from "../../../public/Images/package4.png";
 
 import "swiper/css";
 import "swiper/css/effect-coverflow";
 import "swiper/css/navigation";
-import Image from "next/image";
+import Image, { StaticImageData } from "next/image";
 
 interface RoomChip {
   icon: React.ReactElement;
@@ -69,7 +80,7 @@ interface RoomChip {
 }
 
 interface Room {
-  image: string;
+  image: string | StaticImageData;
   title: string;
   content: string;
   serviceList: string[];
@@ -89,8 +100,7 @@ interface Room {
 
 const cards: Room[] = [
   {
-    image:
-      "https://images.unsplash.com/photo-1609587639086-b4cbf85e4355?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxtb2Rlcm4lMjBkb3JtJTIwYmVkcm9vbSUyMGludGVyaW9yfGVufDF8fHx8MTc2MDQ0NzY5Mnww&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral",
+    image: package1,
     title: "Standard Non-AC Room",
     content:
       "Comfortable accommodation with essential amenities for extended stays.",
@@ -126,8 +136,7 @@ const cards: Room[] = [
     interval: 2000,
   },
   {
-    image:
-      "https://images.unsplash.com/photo-1697603899008-a4027a95fd95?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxob3N0ZWwlMjBjb21tb24lMjByb29tfGVufDF8fHx8MTc2MDQ0NzY5M3ww&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral",
+    image: package2,
     title: "Standard Room (With AC)",
     content:
       "Comfortable AC accommodation with essential amenities at affordable rates.",
@@ -172,8 +181,7 @@ const cards: Room[] = [
     interval: 2000,
   },
   {
-    image:
-      "https://images.unsplash.com/photo-1709805619372-40de3f158e83?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8aG9zdGVsJTIwcm9vbXxlbnwwfHwwfHx8MA%3D%3D&auto=format&fit=crop&q=60&w=500",
+    image: package3,
     title: "Luxury Stay",
     content:
       "Premium accommodation with modern amenities for a comfortable, elegant stay.",
@@ -217,7 +225,49 @@ const cards: Room[] = [
     ],
     interval: 2000,
   },
-  // I haven't recieved data for this one
+  {
+    image: package4,
+    title: "Standard Daily Stay",
+    content:
+      "Affordable short-term stay with all basic amenities and utilities included.",
+    serviceList: [
+      "Air Conditioning",
+      "LED TV with Cable",
+      "Hot Water (Geyser)",
+      "Personal Cubed Storage",
+      "High-speed Wi-Fi",
+      "Secure Parking",
+      "Single Bed with Mattress",
+      "Elevator Access",
+      "Electricity Bill Included",
+    ],
+    chips: [
+      { icon: <CalendarCheck />, label: "Short Stay", position: "bottom-left" },
+    ],
+    price: "PKR 3,500",
+    duration: "Per Day",
+    btnText: "Book Now",
+    capacity: 1,
+    size: "Single Room",
+    availability: "Available",
+    rating: 4.1,
+    reviews: 18,
+    description:
+      "Affordable daily accommodation perfect for quick stays or short visits. Includes all utilities and comfortable essentials for a hassle-free experience.",
+    amenities: [
+      { icon: <AirVent />, label: "Air Conditioner" },
+      { icon: <MonitorPlay />, label: "LED TV" },
+      { icon: <Cable />, label: "Cable Service" },
+      { icon: <HotTub />, label: "Geyser (Hot Water)" },
+      { icon: <DoorClosedLocked />, label: "Cubed Storage" },
+      { icon: <Router />, label: "Wi-Fi" },
+      { icon: <CircleParking />, label: "Parking" },
+      { icon: <Bed />, label: "Bed with Mattress" },
+      { icon: <Elevator />, label: "Elevator" },
+      { icon: <Zap />, label: "Electricity Included" },
+    ],
+  },
+  // I haven't received data for this one
   {
     image:
       "https://images.unsplash.com/photo-1697603899008-a4027a95fd95?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxob3N0ZWwlMjBjb21tb24lMjByb29tfGVufDF8fHx8MTc2MDQ0NzY5M3ww&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral",
@@ -263,49 +313,6 @@ const cards: Room[] = [
       { icon: <Utensils />, label: "Mess (Paid)" },
     ],
     interval: 2000,
-  },
-  {
-    image:
-      "https://images.unsplash.com/photo-1568992687947-868a62a9f521?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NHx8b2ZmaWNlfGVufDB8fDB8fHww&auto=format&fit=crop&q=60&w=500",
-    title: "Standard Daily Stay",
-    content:
-      "Affordable short-term stay with all basic amenities and utilities included.",
-    serviceList: [
-      "Air Conditioning",
-      "LED TV with Cable",
-      "Hot Water (Geyser)",
-      "Personal Cubed Storage",
-      "High-speed Wi-Fi",
-      "Secure Parking",
-      "Single Bed with Mattress",
-      "Elevator Access",
-      "Electricity Bill Included",
-    ],
-    chips: [
-      { icon: <CalendarCheck />, label: "Short Stay", position: "bottom-left" },
-    ],
-    price: "PKR 3,500",
-    duration: "Per Day",
-    btnText: "Book Now",
-    capacity: 1,
-    size: "Single Room",
-    availability: "Available",
-    rating: 4.1,
-    reviews: 18,
-    description:
-      "Affordable daily accommodation perfect for quick stays or short visits. Includes all utilities and comfortable essentials for a hassle-free experience.",
-    amenities: [
-      { icon: <AirVent />, label: "Air Conditioner" },
-      { icon: <MonitorPlay />, label: "LED TV" },
-      { icon: <Cable />, label: "Cable Service" },
-      { icon: <HotTub />, label: "Geyser (Hot Water)" },
-      { icon: <DoorClosedLocked />, label: "Cubed Storage" },
-      { icon: <Router />, label: "Wi-Fi" },
-      { icon: <CircleParking />, label: "Parking" },
-      { icon: <Bed />, label: "Bed with Mattress" },
-      { icon: <Elevator />, label: "Elevator" },
-      { icon: <Zap />, label: "Electricity Included" },
-    ],
   },
 ];
 
@@ -395,7 +402,7 @@ const RoomDetailsModal: React.FC<RoomDetailsModalProps> = ({
         <Box
           sx={{
             width: { xs: "100%", lg: "50%" },
-            height: { xs: 300, lg: "100%" },
+            height: { xs: 800, lg: "100%" },
             position: "relative",
             overflow: "hidden",
           }}
@@ -797,6 +804,7 @@ const RoomDetailsModal: React.FC<RoomDetailsModalProps> = ({
 function Rooms() {
   const [open, setOpen] = useState(false);
   const [selectedRoom, setSelectedRoom] = useState<Room | null>(null);
+  const swiperRef = useRef<any>(null);
 
   const handleOpen = (room: Room) => {
     setSelectedRoom(room);
@@ -868,17 +876,29 @@ function Rooms() {
             viewport={{ once: true, amount: 0.2 }}
           >
             <Swiper
-              grabCursor={true}
-              centeredSlides={true}
+              onSwiper={(swiper) => (swiperRef.current = swiper)}
               slidesPerView={3}
               loop={true}
-              speed={800}
+              freeMode={true}
+              allowTouchMove={true}
+              speed={1000} // reduce speed for smoother animation
               autoplay={{
                 delay: 2500,
                 disableOnInteraction: false,
                 pauseOnMouseEnter: true,
               }}
-              modules={[Autoplay]}
+              pagination={{
+                clickable: true,
+                el: ".swiper-pagination",
+              }}
+              navigation={{
+                nextEl: ".custom-next",
+                prevEl: ".custom-prev",
+              }}
+              modules={[Autoplay, FreeMode, Navigation, Pagination]}
+              spaceBetween={30}
+              grabCursor={false}
+              centeredSlides={false}
               breakpoints={{
                 320: { slidesPerView: 1, spaceBetween: 20 },
                 640: { slidesPerView: 2, spaceBetween: 20 },
@@ -1196,6 +1216,35 @@ function Rooms() {
                 </SwiperSlide>
               ))}
             </Swiper>
+            {/* Custom controls (call swiperRef) */}
+            <Box
+              className="swiper-controls"
+              sx={{
+                mt: 3,
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                gap: 3,
+              }}
+            >
+              <Box
+                className="swiper-button custom-prev"
+                onClick={() => swiperRef.current?.slidePrev()}
+                sx={{ cursor: "pointer" }}
+              >
+                <ArrowLeft />
+              </Box>
+
+              {/* Swiper will render bullets into .swiper-pagination automatically */}
+              <div className="swiper-pagination" />
+              <Box
+                className="swiper-button custom-next"
+                onClick={() => swiperRef.current?.slideNext()}
+                sx={{ cursor: "pointer" }}
+              >
+                <ArrowRight />
+              </Box>
+            </Box>
 
             <style jsx global>{`
               .swiper {
@@ -1206,6 +1255,7 @@ function Rooms() {
               .swiper-wrapper {
                 display: flex;
                 align-items: stretch;
+                transition-timing-function: linear !important;
               }
 
               .swiper-slide {
@@ -1214,19 +1264,63 @@ function Rooms() {
                 height: auto !important;
               }
 
+              .swiper-controls {
+                /* centered, same as you wanted */
+              }
+
+              .swiper-button {
+                display: grid;
+                place-items: center;
+                width: 50px;
+                height: 50px;
+                border-radius: 50%;
+                background-color: #7b2e2e;
+                color: #fff;
+                font-size: 24px;
+                transition: all 0.3s ease;
+                box-shadow: 0 4px 10px rgba(123, 46, 46, 0.25);
+                z-index: 30;
+              }
+
+              .swiper-button:hover {
+                background-color: #d4a373;
+                transform: scale(1.1);
+              }
+              .swiper-pagination,
+              .custom-pagination {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                gap: 8px;
+              }
+              .swiper-pagination-bullet {
+                background-color: #7b2e2e;
+                opacity: 0.6;
+                width: 10px;
+                border-radius: 50%;
+                height: 10px;
+                margin: 0 4px;
+                transition: all 0.25s ease;
+              }
+
+              .swiper-pagination-bullet-active {
+                background-color: #d4a373;
+                opacity: 1;
+                transform: scale(1.2);
+              }
+
               @media (max-width: 1024px) {
                 .swiper-slide {
-                  width: 50% !important; /* 2 per view */
+                  width: 50% !important;
                 }
               }
 
               @media (max-width: 640px) {
                 .swiper-slide {
-                  width: 100% !important; /* 1 per view */
+                  width: 100% !important;
                 }
               }
             `}</style>
-
             <Box>
               <Container maxWidth={"sm"} sx={{ py: 4 }}>
                 <motion.div variants={cardVariants}>

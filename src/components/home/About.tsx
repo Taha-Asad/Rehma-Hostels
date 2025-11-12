@@ -9,7 +9,7 @@ import {
   Typography,
 } from "@mui/material";
 import Image from "next/image";
-import about from "../../../public/Images/about.jpeg";
+import about from "../../../public/Images/about3.jpeg";
 import {
   AutoAwesomeRounded,
   People,
@@ -128,20 +128,6 @@ function About() {
                       width: "100%",
                       height: "auto",
                       objectFit: "cover",
-                      opacity: 0.5, // soft but visible
-                      filter: `
-        brightness(0.9)
-        contrast(1.05)
-        sepia(0.25)
-        hue-rotate(-10deg)
-        saturate(1.1)
-      `,
-                      backgroundColor: "#F1E9E9", // blends with your section background
-                      transform: "scale(1.02)",
-                      transition: "transform 0.5s ease",
-                      "&:hover": {
-                        transform: "scale(1.04)",
-                      },
                     }}
                   />
                 </Box>

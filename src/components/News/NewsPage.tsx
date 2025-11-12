@@ -47,7 +47,7 @@ import {
   Wrench,
 } from "lucide-react";
 import Image from "next/image";
-
+import newsHero from "../../../public/Images/newsHero.png";
 // Types
 interface NewsChip {
   icon: React.ReactElement;
@@ -196,7 +196,6 @@ const sortMenu = [
 
 export default function NewsPage() {
   // State management
-  const [articles, setArticles] = useState<NewsArticle[]>(allNewsArticles);
   const [filteredArticles, setFilteredArticles] =
     useState<NewsArticle[]>(allNewsArticles);
   const [searchTerm, setSearchTerm] = useState("");
@@ -222,7 +221,7 @@ export default function NewsPage() {
 
   // Filter and sort logic
   useEffect(() => {
-    let filtered = [...articles];
+    let filtered = [...allNewsArticles];
 
     // Category filter
     if (selectedCategory !== "All") {
@@ -265,7 +264,7 @@ export default function NewsPage() {
 
     setFilteredArticles(filtered);
     setPage(1); // Reset to first page when filters change
-  }, [articles, searchTerm, selectedCategory, sortBy]);
+  }, [searchTerm, selectedCategory, sortBy]);
 
   // Pagination
   const totalPages = Math.ceil(filteredArticles.length / itemsPerPage);
@@ -302,7 +301,7 @@ export default function NewsPage() {
         >
           <Image
             loading="lazy"
-            src="https://images.unsplash.com/photo-1589872880544-76e896b0592c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxzdHVkZW50JTIwaG9zdGVsJTIwc3R1ZHklMjBsb3VuZ2V8ZW58MXx8fHwxNzYwNDQ3NjkyfDA&ixlib=rb-4.1.0&q=80&w=1080"
+            src={newsHero}
             alt="REHMA Hostel"
             fill
             style={{

@@ -150,7 +150,7 @@ function Location() {
                         <>
                           <RouterLink
                             component={Link}
-                            href="tel:+923001122334"
+                            href="tel:+923055088887"
                             underline="hover"
                             sx={{
                               fontSize: "17px",
@@ -161,11 +161,11 @@ function Location() {
                             }}
                           >
                             <Call sx={{ fontSize: "22px" }} />
-                            +92 300 1122334
+                            +92 305 5088887{" "}
                           </RouterLink>
                           <RouterLink
                             component={Link}
-                            href="https://wa.me/923001122334"
+                            href="https://wa.me/923055088887"
                             target="_blank"
                             rel="noopener noreferrer"
                             underline="hover"
@@ -178,7 +178,7 @@ function Location() {
                             }}
                           >
                             <WhatsApp sx={{ fontSize: "24px" }} />
-                            +92 300 1122334
+                            +92 305 5088887
                           </RouterLink>
                           <Typography
                             fontSize={"14px"}
@@ -197,7 +197,7 @@ function Location() {
                         <>
                           <RouterLink
                             component={Link}
-                            href="mailto:info@rehmahotel.com"
+                            href="mailto:info@rehmahotels.com"
                             underline="hover"
                             sx={{
                               fontSize: "17px",
@@ -208,22 +208,7 @@ function Location() {
                               "&:hover": { color: "#7B2E2E" },
                             }}
                           >
-                            info@rehmahotel.com
-                          </RouterLink>
-                          <RouterLink
-                            component={Link}
-                            href="mailto:contact@rehmahotel.com"
-                            underline="hover"
-                            sx={{
-                              fontSize: "17px",
-                              display: "flex",
-                              alignItems: "center",
-                              color: "#505A63",
-                              gap: 1,
-                              "&:hover": { color: "#7B2E2E" },
-                            }}
-                          >
-                            contact@rehmahotel.com
+                            info@rehmahotels.com
                           </RouterLink>
                         </>
                       ),

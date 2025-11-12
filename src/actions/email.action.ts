@@ -17,6 +17,23 @@ export async function contactForm(
       };
     }
 
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      return {
+        success: false,
+        message: "Please enter a valid email address.",
+      };
+    }
+    const pakistanPhoneRegex = /^\+923\d{2}\d{7}$/;
+
+    if (!pakistanPhoneRegex.test(phone)) {
+      return {
+        success: false,
+        message:
+          "Please enter a valid Pakistan phone number in +92 format (e.g., +923001234567).",
+      };
+    }
+
     // Save to database
     const contact = await prisma.contact.create({
       data: {

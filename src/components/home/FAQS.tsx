@@ -107,9 +107,6 @@ const faqs = [
   },
 ];
 
-// --------------------------------------------
-// 2️⃣ Framer Motion Variants (Outside Render)
-// --------------------------------------------
 const fadeInLeft = {
   hidden: { opacity: 0, x: -50 },
   visible: { opacity: 1, x: 0, transition: { duration: 0.6 } },
@@ -123,9 +120,6 @@ const fadeInUp = {
   visible: { opacity: 1, y: 0, transition: { duration: 0.8 } },
 };
 
-// --------------------------------------------
-// 3️⃣ Styles Outside Render to Avoid Recalc
-// --------------------------------------------
 const baseAccordionStyle = {
   borderRadius: "16px !important",
   border: "none",
@@ -155,7 +149,12 @@ function FAQItem({ faq, index, expanded, onChange }: any) {
   const IconComponent = faq.icon;
 
   return (
-    <Grid size={{ xs: 12 }}>
+    <Grid
+      size={{ xs: 12 }}
+      sx={{
+        overflow: "hidden",
+      }}
+    >
       <motion.div
         variants={prefersReducedMotion ? {} : animation}
         initial="hidden"
@@ -422,7 +421,7 @@ export default function FAQs() {
                   variant="contained"
                   size="large"
                   startIcon={<Phone />}
-                  href="tel:+923001234567"
+                  href="tel:+923055088887"
                   sx={{
                     bgcolor: "primary.contrastText",
                     color: "#7B2E2E",
