@@ -244,8 +244,7 @@ function NavbarClient() {
                     "&:hover::after": { width: "70%" },
                   }}
                   aria-current={active ? "page" : undefined}
-                  onClick={(e) => {
-                    e.preventDefault();
+                  onClick={() => {
                     handleNavClick(item.url);
                   }}
                 >
