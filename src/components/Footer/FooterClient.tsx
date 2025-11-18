@@ -14,7 +14,7 @@ import Instagram from "@mui/icons-material/Instagram";
 import Email from "@mui/icons-material/Email";
 import WhatsApp from "@mui/icons-material/WhatsApp";
 import toast from "react-hot-toast";
-import { subscriptionField } from "@/actions/email.action";
+import { subscriptionBridge } from "@/actions/email.action";
 
 export default function FooterClient() {
   const [email, setEmail] = useState("");
@@ -57,7 +57,10 @@ export default function FooterClient() {
     setSubscribing(true);
 
     try {
-      const result = await subscriptionField(email);
+      const form = new FormData(); // ✅ FIXED
+      form.append("email", email);
+
+      const result = await subscriptionBridge(form);
       if (result?.success) {
         setEmail("");
         toast.success("Newsletter Subscribed successfully");
