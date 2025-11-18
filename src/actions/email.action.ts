@@ -363,27 +363,27 @@ export async function contactForm(
     `;
 
     // Send emails with error handling
-    try {
-      await sendMail(
-        process.env.ADMIN_EMAIL!,
-        "New Booking Inquiry",
-        adminHtml
-      );
-    } catch (emailError) {
-      console.error("Error sending admin email:", emailError);
-      return { success: false, message: "Error sending admin email." };
-    }
+    // try {
+    //   await sendMail(
+    //     process.env.ADMIN_EMAIL!,
+    //     "New Booking Inquiry",
+    //     adminHtml
+    //   );
+    // } catch (emailError) {
+    //   console.error("Error sending admin email:", emailError);
+    //   return { success: false, message: "Error sending admin email." };
+    // }
 
-    try {
-      await sendMail(
-        contact.email,
-        "Thank You for Contacting REHMA Hostel",
-        userHtml
-      );
-    } catch (emailError) {
-      console.error("Error sending user email:", emailError);
-      return { success: false, message: "Error sending user email." };
-    }
+    // try {
+    //   await sendMail(
+    //     contact.email,
+    //     "Thank You for Contacting REHMA Hostel",
+    //     userHtml
+    //   );
+    // } catch (emailError) {
+    //   console.error("Error sending user email:", emailError);
+    //   return { success: false, message: "Error sending user email." };
+    // }
 
     return { success: true, message: "Contact Form Submitted Successfully" };
   } catch (err) {
@@ -701,27 +701,27 @@ export async function subscriptionField(email: string) {
     `;
 
     // Send emails with error handling
-    try {
-      await sendMail(
-        process.env.ADMIN_EMAIL!,
-        "Newsletter Subscription",
-        adminHtml
-      );
-    } catch (emailError) {
-      console.error("Error sending admin email:", emailError);
-      return { success: false, message: "Error sending admin email." };
-    }
+    // try {
+    //   await sendMail(
+    //     process.env.ADMIN_EMAIL!,
+    //     "Newsletter Subscription",
+    //     adminHtml
+    //   );
+    // } catch (emailError) {
+    //   console.error("Error sending admin email:", emailError);
+    //   return { success: false, message: "Error sending admin email." };
+    // }
 
-    try {
-      await sendMail(
-        newsSub.email,
-        "Thank You for Subscribing to our Newsletter",
-        userHtml
-      );
-    } catch (emailError) {
-      console.error("Error sending user email:", emailError);
-      return { success: false, message: "Error sending user email." };
-    }
+    // try {
+    //   await sendMail(
+    //     newsSub.email,
+    //     "Thank You for Subscribing to our Newsletter",
+    //     userHtml
+    //   );
+    // } catch (emailError) {
+    //   console.error("Error sending user email:", emailError);
+    //   return { success: false, message: "Error sending user email." };
+    // }
 
     return {
       success: true,
