@@ -38,7 +38,10 @@ function NavbarClient() {
   const [visible, setVisible] = useState(true);
   const [lastScrollY, setLastScrollY] = useState(0);
 
-  const isActive = (url: string) => location.pathname === url;
+  const isActive = (url: string) => {
+    const hash = window.location.hash;
+    return hash === url.replace("/", "");
+  };
   const router = useRouter();
   const pathname = usePathname();
 
