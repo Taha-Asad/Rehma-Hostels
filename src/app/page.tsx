@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import HomeContent from "./HomeContent";
+import Head from "next/head";
 
 export const metadata: Metadata = {
   title: "Rehma Hostels - Affordable Rooms for Rent in Lahore",
@@ -15,5 +16,14 @@ export const metadata: Metadata = {
 };
 
 export default function HomePage() {
-  return <HomeContent />;
+  return (
+    <>
+      <Head>
+        <link rel="icon" href="/Logo.ico" sizes="any" />
+      </Head>
+      <main>
+        <HomeContent />
+      </main>
+    </>
+  );
 }

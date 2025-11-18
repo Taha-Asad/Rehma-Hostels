@@ -143,7 +143,7 @@ export default function FooterStatic() {
               <Stack direction="row" alignItems="flex-start" spacing={1.5}>
                 <LocationOn sx={{ opacity: 0.8, fontSize: 20 }} />
                 <Typography variant="body2">
-                  Plot No. 25, Main Boulevard, DHA Phase 5, Lahore, Pakistan
+                  4/1 Davis Road, Lahore, Pakistan
                 </Typography>
               </Stack>
               <Stack direction="row" alignItems="center" spacing={1.5}>

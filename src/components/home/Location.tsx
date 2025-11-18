@@ -138,8 +138,8 @@ function Location() {
                       title: "Address",
                       content: (
                         <>
-                          Plot No. 25, Main Boulevard DHA Phase 5, <br /> Lahore
-                          Punjab, <br /> Pakistan - 54000
+                          4/1 Davis Road, <br /> Lahore Punjab, <br /> Pakistan
+                          - 54000
                         </>
                       ),
                     },
