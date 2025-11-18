@@ -214,7 +214,7 @@ export async function contactForm(
           <div class="footer">
             <p>
               © REHMA Hostel | 
-              <a href="https://rehma-hostels-gtbz.vercel.app/">Visit Website</a>
+              <a href="https://www.rehmahostels.com/">Visit Website</a>
             </p>
           </div>
         </div>
@@ -345,7 +345,7 @@ export async function contactForm(
             <p>Meanwhile, you can explore our rooms and facilities on our website:</p>
 
             <a
-              href="https://rehma-hostels-gtbz.vercel.app/"
+              href="https://www.rehmahostels.com/"
               class="cta"
               >Visit REHMA Hostel</a
             >
@@ -354,7 +354,7 @@ export async function contactForm(
           <div class="footer">
             <p>
               © REHMA Hostel | Crafted with care and caffeine.<br />
-              <a href="https://rehma-hostels-gtbz.vercel.app/">rehma-hostels.com</a>
+              <a href="https://www.rehmahostels.com/</a>
             </p>
           </div>
         </div>
@@ -684,16 +684,15 @@ export async function subscriptionField(email: string) {
               below to explore.
             </p>
 
-            <a href="https://rehma-hostels-gtbz.vercel.app/" class="cta"
+            <a href="https://www.rehmahostels.com/" class="cta"
               >Explore REHMA Hostel</a
             >
           </div>
 
           <div class="footer">
             <p>
-              © REHMA Hostel | You can unsubscribe anytime.<br />
-              <a href="{{unsubscribe_link}}">Unsubscribe</a> |
-              <a href="https://rehma-hostels-gtbz.vercel.app/">rehmahostels.com</a>
+              © REHMA Hostel<br />
+              <a href="https://www.rehmahostels.com/">rehmahostels.com</a>
             </p>
           </div>
         </div>
