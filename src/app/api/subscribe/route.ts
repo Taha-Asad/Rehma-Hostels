@@ -10,16 +10,19 @@ export async function POST(req: Request) {
     const email = data.get("email") as string;
 
     if (!email) {
-      return NextResponse.json({ success: false, message: "Email required" });
+      return NextResponse.json(
+        { success: false, message: "Email required" },
+        { status: 400 }
+      );
     }
 
     // Check if already subscribed
     const exists = await prisma.subscription.findUnique({ where: { email } });
     if (exists) {
-      return NextResponse.json({
-        success: false,
-        message: "Already subscribed",
-      });
+      return NextResponse.json(
+        { success: false, message: "Already subscribed" },
+        { status: 409 }
+      );
     }
 
     // Save subscription
@@ -329,10 +332,10 @@ export async function POST(req: Request) {
       return { success: false, message: "Error sending user email." };
     }
 
-    return NextResponse.json({
-      success: true,
-      message: "Subscribed successfully",
-    });
+    return NextResponse.json(
+      { success: true, message: "Subscribed successfully" },
+      { status: 200 }
+    );
   } catch (err) {
     console.error(err);
     return NextResponse.json(
