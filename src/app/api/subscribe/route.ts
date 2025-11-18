@@ -6,7 +6,7 @@ import { sendMail } from "@/lib/mailer";
 
 export async function POST(req: Request) {
   try {
-    const data = await req.formData(); // we’ll send FormData from client
+    const data = await req.formData(); // sending FormData from client
     const email = data.get("email") as string;
 
     if (!email) {
@@ -309,7 +309,7 @@ export async function POST(req: Request) {
     </html>
     `;
 
-    // Send emails with error handling
+    // Send emails
     try {
       await sendMail(
         process.env.ADMIN_EMAIL!,
@@ -318,18 +318,20 @@ export async function POST(req: Request) {
       );
     } catch (emailError) {
       console.error("Error sending admin email:", emailError);
-      return { success: false, message: "Error sending admin email." };
+      return NextResponse.json(
+        { success: false, message: "Error sending admin email" },
+        { status: 500 }
+      );
     }
 
     try {
-      await sendMail(
-        sub.email,
-        "Thank You for Subscribing to our Newsletter",
-        userHtml
-      );
+      await sendMail(sub.email, "Thank You for Subscribing", userHtml);
     } catch (emailError) {
       console.error("Error sending user email:", emailError);
-      return { success: false, message: "Error sending user email." };
+      return NextResponse.json(
+        { success: false, message: "Error sending user email" },
+        { status: 500 }
+      );
     }
 
     return NextResponse.json(
