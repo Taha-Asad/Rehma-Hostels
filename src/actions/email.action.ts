@@ -354,7 +354,7 @@ export async function contactForm(
           <div class="footer">
             <p>
               © REHMA Hostel | Crafted with care and caffeine.<br />
-              <a href="https://www.rehmahostels.com/> Rehma hostels</a>
+<a href="https://www.rehmahostels.com/"> Rehma hostels</a>
             </p>
           </div>
         </div>
@@ -734,9 +734,4 @@ export async function subscriptionField(email: string) {
       message: "Error in subscribing to the newsletter.",
     };
   }
-}
-
-export async function subscriptionBridge(formData: FormData) {
-  const email = formData.get("email") as string;
-  return await subscriptionField(email);
 }
