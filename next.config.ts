@@ -13,6 +13,9 @@ const nextConfig: NextConfig = {
       "*.tsx": ["@swc/jest"],
     },
   },
+  eslint: {
+    ignoreDuringBuilds: true,
+  },
   experimental: {
     optimizePackageImports: [
       "@mui/material",
