@@ -354,7 +354,7 @@ export async function contactForm(
           <div class="footer">
             <p>
               © REHMA Hostel | Crafted with care and caffeine.<br />
-              <a href="https://www.rehmahostels.com/</a>
+              <a href="https://www.rehmahostels.com/"> Rehma Hostels</a>
             </p>
           </div>
         </div>
