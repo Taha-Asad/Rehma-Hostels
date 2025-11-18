@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import {
   Avatar,
   Box,
@@ -14,37 +15,35 @@ import {
   Stack,
   Typography,
 } from "@mui/material";
-import React from "react";
+import React, { useRef } from "react";
 import Stats from "../ui/Stats";
 import { People } from "@mui/icons-material";
-import { Quote } from "lucide-react";
+import { ArrowLeft, ArrowRight, Quote } from "lucide-react";
 import { motion, Variants } from "framer-motion";
 import { scrollToSection } from "@/utils/scrollToSection";
-
+import { Swiper, SwiperSlide } from "swiper/react";
+import { Autoplay, FreeMode, Navigation, Pagination } from "swiper/modules";
+import "swiper/css";
+import "swiper/css/effect-coverflow";
+import "swiper/css/navigation";
 const TestCards = [
   {
     text: "“I had been searching for hostels in Lahore, but most places didn’t feel secure or comfortable. REHMA changed that completely. The rooms are clean, the staff is supportive, and I finally found a peaceful environment where I can relax and feel at ease. It truly feels like home.”",
     value: 4.5,
     avatar: "",
     name: "Ahmed Hassan",
-    major: "Computer Science",
-    uni: "LUMS",
   },
   {
     text: "“As a working professional, I preferred apartments in Lahore over shared hostels. I’m glad I chose REHMA. The furnished rooms, Wi-Fi, and maintenance services are exactly what I needed. It’s rare to find this level of comfort and management at such a reasonable price.”",
     value: 5,
     avatar: "",
-    name: "Ahmed Hassan",
-    major: "Computer Science",
-    uni: "LUMS",
+    name: "Muhammad Hamza",
   },
   {
     text: "“My experience at REHMA’s Girls Hostel in Lahore was wonderful! It felt like a second home, safe, clean, and caring, with delicious food and a welcoming atmosphere.”",
     value: 4,
     avatar: "",
-    name: "Ahmed Hassan",
-    major: "Computer Science",
-    uni: "LUMS",
+    name: "Abdullah Ahmad",
   },
 ];
 const containerVariants: Variants = {
@@ -63,6 +62,7 @@ const cardVariants: Variants = {
   },
 };
 function Testimonials() {
+  const swiperRef = useRef<any>(null);
   return (
     <Box
       sx={{
@@ -152,11 +152,65 @@ function Testimonials() {
               </Grid>
             </Grid>
           </Box>
-          <Box>
-            <Grid container spacing={2}>
-              {TestCards.map((items, index) => (
-                <Grid key={index} size={{ xs: 12, sm: 6, md: 4 }}>
-                  <motion.div variants={cardVariants}>
+          <Box
+            sx={{
+              position: "relative",
+              overflow: "hidden",
+              py: 4,
+            }}
+          >
+            <motion.div
+              variants={containerVariants}
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true, amount: 0.2 }}
+            >
+              {" "}
+              <Swiper
+                onSwiper={(swiper) => (swiperRef.current = swiper)}
+                slidesPerView={3}
+                loop={true}
+                freeMode={true}
+                allowTouchMove={true}
+                speed={1000} // reduce speed for smoother animation
+                autoplay={{
+                  delay: 2500,
+                  disableOnInteraction: false,
+                  pauseOnMouseEnter: true,
+                }}
+                pagination={{
+                  clickable: true,
+                  el: ".swiper-pagination",
+                }}
+                navigation={{
+                  nextEl: ".custom-next",
+                  prevEl: ".custom-prev",
+                }}
+                modules={[Autoplay, FreeMode, Navigation, Pagination]}
+                spaceBetween={30}
+                grabCursor={false}
+                centeredSlides={false}
+                breakpoints={{
+                  320: { slidesPerView: 1, spaceBetween: 20 },
+                  640: { slidesPerView: 2, spaceBetween: 20 },
+                  1024: { slidesPerView: 3, spaceBetween: 30 },
+                }}
+                style={{
+                  width: "100%",
+                  height: "100%",
+                  overflow: "visible",
+                }}
+              >
+                {" "}
+                {TestCards.map((items, index) => (
+                  <SwiperSlide
+                    key={index}
+                    style={{
+                      width: "fit-content",
+                      height: "auto",
+                    }}
+                  >
+                    {" "}
                     <Card
                       sx={{
                         px: { xs: 1, md: 3 },
@@ -242,21 +296,119 @@ function Testimonials() {
                               >
                                 {items.name}
                               </Typography>
-                              <Typography fontSize="13px">
-                                {items.major}
-                              </Typography>
-                              <Typography fontSize="13px" color="#7B2E2E">
-                                {items.uni}
-                              </Typography>
                             </Box>
                           </Stack>
                         </Box>
                       </CardContent>
                     </Card>
-                  </motion.div>
-                </Grid>
-              ))}
-            </Grid>
+                  </SwiperSlide>
+                ))}
+              </Swiper>
+              {/* Custom controls (call swiperRef) */}
+              <Box
+                className="swiper-controls"
+                sx={{
+                  mt: 3,
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  gap: 3,
+                }}
+              >
+                <Box
+                  className="swiper-button custom-prev"
+                  onClick={() => swiperRef.current?.slidePrev()}
+                  sx={{ cursor: "pointer" }}
+                >
+                  <ArrowLeft />
+                </Box>
+
+                {/* Swiper will render bullets into .swiper-pagination automatically */}
+                <div className="swiper-pagination" />
+                <Box
+                  className="swiper-button custom-next"
+                  onClick={() => swiperRef.current?.slideNext()}
+                  sx={{ cursor: "pointer" }}
+                >
+                  <ArrowRight />
+                </Box>
+              </Box>
+              <style jsx global>{`
+                .swiper {
+                  overflow: visible !important;
+                  padding-right: 60px;
+                }
+
+                .swiper-wrapper {
+                  display: flex;
+                  align-items: stretch;
+                  transition-timing-function: linear !important;
+                }
+
+                .swiper-slide {
+                  width: 32% !important;
+                  flex-shrink: 0 !important;
+                  height: auto !important;
+                }
+
+                .swiper-controls {
+                  /* centered, same as you wanted */
+                }
+
+                .swiper-button {
+                  display: grid;
+                  place-items: center;
+                  width: 50px;
+                  height: 50px;
+                  border-radius: 50%;
+                  background-color: #7b2e2e;
+                  color: #fff;
+                  font-size: 24px;
+                  transition: all 0.3s ease;
+                  box-shadow: 0 4px 10px rgba(123, 46, 46, 0.25);
+                  z-index: 30;
+                }
+
+                .swiper-button:hover {
+                  background-color: #d4a373;
+                  transform: scale(1.1);
+                }
+                .swiper-pagination,
+                .custom-pagination {
+                  display: flex;
+                  justify-content: center;
+                  align-items: center;
+                  gap: 8px;
+                }
+                .swiper-pagination-bullet {
+                  background-color: #7b2e2e;
+                  opacity: 0.6;
+                  width: 10px;
+                  border-radius: 50%;
+                  height: 10px;
+                  margin: 0 4px;
+                  transition: all 0.25s ease;
+                }
+
+                .swiper-pagination-bullet-active {
+                  background-color: #d4a373;
+                  opacity: 1;
+                  transform: scale(1.2);
+                }
+
+                @media (max-width: 1024px) {
+                  .swiper-slide {
+                    width: 50% !important;
+                  }
+                }
+
+                @media (max-width: 640px) {
+                  .swiper-slide {
+                    width: 100% !important;
+                  }
+                }
+              `}</style>
+            </motion.div>
           </Box>
           <Box>
             <Container maxWidth={"sm"} sx={{ py: 4 }}>
