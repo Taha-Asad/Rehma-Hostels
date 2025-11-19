@@ -37,7 +37,6 @@ import Link from "next/link";
 import toast from "react-hot-toast";
 import DOMPurify from "dompurify";
 import Image from "next/image";
-import { subscriptionField } from "@/actions/email.action";
 interface NewsChip {
   icon: React.ReactElement;
   label: string;
@@ -193,18 +192,25 @@ const News = () => {
     setSubscribing(true);
 
     try {
-      const result = await subscriptionField(email);
-      if (result?.success) {
+      const form = new FormData();
+      form.append("email", email);
+
+      const res = await fetch("/api/subscribe", {
+        method: "POST",
+        body: form,
+      });
+
+      const result = await res.json();
+
+      if (result.success) {
         setEmail("");
-        toast.success("Newsletter Subscribed successfully");
+        toast.success(result.message || "Newsletter Subscribed successfully");
       } else {
         setEmail("");
-        toast.error(
-          result?.message || `Subscription failed. Please try again later`
-        );
+        toast.error(result.message || "Subscription failed. Try again later");
       }
-    } catch (error) {
-      toast.error(`Subscription failed. Please try again later.${error}`);
+    } catch (err) {
+      toast.error(`Subscription failed. Try again later. ${err}`);
     } finally {
       setSubscribing(false);
     }

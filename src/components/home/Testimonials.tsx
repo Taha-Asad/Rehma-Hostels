@@ -17,8 +17,8 @@ import {
 } from "@mui/material";
 import React, { useRef } from "react";
 import Stats from "../ui/Stats";
-import { People } from "@mui/icons-material";
-import { ArrowLeft, ArrowRight, Quote } from "lucide-react";
+import { ArrowLeft, ArrowRight, People } from "@mui/icons-material";
+import { Quote } from "lucide-react";
 import { motion, Variants } from "framer-motion";
 import { scrollToSection } from "@/utils/scrollToSection";
 import { Swiper, SwiperSlide } from "swiper/react";
@@ -28,22 +28,34 @@ import "swiper/css/effect-coverflow";
 import "swiper/css/navigation";
 const TestCards = [
   {
-    text: "“I had been searching for hostels in Lahore, but most places didn’t feel secure or comfortable. REHMA changed that completely. The rooms are clean, the staff is supportive, and I finally found a peaceful environment where I can relax and feel at ease. It truly feels like home.”",
+    text: `"Stayed here during a work assignment in Lahore, and it was the perfect choice. The environment is peaceful, the rooms are clean, and the Wi-Fi is reliable—everything a working professional needs. The location made commuting to meetings extremely convenient."`,
     value: 4.5,
     avatar: "",
-    name: "Ahmed Hassan",
+    name: "Ayesha Malik",
   },
   {
-    text: "“As a working professional, I preferred apartments in Lahore over shared hostels. I’m glad I chose REHMA. The furnished rooms, Wi-Fi, and maintenance services are exactly what I needed. It’s rare to find this level of comfort and management at such a reasonable price.”",
+    text: '"I frequently travel for tech projects, and this hostel really impressed me. The workspace areas are quiet, the staff is professional, and the atmosphere feels safe and mature. Great option for anyone who needs both affordability and comfort."',
     value: 5,
     avatar: "",
     name: "Muhammad Hamza",
   },
   {
-    text: "“My experience at REHMA’s Girls Hostel in Lahore was wonderful! It felt like a second home, safe, clean, and caring, with delicious food and a welcoming atmosphere.”",
+    text: '"I spent a week here during a recruitment drive in Lahore, and I loved the calm, organized environment. The common areas are well-designed for professionals, and the proximity to business districts saved me a lot of time. Highly recommended."',
     value: 4,
     avatar: "",
     name: "Abdullah Ahmad",
+  },
+  {
+    text: "“My experience at REHMA's Girls Hostel in Lahore was wonderful! It felt like a second home, safe, clean, and caring, with delicious food and a welcoming atmosphere.”",
+    value: 4,
+    avatar: "",
+    name: "Saba khan",
+  },
+  {
+    text: '"I stayed here while working on a project in Lahore and had a great experience. The atmosphere is respectful, the facilities are well-maintained, and the location is ideal for professionals. Definitely planning to stay again on my next trip."',
+    value: 5,
+    avatar: "",
+    name: "Ali Usman",
   },
 ];
 const containerVariants: Variants = {
@@ -159,152 +171,141 @@ function Testimonials() {
               py: 4,
             }}
           >
-            <motion.div
-              variants={containerVariants}
-              initial="hidden"
-              whileInView="visible"
-              viewport={{ once: true, amount: 0.2 }}
+            {" "}
+            <Swiper
+              onSwiper={(swiper) => (swiperRef.current = swiper)}
+              slidesPerView={3}
+              loop={true}
+              freeMode={true}
+              allowTouchMove={true}
+              speed={1000} // reduce speed for smoother animation
+              autoplay={{
+                delay: 2500,
+                disableOnInteraction: false,
+                pauseOnMouseEnter: true,
+              }}
+              pagination={{
+                clickable: true,
+                el: ".swiper-pagination",
+              }}
+              navigation={{
+                nextEl: ".custom-next",
+                prevEl: ".custom-prev",
+              }}
+              modules={[Autoplay, FreeMode, Navigation, Pagination]}
+              spaceBetween={30}
+              grabCursor={false}
+              centeredSlides={false}
+              breakpoints={{
+                320: { slidesPerView: 1, spaceBetween: 20 },
+                640: { slidesPerView: 2, spaceBetween: 20 },
+                1024: { slidesPerView: 3, spaceBetween: 30 },
+              }}
+              style={{
+                width: "100%",
+                height: "100%",
+                overflow: "visible",
+              }}
             >
               {" "}
-              <Swiper
-                onSwiper={(swiper) => (swiperRef.current = swiper)}
-                slidesPerView={3}
-                loop={true}
-                freeMode={true}
-                allowTouchMove={true}
-                speed={1000} // reduce speed for smoother animation
-                autoplay={{
-                  delay: 2500,
-                  disableOnInteraction: false,
-                  pauseOnMouseEnter: true,
-                }}
-                pagination={{
-                  clickable: true,
-                  el: ".swiper-pagination",
-                }}
-                navigation={{
-                  nextEl: ".custom-next",
-                  prevEl: ".custom-prev",
-                }}
-                modules={[Autoplay, FreeMode, Navigation, Pagination]}
-                spaceBetween={30}
-                grabCursor={false}
-                centeredSlides={false}
-                breakpoints={{
-                  320: { slidesPerView: 1, spaceBetween: 20 },
-                  640: { slidesPerView: 2, spaceBetween: 20 },
-                  1024: { slidesPerView: 3, spaceBetween: 30 },
-                }}
-                style={{
-                  width: "100%",
-                  height: "100%",
-                  overflow: "visible",
-                }}
-              >
-                {" "}
-                {TestCards.map((items, index) => (
-                  <SwiperSlide
-                    key={index}
-                    style={{
-                      width: "fit-content",
-                      height: "auto",
+              {TestCards.map((items, index) => (
+                <SwiperSlide
+                  key={index}
+                  style={{
+                    width: "fit-content",
+                    height: "auto",
+                    gap: 2,
+                  }}
+                >
+                  {" "}
+                  <Card
+                    sx={{
+                      px: { xs: 1, md: 3 },
+                      py: 3,
+                      width: "100%",
+                      height: { md: 480, lg: 420 },
+                      display: "flex", // make Card itself a flex container
+                      flexDirection: "column",
+                      justifyContent: "space-between", // ensures top and bottom are spaced
+                      transition: "all 0.3s ease",
+                      backgroundColor: "rgba(217,212,209,0.25)",
+                      backdropFilter: "blur(8px)",
+                      boxShadow:
+                        "0 8px 20px rgba(123,46,46,0.25), 0 2px 5px rgba(0,0,0,0.1)",
+                      "&:hover": {
+                        transform: "translateY(-6px)",
+                        boxShadow: "0 20px 40px rgba(123,46,46,0.4)",
+                      },
+                      bgcolor: "#FFFFFF",
+                      borderRadius: 1,
                     }}
                   >
-                    {" "}
-                    <Card
+                    <CardMedia>
+                      <Quote size={"30px"} style={{ marginLeft: "5px" }} />
+                    </CardMedia>
+
+                    <CardContent
                       sx={{
-                        px: { xs: 1, md: 3 },
-                        py: 3,
-                        width: "100%",
-                        height: { md: 480, lg: 420 },
-                        display: "flex", // make Card itself a flex container
+                        flexGrow: 1, // fills available vertical space
+                        display: "flex",
                         flexDirection: "column",
-                        justifyContent: "space-between", // ensures top and bottom are spaced
-                        transition: "all 0.3s ease",
-                        backgroundColor: "rgba(217,212,209,0.25)",
-                        backdropFilter: "blur(8px)",
-                        boxShadow:
-                          "0 8px 20px rgba(123,46,46,0.25), 0 2px 5px rgba(0,0,0,0.1)",
-                        "&:hover": {
-                          transform: "translateY(-6px)",
-                          boxShadow: "0 20px 40px rgba(123,46,46,0.4)",
-                        },
-                        bgcolor: "#FFFFFF",
-                        borderRadius: 1,
                       }}
                     >
-                      <CardMedia>
-                        <Quote size={"30px"} style={{ marginLeft: "5px" }} />
-                      </CardMedia>
+                      <Typography variant="body1" fontSize="15px">
+                        {items.text}
+                      </Typography>
 
-                      <CardContent
+                      <Rating
+                        value={items.value}
+                        precision={0.5}
                         sx={{
-                          flexGrow: 1, // fills available vertical space
-                          display: "flex",
-                          flexDirection: "column",
+                          mt: 2,
+                          "& .MuiRating-iconFilled": { color: "#7B2E2E" },
+                          "& .MuiRating-iconEmpty": { color: "#BAB1AD" },
                         }}
-                      >
-                        <Typography variant="body1" fontSize="15px">
-                          {items.text}
-                        </Typography>
+                      />
 
-                        <Rating
-                          value={items.value}
-                          precision={0.5}
-                          sx={{
-                            mt: 2,
-                            "& .MuiRating-iconFilled": { color: "#7B2E2E" },
-                            "& .MuiRating-iconEmpty": { color: "#BAB1AD" },
-                          }}
-                        />
-
-                        {/* Bottom section sticks to bottom */}
-                        <Box sx={{ mt: "auto" }}>
-                          <Divider sx={{ mb: 2 }} />
-                          <Stack
-                            direction="row"
-                            alignItems="center"
-                            spacing={2}
+                      {/* Bottom section sticks to bottom */}
+                      <Box sx={{ mt: "auto" }}>
+                        <Divider sx={{ mb: 2 }} />
+                        <Stack direction="row" alignItems="center" spacing={2}>
+                          <Avatar
+                            alt={items.name}
+                            src={items.avatar || undefined}
+                            sx={{
+                              width: 48,
+                              height: 48,
+                              bgcolor: "#098698",
+                              fontWeight: 600,
+                              border: "2px solid #fff",
+                              "&:hover": {
+                                transform: "scale(1.1)",
+                                transition: "0.2s ease",
+                              },
+                            }}
                           >
-                            <Avatar
-                              alt={items.name}
-                              src={items.avatar || undefined}
-                              sx={{
-                                width: 48,
-                                height: 48,
-                                bgcolor: "#098698",
-                                fontWeight: 600,
-                                border: "2px solid #fff",
-                                "&:hover": {
-                                  transform: "scale(1.1)",
-                                  transition: "0.2s ease",
-                                },
-                              }}
-                            >
-                              {!items.avatar &&
-                                items.name
-                                  .split(" ")
-                                  .map((n) => n[0])
-                                  .join("")}
-                            </Avatar>
+                            {!items.avatar &&
+                              items.name
+                                .split(" ")
+                                .map((n) => n[0])
+                                .join("")}
+                          </Avatar>
 
-                            <Box>
-                              <Typography
-                                fontWeight="bold"
-                                fontSize="14px"
-                                color="#1A1A1A"
-                              >
-                                {items.name}
-                              </Typography>
-                            </Box>
-                          </Stack>
-                        </Box>
-                      </CardContent>
-                    </Card>
-                  </SwiperSlide>
-                ))}
-              </Swiper>
-              {/* Custom controls (call swiperRef) */}
+                          <Box>
+                            <Typography
+                              fontWeight="bold"
+                              fontSize="14px"
+                              color="#1A1A1A"
+                            >
+                              {items.name}
+                            </Typography>
+                          </Box>
+                        </Stack>
+                      </Box>
+                    </CardContent>
+                  </Card>
+                </SwiperSlide>
+              ))}
               <Box
                 className="swiper-controls"
                 sx={{
@@ -312,7 +313,7 @@ function Testimonials() {
                   display: "flex",
                   justifyContent: "center",
                   alignItems: "center",
-                  gap: 3,
+                  gap: 5,
                 }}
               >
                 <Box
@@ -408,7 +409,7 @@ function Testimonials() {
                   }
                 }
               `}</style>
-            </motion.div>
+            </Swiper>
           </Box>
           <Box>
             <Container maxWidth={"sm"} sx={{ py: 4 }}>
