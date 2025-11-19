@@ -1,8 +1,6 @@
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
-("use server");
-
 import { NextResponse } from "next/server";
 import { sendMail } from "@/lib/mailer";
 import prisma from "@/lib/prisma";
