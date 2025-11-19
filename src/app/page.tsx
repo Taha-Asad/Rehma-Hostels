@@ -19,7 +19,12 @@ export default function HomePage() {
   return (
     <>
       <Head>
-        <link rel="icon" href="/favicon.ico" sizes="any" />
+        <link
+          rel="icon"
+          href="/favicon.ico"
+          sizes="any"
+          style={{ borderRadius: "50%" }}
+        />
       </Head>
       <main>
         <HomeContent />

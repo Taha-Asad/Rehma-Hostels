@@ -1,8 +1,8 @@
 "use server";
 
 import { NextResponse } from "next/server";
-import prisma from "@/lib/prisma";
 import { sendMail } from "@/lib/mailer";
+import prisma from "@/lib/prisma";
 
 export async function POST(req: Request) {
   try {
