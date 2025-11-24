@@ -1,6 +1,6 @@
 "use server";
 import { sendMail } from "@/lib/mailer";
-import prisma from "@/lib/prisma";
+import { prisma } from "@/lib/prisma";
 
 export async function contactForm(
   name: string,
@@ -389,47 +389,5 @@ export async function contactForm(
   } catch (err) {
     console.error("Error in contact form function:", err);
     return { success: false, message: "Error In Submitting Contact Form" };
-  }
-}
-
-export async function subscriptionField(email: string) {
-  try {
-    if (!email) {
-      console.error("Missing email:", email);
-      return {
-        success: false,
-        message: "Please fill in all the required fields before submitting.",
-      };
-    }
-
-    const existence = await prisma.subscription.findUnique({
-      where: { email },
-    });
-
-    if (existence) {
-      console.error("Email already subscribed:", email);
-      return {
-        success: false,
-        message: "You have already subscribed to our email",
-      };
-    }
-
-    const name = email.split("@")[0]; // Extract name from email
-    const newsSub = await prisma.subscription.create({
-      data: { name, email },
-    });
-
-    console.log("Subscription saved:", newsSub);
-
-    return {
-      success: true,
-      message: "Newsletter subscription Submitted Successfully",
-    };
-  } catch (err) {
-    console.error("Error in subscription function:", err);
-    return {
-      success: false,
-      message: "Error in subscribing to the newsletter.",
-    };
   }
 }

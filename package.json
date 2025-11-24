@@ -6,8 +6,10 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start -p 3000",
-    "lint": "eslint",
-    "postinstall": "prisma generate"
+    "lint": "eslint"
+  },
+  "prisma": {
+    "seed": "tsx prisma/seed.ts"
   },
   "dependencies": {
     "@emailjs/browser": "^4.4.1",
@@ -15,21 +17,28 @@
     "@emotion/react": "^11.14.0",
     "@emotion/server": "^11.11.0",
     "@emotion/styled": "^11.14.1",
+    "@faker-js/faker": "^10.1.0",
     "@mui/icons-material": "^7.3.4",
     "@mui/material": "^7.3.4",
     "@mui/material-nextjs": "^7.3.3",
     "@next/bundle-analyzer": "^16.0.1",
-    "@prisma/adapter-pg": "^6.19.0",
-    "@prisma/client": "^6.19.0",
-    "@prisma/extension-accelerate": "^2.0.2",
+    "@prisma/adapter-pg": "^7.0.0",
+    "@prisma/adapter-ppg": "^7.0.0",
+    "@prisma/client": "^7.0.0",
+    "@prisma/config": "^7.0.0",
     "@vercel/speed-insights": "^1.2.0",
+    "bcryptjs": "^3.0.3",
+    "chart.js": "^4.5.1",
     "dompurify": "^3.3.0",
     "framer-motion": "^12.23.24",
     "jsdom": "^27.1.0",
     "lucide-react": "^0.546.0",
     "next": "15.5.5",
+    "next-auth": "^5.0.0-beta.30",
     "nodemailer": "^7.0.10",
+    "pg": "^8.16.3",
     "react": "19.1.0",
+    "react-chartjs-2": "^5.3.1",
     "react-dom": "19.1.0",
     "react-hot-toast": "^2.6.0",
     "swiper": "^12.0.3"
@@ -40,12 +49,14 @@
     "@types/jsdom": "^27.0.0",
     "@types/node": "^20.19.25",
     "@types/nodemailer": "^7.0.3",
+    "@types/pg": "^8.15.6",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "eslint": "^9",
     "eslint-config-next": "15.5.5",
-    "prisma": "^6.19.0",
+    "prisma": "^7.0.0",
     "tailwindcss": "^4",
-    "typescript": "^5"
+    "tsx": "^4.20.6",
+    "typescript": "^5.9.3"
   }
 }

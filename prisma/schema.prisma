@@ -5,17 +5,143 @@
 // Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
 
 generator client {
-  provider = "prisma-client-js"
-  binaryTargets = ["native", "windows", "debian-openssl-3.0.x"]
+  provider   = "prisma-client-js"
+  seed       = "tsx prisma/seed.ts"
+  engineType = "library"
 }
-
 
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
-  directUrl = env("DIRECT_URL")
 }
 
+model User {
+  id        String   @id @default(cuid())
+  name      String
+  userCode  String   @unique
+  email     String   @unique
+  image     String?
+  phone     String
+  role      ROLE     @default(USER)
+  password  String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  rooms                Room[]
+  posts                Post[] //One to many 
+  comments             Comment[] //One to many
+  likes                Like[] // one to many}
+  subscription         Subscription? // just the relation name
+  notifications        Notification[] @relation("userNotifications") // notifications recived by user
+  notificationsCreated Notification[] @relation("notificationCreator")
+}
+
+enum ROLE {
+  ADMIN
+  USER
+}
+
+model Post {
+  id          String   @id @default(cuid())
+  title       String
+  content     String
+  fullContent String
+  image       String?
+  date        DateTime @default(now())
+  authorId    String
+  readTime    String
+  category    String
+  chips       String[] // list of chips/tags as strings
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  author        User           @relation(fields: [authorId], references: [id])
+  comments      Comment[]
+  likes         Like[]
+  notifications Notification[]
+  status        PostStatus     @default(PUBLISHED)
+}
+
+enum PostStatus {
+  DRAFT
+  PUBLISHED
+  ARCHIVED
+}
+
+model Room {
+  id           String   @id @default(cuid())
+  title        String
+  content      String
+  image        String?
+  serviceList  String[]
+  chips        String[]
+  price        String
+  duration     String
+  btnText      String
+  capacity     Int?
+  size         String?
+  availability String?
+  rating       Float?
+  reviews      Int?
+  description  String?
+  amenities    String[]
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  createdById String?
+  createdBy   User?   @relation(fields: [createdById], references: [id])
+}
+
+model Comment {
+  id        String   @id @default(cuid())
+  content   String
+  authorId  String
+  postId    String
+  createdAt DateTime @default(now())
+
+  author       User           @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  post         Post           @relation(fields: [postId], references: [id], onDelete: Cascade)
+  notification Notification[]
+}
+
+model Like {
+  id        String   @id @default(cuid())
+  postId    String
+  userId    String
+  createdAt DateTime @default(now())
+
+  // Relations
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  post Post @relation(fields: [postId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, postId]) // Prevents a user from liking more then one time 
+  @@index([userId, postId]) // search about it don't understand it
+}
+
+model Notification {
+  id        String           @id @default(cuid())
+  userId    String
+  creatorId String
+  type      NotificationType
+  read      Boolean          @default(false)
+  postId    String?
+  commentId String?
+  createdAt DateTime         @default(now())
+
+  //Relations
+  user    User     @relation("userNotifications", fields: [userId], references: [id], onDelete: Cascade)
+  creator User     @relation("notificationCreator", fields: [creatorId], references: [id], onDelete: Cascade)
+  post    Post?    @relation(fields: [postId], references: [id], onDelete: Cascade)
+  comment Comment? @relation(fields: [commentId], references: [id], onDelete: Cascade)
+
+  @@index([userId, createdAt])
+}
+
+enum NotificationType {
+  LIKE
+  COMMENT
+  SUBSCRIPTION
+  CONTACT
+}
 
 model Contact {
   id        Int      @id @default(autoincrement())
@@ -28,8 +154,10 @@ model Contact {
 }
 
 model Subscription {
-  id        Int      @id @default(autoincrement())
-  name      String
+  id        String   @id @default(cuid())
   email     String   @unique
+  name      String
+  userId    String?  @unique
+  user      User?    @relation(fields: [userId], references: [id])
   createdAt DateTime @default(now())
 }

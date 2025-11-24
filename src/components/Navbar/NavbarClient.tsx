@@ -21,6 +21,8 @@ import HotelIcon from "@mui/icons-material/Hotel";
 import AutoStoriesIcon from "@mui/icons-material/AutoStories";
 import { ScrollText } from "lucide-react";
 import { useRouter, usePathname } from "next/navigation";
+import AuthDialog from "./AuthDialog";
+import { useSession } from "next-auth/react";
 
 const navlinks = [
   { icon: <Home />, title: "Home", url: "/#home" },
@@ -34,7 +36,7 @@ const navlinks = [
 
 function NavbarClient() {
   const [mobileOpen, setMobileOpen] = useState(false);
-
+  const [openDialog, setOpenDialog] = useState(false);
   const [visible, setVisible] = useState(true);
   const [lastScrollY, setLastScrollY] = useState(0);
 
@@ -44,6 +46,8 @@ function NavbarClient() {
   };
   const router = useRouter();
   const pathname = usePathname();
+
+  const { data: session, status } = useSession();
 
   // Check for hash on page load and scroll to section
   useEffect(() => {
@@ -94,11 +98,13 @@ function NavbarClient() {
 
       setLastScrollY(currentScrollY);
     };
-
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, [lastScrollY]);
 
+  const handleCloseModal = () => {
+    setOpenDialog(false);
+  };
   // Prevent body scroll when drawer is open
   useEffect(() => {
     if (mobileOpen) {
@@ -289,6 +295,55 @@ function NavbarClient() {
           >
             Book Now
           </Button>
+          {status === "loading" ? (
+            <span>Loading...</span>
+          ) : session ? (
+            <Button
+              variant="contained"
+              size="large"
+              onClick={() => router.push("/profile")}
+              sx={{
+                bgcolor: "#ffff",
+                color: "#7B2E2E",
+                borderRadius: 0.5,
+                py: "10px",
+                px: "15px",
+                width: "130px",
+                fontWeight: 600,
+                boxShadow: "5px 5px 10px rgba(123, 46, 46, 0.2)",
+                transition: "all 0.3s",
+                "&:hover": {
+                  bgcolor: "#D4A373",
+                  color: "#ffff",
+                },
+              }}
+            >
+              Profile{" "}
+            </Button>
+          ) : (
+            <Button
+              variant="contained"
+              size="large"
+              onClick={() => setOpenDialog(true)}
+              sx={{
+                bgcolor: "#ffff",
+                color: "#7B2E2E",
+                borderRadius: 0.5,
+                py: "10px",
+                px: "15px",
+                width: "130px",
+                fontWeight: 600,
+                boxShadow: "5px 5px 10px rgba(123, 46, 46, 0.2)",
+                transition: "all 0.3s",
+                "&:hover": {
+                  bgcolor: "#D4A373",
+                  color: "#ffff",
+                },
+              }}
+            >
+              Sign In{" "}
+            </Button>
+          )}
         </Box>
 
         {/* Hamburger Menu */}
@@ -448,6 +503,9 @@ function NavbarClient() {
           </Button>
         </Box>
       </Drawer>
+
+      {/* Dialog Sign Up */}
+      <AuthDialog open={openDialog} onClose={handleCloseModal} />
     </Box>
   );
 }
