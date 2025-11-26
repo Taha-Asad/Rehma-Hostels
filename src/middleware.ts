@@ -1,11 +1,13 @@
 export const runtime = "nodejs";
 
-import { NextRequest, NextResponse } from "next/server";
-import { auth } from "@/auth";
+import { NextResponse } from "next/server";
+import type { NextRequest } from "next/server";
+import { auth } from "@/auth"; // <-- THIS is correct for v5
 
 export async function middleware(req: NextRequest) {
   const pathname = req.nextUrl.pathname;
 
+  // Allow this route
   if (pathname.startsWith("/not-authorized")) {
     return NextResponse.next();
   }

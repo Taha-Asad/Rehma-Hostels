@@ -1,6 +1,13 @@
 "use client";
 
-import { createContext, ReactNode, useContext, useMemo, useState } from "react";
+import {
+  createContext,
+  ReactNode,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
 import { ThemeProvider as MuiThemeProvider } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
 import Theme from "./theme";
@@ -13,9 +20,18 @@ interface ThemeProps {
 }
 export default function ThemeProvider({ children }: ThemeProps) {
   const [mode, setMode] = useState("light");
-
+  useEffect(() => {
+    const saved = localStorage.getItem("themeMode");
+    if (saved) {
+      setMode(saved);
+    }
+  }, []);
   const toggleTheme = () => {
-    setMode((prev) => (prev === "light" ? "dark" : "light"));
+    setMode((prev) => {
+      const next = prev == "light" ? "dark" : "light";
+      localStorage.setItem("themeMode", next);
+      return next;
+    });
   };
 
   const theme = useMemo(() => Theme(mode), [mode]);

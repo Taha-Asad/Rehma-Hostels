@@ -1,5 +1,4 @@
-"use client";
-
+import { getAdmin } from "@/actions/user.action";
 import ThemeProvider from "@/adminTheme/ThemeProvider";
 import Navbar from "@/components/admin/Navbar";
 import Sidebar from "@/components/admin/Sidebar";
@@ -10,7 +9,10 @@ interface AdminLayoutProps {
   children: ReactNode;
 }
 
-export default function AdminLayout({ children }: AdminLayoutProps) {
+export default async function AdminLayout({ children }: AdminLayoutProps) {
+  const res = await getAdmin();
+  const admin = res.success ? res.data : null;
+
   return (
     <ThemeProvider>
       <Box
@@ -51,7 +53,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
               width: "calc(100% - 260px)",
             }}
           >
-            <Navbar />
+            <Navbar admin={admin!} />
           </Box>
 
           <Box

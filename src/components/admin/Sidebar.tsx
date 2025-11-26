@@ -1,3 +1,4 @@
+"use client";
 import {
   Accordion,
   AccordionDetails,
@@ -61,7 +62,7 @@ function Sidebar() {
         <Box
           sx={{
             px: 3.5,
-            maxHeight: 300,
+            maxHeight: 400,
             overflowY: "auto",
             py: 1.5,
             pr: 1,

@@ -1,3 +1,4 @@
+"use client";
 import { useThemeMode } from "@/adminTheme/ThemeProvider";
 import {
   DarkMode,
@@ -16,7 +17,12 @@ import {
   useTheme,
 } from "@mui/material";
 
-function Navbar() {
+type Admin = {
+  name: string;
+  email: string;
+  image: string | null;
+} | null;
+function Navbar({ admin }: { admin: Admin }) {
   const theme = useTheme();
   const { toggleTheme } = useThemeMode();
 
@@ -132,10 +138,18 @@ function Navbar() {
               gap: 2,
             }}
           >
-            <Avatar />
-            <Typography sx={{ color: theme.palette.text.primary }}>
-              Admin
-            </Typography>
+            <Avatar src={admin?.image || ""} />
+            <Box>
+              <Typography sx={{ color: theme.palette.text.primary }}>
+                {admin?.name || "Admin"}{" "}
+              </Typography>
+              <Typography
+                variant="body2"
+                sx={{ color: theme.palette.text.primary }}
+              >
+                {admin?.email || "admin@example.com"}{" "}
+              </Typography>
+            </Box>
           </Box>
         </Box>
       </Box>
