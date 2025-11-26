@@ -46,7 +46,7 @@ export default function AuthDialog({ open, onClose }: authProps) {
   const [resetDialog, setResetDialog] = useState(false);
   const [verificationCodes, setVerificationCodes] = useState(Array(6).fill(""));
 
-  const handleChange = (event: any, newValue: number) => {
+  const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setTab(newValue);
   };
 

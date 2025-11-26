@@ -1,30 +1,18 @@
-import type { Metadata } from "next";
-import HomeContent from "./HomeContent";
-import AdminDashboard from "./admin/page";
 import { auth } from "@/auth";
 import Navbar from "@/components/Navbar/Navbar";
 import { Footer } from "@/components/Footer/Footer";
-
-export const metadata: Metadata = {
-  title: "Rehma Hostels - Affordable Rooms for Rent in Lahore",
-  description:
-    "Looking for rooms for rent in Lahore? Rehma Hostels offers budget-friendly, secure, and fully equipped rooms for individuals and professionals.",
-  keywords: "hostels, rooms for rent, Lahore, budget hostels, secure hostels",
-  openGraph: {
-    title: "Rooms for Rent in Lahore | Rehma Hostels",
-    description:
-      "Looking for rooms for rent in Lahore? Rehma Hostels offers budget-friendly, secure, and fully equipped rooms for individuals and professionals.",
-    type: "website",
-  },
-};
+import { redirect } from "next/navigation";
+import HomeContent from "./HomeContent";
 
 export default async function HomePage() {
   console.log("auth.ts LOADED");
-  const session = await auth();
-  const role = session?.user?.role;
 
   // Example: show navbar/footer only on non-admin pages
+  const session = await auth();
+  const role = session?.user?.role;
   const showNavbarFooter = role !== "ADMIN";
+
+  if (role === "ADMIN") redirect("/admin");
 
   return (
     <>
@@ -37,8 +25,7 @@ export default async function HomePage() {
       />
 
       {showNavbarFooter && <Navbar />}
-
-      <main>{role === "ADMIN" ? <AdminDashboard /> : <HomeContent />}</main>
+      <HomeContent />
 
       {showNavbarFooter && <Footer />}
     </>
