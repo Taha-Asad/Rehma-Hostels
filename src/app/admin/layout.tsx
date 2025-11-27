@@ -1,7 +1,7 @@
 // import { getAdmin } from "@/actions/user.action";
 // import ThemeProvider from "@/adminTheme/ThemeProvider";
 // import Navbar from "@/components/admin/Navbar";
-import Sidebar from "@/components/admin/Sidebar";
+// import Sidebar from "@/components/admin/Sidebar";
 import { Box } from "@mui/material";
 import React, { ReactNode } from "react";
 
@@ -30,7 +30,7 @@ export default async function AdminLayout({ children }: AdminLayoutProps) {
           zIndex: 15,
         }}
       >
-        <Sidebar />
+        {/* <Sidebar /> */}
       </Box>
 
       <Box
