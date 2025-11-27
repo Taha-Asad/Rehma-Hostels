@@ -14,61 +14,61 @@ export default async function AdminLayout({ children }: AdminLayoutProps) {
   const admin = res.success ? res.data : null;
 
   return (
-    <ThemeProvider>
+    // <ThemeProvider>
+    <Box
+      sx={{
+        display: "flex",
+      }}
+    >
       <Box
         sx={{
+          width: 260,
+          height: "100%",
+          position: "fixed",
+          bgcolor: "background.paper",
+          boxShadow: "4px 0px 15px -2px rgba(0,0,0,0.1)",
+          zIndex: 15,
+        }}
+      >
+        <Sidebar />
+      </Box>
+
+      <Box
+        sx={{
+          flex: 1,
           display: "flex",
+          flexDirection: "column",
+          height: "100vh",
+          ml: "260px",
         }}
       >
         <Box
           sx={{
-            width: 260,
-            height: "100%",
+            boxShadow: "0px 4px 15px -2px rgba(0,0,0,0.1)",
+            zIndex: 10,
             position: "fixed",
+            left: 260,
             bgcolor: "background.paper",
-            boxShadow: "4px 0px 15px -2px rgba(0,0,0,0.1)",
-            zIndex: 15,
+            height: 80,
+            width: "calc(100% - 260px)",
           }}
         >
-          <Sidebar />
+          <Navbar admin={admin!} />
         </Box>
 
         <Box
           sx={{
             flex: 1,
-            display: "flex",
-            flexDirection: "column",
-            height: "100vh",
-            ml: "260px",
+            overflow: "auto",
+            width: "100%",
+            pt: "80px",
+            bgcolor: "background.default",
           }}
         >
-          <Box
-            sx={{
-              boxShadow: "0px 4px 15px -2px rgba(0,0,0,0.1)",
-              zIndex: 10,
-              position: "fixed",
-              left: 260,
-              bgcolor: "background.paper",
-              height: 80,
-              width: "calc(100% - 260px)",
-            }}
-          >
-            <Navbar admin={admin!} />
-          </Box>
-
-          <Box
-            sx={{
-              flex: 1,
-              overflow: "auto",
-              width: "100%",
-              pt: "80px",
-              bgcolor: "background.default",
-            }}
-          >
-            {children}
-          </Box>
+          {children}
         </Box>
       </Box>
-    </ThemeProvider>
+    </Box>
+    // </ThemeProvider>
   );
 }
