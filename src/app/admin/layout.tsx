@@ -1,6 +1,6 @@
-import { getAdmin } from "@/actions/user.action";
-import ThemeProvider from "@/adminTheme/ThemeProvider";
-import Navbar from "@/components/admin/Navbar";
+// import { getAdmin } from "@/actions/user.action";
+// import ThemeProvider from "@/adminTheme/ThemeProvider";
+// import Navbar from "@/components/admin/Navbar";
 import Sidebar from "@/components/admin/Sidebar";
 import { Box } from "@mui/material";
 import React, { ReactNode } from "react";
@@ -10,8 +10,8 @@ interface AdminLayoutProps {
 }
 
 export default async function AdminLayout({ children }: AdminLayoutProps) {
-  const res = await getAdmin();
-  const admin = res.success ? res.data : null;
+  // const res = await getAdmin();
+  // const admin = res.success ? res.data : null;
 
   return (
     // <ThemeProvider>
@@ -53,7 +53,7 @@ export default async function AdminLayout({ children }: AdminLayoutProps) {
             width: "calc(100% - 260px)",
           }}
         >
-          <Navbar admin={admin!} />
+          {/* <Navbar admin={admin!} /> */}
         </Box>
 
         <Box
