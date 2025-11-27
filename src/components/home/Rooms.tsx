@@ -316,7 +316,6 @@ const cards: Room[] = [
   },
 ];
 
-
 const cardVariants: Variants = {
   hidden: { opacity: 0, y: 50 },
   visible: {
@@ -762,7 +761,7 @@ const RoomDetailsModal: React.FC<RoomDetailsModalProps> = ({
                   <Button
                     variant="contained"
                     size="large"
-                    href="https://wa.me/923259881310"
+                    href="https://wa.me/923055088887"
                     target="_blank"
                     rel="noopener noreferrer"
                     sx={{
