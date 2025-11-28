@@ -5,14 +5,21 @@ import { redirect } from "next/navigation";
 import HomeContent from "./HomeContent";
 
 export default async function HomePage() {
-  console.log("auth.ts LOADED");
+  let session = null;
 
-  // Example: show navbar/footer only on non-admin pages
-  const session = await auth();
+  try {
+    session = await auth();
+  } catch (err) {
+    console.error("Auth failed:", err);
+  }
+
   const role = session?.user?.role;
   const showNavbarFooter = role !== "ADMIN";
 
-  if (role === "ADMIN") redirect("/admin");
+  if (role === "ADMIN") {
+    // Only redirect if session exists
+    return redirect("/admin");
+  }
 
   return (
     <>

@@ -73,17 +73,16 @@ model Room {
   content      String
   image        String?
   serviceList  String[]
-  chips        String[]
+  chips        Json[]
   price        String
   duration     String
-  btnText      String
   capacity     Int?
   size         String?
   availability String?
   rating       Float?
   reviews      Int?
   description  String?
-  amenities    String[]
+  amenities    Json[]
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 
