@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
 "use client";
 
 import React, { useState, useEffect } from "react";
@@ -13,6 +15,7 @@ import {
   DialogTitle,
   DialogContent,
   DialogActions,
+  Autocomplete,
 } from "@mui/material";
 
 import {
@@ -23,7 +26,8 @@ import {
 
 // import Image from "next/image";
 import toast from "react-hot-toast";
-import { JsonValue } from "@/generated/prisma/runtime/library";
+import { Prisma } from "@prisma/client";
+import Image from "next/image";
 
 interface EditModelProps {
   open: boolean;
@@ -32,13 +36,33 @@ interface EditModelProps {
   onConfirm: (data: FormData) => void; // SERVER ACTION
 }
 
+const availability = [
+  {
+    label: "Available",
+    value: "Available",
+  },
+  {
+    label: "Unavailable",
+    value: "Unavailable",
+  },
+];
+const chipPosition = [
+  {
+    label: "top-right",
+    value: "top-right",
+  },
+  {
+    label: "bottom-left",
+    value: "bottom-left",
+  },
+];
 const EditRoomModal = ({ open, onClose, room, onConfirm }: EditModelProps) => {
   const [formData, setFormData] = useState({
     title: "",
     content: "",
     serviceList: [] as string[],
     newServiceItem: "",
-    chips: [] as JsonValue[],
+    chips: [] as Prisma.JsonValue[],
     newChip: { icon: "", label: "", position: "" },
     price: "",
     duration: "",
@@ -48,12 +72,12 @@ const EditRoomModal = ({ open, onClose, room, onConfirm }: EditModelProps) => {
     rating: null as number | null,
     reviews: null as number | null,
     description: "",
-    amenities: [] as JsonValue[], // [{icon, label}]
-    newAmenity: { icon: "", label: "" },
+    amenities: [] as string[], // [{icon, label}]
+    newAmenity: "",
   });
 
-  //   const [image, setImage] = useState<File | null>(null);
-  //   const [imagePreview, setImagePreview] = useState("");
+  const [image, setImage] = useState<File | null>(null);
+  const [imagePreview, setImagePreview] = useState("");
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
@@ -63,11 +87,12 @@ const EditRoomModal = ({ open, onClose, room, onConfirm }: EditModelProps) => {
         content: room.content || "",
         serviceList: room.serviceList || [],
         newServiceItem: "",
-        chips: (room.chips as any[]).map((c) => ({
-          icon: c.icon || "",
-          label: c.label || "",
-          position: c.position || "",
-        })),
+        chips:
+          (room.chips as any[])?.map((c) => ({
+            icon: c.icon || "",
+            label: c.label || "",
+            position: c.position || "",
+          })) || [],
         newChip: { icon: "", label: "", position: "" },
         price: room.price || "",
         duration: room.duration || "",
@@ -77,12 +102,13 @@ const EditRoomModal = ({ open, onClose, room, onConfirm }: EditModelProps) => {
         rating: room.rating ?? null,
         reviews: room.reviews ?? null,
         description: room.description || "",
-        amenities: (room.amenities as any[]).map((a) => ({
-          icon: a.icon || "",
-          label: a.label || "",
-        })),
-        newAmenity: { icon: "", label: "" },
+        amenities: room.amenities || [],
+        newAmenity: "",
       });
+
+      // FIX IMAGE PREVIEW
+      setImagePreview(room.image ?? "");
+      setImage(null);
     }
   }, [room]);
 
@@ -98,14 +124,17 @@ const EditRoomModal = ({ open, onClose, room, onConfirm }: EditModelProps) => {
   };
 
   const addChip = () => {
-    if (!formData.newChip.label) return;
+    if (!formData.newChip.label || !formData.newChip.position) return;
 
     setFormData({
       ...formData,
       chips: [...formData.chips, formData.newChip],
-      newChip: { icon: "", label: "", position: "" },
+      newChip: { label: "", icon: "", position: "" },
     });
   };
+  useEffect(() => {
+    console.log("chips updated", formData.chips);
+  }, [formData.chips]);
 
   const removeChip = (i: number) => {
     const updated = [...formData.chips];
@@ -120,12 +149,12 @@ const EditRoomModal = ({ open, onClose, room, onConfirm }: EditModelProps) => {
   };
 
   const addAmenity = () => {
-    if (!formData.newAmenity.label) return;
+    if (!formData.newAmenity.trim()) return;
 
     setFormData({
       ...formData,
       amenities: [...formData.amenities, formData.newAmenity],
-      newAmenity: { icon: "", label: "" },
+      newAmenity: "",
     });
   };
 
@@ -137,13 +166,13 @@ const EditRoomModal = ({ open, onClose, room, onConfirm }: EditModelProps) => {
 
   // IMAGE ---------------------------------------------------------------------
 
-  //   const handleImageChange = (e: SyntheticEvent) => {
-  //     const file = e.target.files?.[0];
-  //     if (!file) return;
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
+    const file = e.target.files?.[0];
+    if (!file) return;
 
-  //     setImage(file);
-  //     setImagePreview(URL.createObjectURL(file));
-  //   };
+    setImage(file);
+    setImagePreview(URL.createObjectURL(file));
+  };
 
   // SUBMIT (SERVER ACTION) ----------------------------------------------------
 
@@ -153,6 +182,9 @@ const EditRoomModal = ({ open, onClose, room, onConfirm }: EditModelProps) => {
 
       const data = new FormData();
 
+      // VERY IMPORTANT
+      data.append("id", room?.id.toString() ?? "");
+
       Object.entries(formData).forEach(([key, value]) => {
         if (Array.isArray(value)) {
           data.append(key, JSON.stringify(value));
@@ -161,7 +193,7 @@ const EditRoomModal = ({ open, onClose, room, onConfirm }: EditModelProps) => {
         }
       });
 
-      //   if (image) data.append("image", image);
+      if (image) data.append("image", image);
 
       await onConfirm(data);
 
@@ -179,17 +211,21 @@ const EditRoomModal = ({ open, onClose, room, onConfirm }: EditModelProps) => {
       open={open}
       onClose={onClose}
       fullWidth
+      disableScrollLock
+      disableEnforceFocus
       maxWidth="xl"
-      PaperProps={{
-        sx: {
-          background: "#111",
-          color: "#fff",
+      slotProps={{
+        paper: {
+          sx: {
+            background: "primary.main",
+            color: "text.primary",
+          },
         },
       }}
     >
       <DialogTitle sx={{ display: "flex", justifyContent: "space-between" }}>
         Edit Room
-        <IconButton onClick={onClose} sx={{ color: "#fff" }}>
+        <IconButton onClick={onClose} sx={{ color: "primary.main" }}>
           <CloseIcon />
         </IconButton>
       </DialogTitle>
@@ -252,8 +288,14 @@ const EditRoomModal = ({ open, onClose, room, onConfirm }: EditModelProps) => {
                 setFormData({ ...formData, title: e.target.value })
               }
               sx={{ mb: 2 }}
-              InputProps={{ sx: { color: "#fff" } }}
-              InputLabelProps={{ sx: { color: "#909090" } }}
+              slotProps={{
+                input: {
+                  sx: {
+                    color: "text.primary",
+                    "&::placeholder": { color: "text.secondary" },
+                  },
+                },
+              }}
             />
 
             <TextField
@@ -266,8 +308,14 @@ const EditRoomModal = ({ open, onClose, room, onConfirm }: EditModelProps) => {
                 setFormData({ ...formData, content: e.target.value })
               }
               sx={{ mb: 2 }}
-              InputProps={{ sx: { color: "#fff" } }}
-              InputLabelProps={{ sx: { color: "#909090" } }}
+              slotProps={{
+                input: {
+                  sx: {
+                    color: "text.primary",
+                    "&::placeholder": { color: "text.secondary" },
+                  },
+                },
+              }}
             />
 
             {/* SERVICE LIST ------------------------------------------------ */}
@@ -281,10 +329,19 @@ const EditRoomModal = ({ open, onClose, room, onConfirm }: EditModelProps) => {
                 onChange={(e) =>
                   setFormData({ ...formData, newServiceItem: e.target.value })
                 }
-                InputProps={{ sx: { color: "#fff" } }}
-                InputLabelProps={{ sx: { color: "#909090" } }}
+                slotProps={{
+                  input: {
+                    sx: {
+                      color: "text.primary",
+                      "&::placeholder": { color: "text.secondary" },
+                    },
+                  },
+                }}
               />
-              <IconButton onClick={addServiceItem} sx={{ color: "#fff" }}>
+              <IconButton
+                onClick={addServiceItem}
+                sx={{ color: "primary.main", width: 50, height: 50 }}
+              >
                 <AddIcon />
               </IconButton>
             </Box>
@@ -295,7 +352,11 @@ const EditRoomModal = ({ open, onClose, room, onConfirm }: EditModelProps) => {
                   key={i}
                   label={s}
                   onDelete={() => removeService(i)}
-                  sx={{ background: "#333", color: "#fff" }}
+                  sx={{
+                    color: "primary.main",
+                    bgcolor: "primary.contrastText",
+                    border: "1px solid primary.main",
+                  }}
                 />
               ))}
             </Box>
@@ -310,7 +371,10 @@ const EditRoomModal = ({ open, onClose, room, onConfirm }: EditModelProps) => {
                     (c as { label: string; position: string }).label
                   } (${(c as { label: string; position: string }).position})`}
                   onDelete={() => removeChip(i)}
-                  sx={{ background: "#333", color: "#fff" }}
+                  sx={{
+                    bgcolor: "primary.main",
+                    color: "primary.contrastText",
+                  }}
                 />
               ))}
             </Box>
@@ -337,8 +401,8 @@ const EditRoomModal = ({ open, onClose, room, onConfirm }: EditModelProps) => {
                         })
                       }
                       sx={{
-                        background: "#222",
-                        color: "#fff",
+                        bgcolor: "primary.main",
+                        color: "primary.contrastText",
                         cursor: "pointer",
                       }}
                     />
@@ -370,18 +434,57 @@ const EditRoomModal = ({ open, onClose, room, onConfirm }: EditModelProps) => {
                 }
               />
 
-              <TextField
-                label="Position"
-                value={formData.newChip.position}
-                onChange={(e) =>
+              <Autocomplete
+                fullWidth
+                disablePortal
+                options={chipPosition}
+                value={
+                  chipPosition.find(
+                    (opt) => opt.label === formData.newChip.position
+                  ) || null
+                }
+                onChange={(_, value) =>
                   setFormData({
                     ...formData,
-                    newChip: { ...formData.newChip, position: e.target.value },
+                    newChip: {
+                      ...formData.newChip,
+                      position: value ? value.label : "",
+                    },
                   })
                 }
+                getOptionLabel={(option) => option.label}
+                renderOption={(props, option) => {
+                  // remove the `key` property before spreading
+                  const { key, ...rest } = props;
+                  return (
+                    <Box key={key} component="li" {...rest}>
+                      <Typography variant="body2">{option.label}</Typography>
+                    </Box>
+                  );
+                }}
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    label="Position"
+                    variant="outlined"
+                    InputLabelProps={{
+                      shrink: true,
+                    }}
+                  />
+                )}
+                sx={{
+                  mb: 2,
+                }}
               />
 
-              <IconButton onClick={addChip}>
+              <IconButton
+                onClick={() => {
+                  console.log("before add", formData.chips);
+                  addChip();
+                  console.log("after add", formData.chips);
+                }}
+                sx={{ color: "primary.main", width: 50, height: 50 }}
+              >
                 <AddIcon />
               </IconButton>
             </Box>
@@ -395,8 +498,14 @@ const EditRoomModal = ({ open, onClose, room, onConfirm }: EditModelProps) => {
                 setFormData({ ...formData, price: e.target.value })
               }
               sx={{ mb: 2 }}
-              InputProps={{ sx: { color: "#fff" } }}
-              InputLabelProps={{ sx: { color: "#909090" } }}
+              slotProps={{
+                input: {
+                  sx: {
+                    color: "text.primary",
+                    "&::placeholder": { color: "text.secondary" },
+                  },
+                },
+              }}
             />
 
             {/* DURATION ------------------------------------------------------ */}
@@ -408,8 +517,14 @@ const EditRoomModal = ({ open, onClose, room, onConfirm }: EditModelProps) => {
                 setFormData({ ...formData, duration: e.target.value })
               }
               sx={{ mb: 2 }}
-              InputProps={{ sx: { color: "#fff" } }}
-              InputLabelProps={{ sx: { color: "#909090" } }}
+              slotProps={{
+                input: {
+                  sx: {
+                    color: "text.primary",
+                    "&::placeholder": { color: "text.secondary" },
+                  },
+                },
+              }}
             />
 
             {/* CAPACITY ------------------------------------------------------ */}
@@ -422,8 +537,14 @@ const EditRoomModal = ({ open, onClose, room, onConfirm }: EditModelProps) => {
                 setFormData({ ...formData, capacity: Number(e.target.value) })
               }
               sx={{ mb: 2 }}
-              InputProps={{ sx: { color: "#fff" } }}
-              InputLabelProps={{ sx: { color: "#909090" } }}
+              slotProps={{
+                input: {
+                  sx: {
+                    color: "text.primary",
+                    "&::placeholder": { color: "text.secondary" },
+                  },
+                },
+              }}
             />
 
             {/* SIZE ----------------------------------------------------------- */}
@@ -435,23 +556,55 @@ const EditRoomModal = ({ open, onClose, room, onConfirm }: EditModelProps) => {
                 setFormData({ ...formData, size: e.target.value })
               }
               sx={{ mb: 2 }}
-              InputProps={{ sx: { color: "#fff" } }}
-              InputLabelProps={{ sx: { color: "#909090" } }}
+              slotProps={{
+                input: {
+                  sx: {
+                    color: "text.primary",
+                    "&::placeholder": { color: "text.secondary" },
+                  },
+                },
+              }}
             />
 
             {/* AVAILABILITY -------------------------------------------------- */}
-            <TextField
-              fullWidth
-              label="Availability"
-              value={formData.availability}
-              onChange={(e) =>
-                setFormData({ ...formData, availability: e.target.value })
-              }
-              sx={{ mb: 2 }}
-              InputProps={{ sx: { color: "#fff" } }}
-              InputLabelProps={{ sx: { color: "#909090" } }}
-            />
 
+            <Autocomplete
+              disablePortal
+              options={availability}
+              value={
+                availability.find(
+                  (opt) => opt.label === formData.availability
+                ) || null
+              }
+              onChange={(_, value) =>
+                setFormData({ ...formData, availability: value?.label || "" })
+              }
+              getOptionLabel={(option) => option.label}
+              renderOption={(props, option) => {
+                // remove the `key` property before spreading
+                const { key, ...rest } = props;
+                return (
+                  <Box key={key} component="li" {...rest}>
+                    <Typography variant="body2">{option.label}</Typography>
+                  </Box>
+                );
+              }}
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  label="Availability"
+                  variant="outlined"
+                  slotProps={{
+                    inputLabel: {
+                      shrink: true,
+                    },
+                  }}
+                />
+              )}
+              sx={{
+                my: 2,
+              }}
+            />
             {/* RATING -------------------------------------------------------- */}
             <TextField
               fullWidth
@@ -462,8 +615,14 @@ const EditRoomModal = ({ open, onClose, room, onConfirm }: EditModelProps) => {
                 setFormData({ ...formData, rating: Number(e.target.value) })
               }
               sx={{ mb: 2 }}
-              InputProps={{ sx: { color: "#fff" } }}
-              InputLabelProps={{ sx: { color: "#909090" } }}
+              slotProps={{
+                input: {
+                  sx: {
+                    color: "text.primary",
+                    "&::placeholder": { color: "text.secondary" },
+                  },
+                },
+              }}
             />
 
             {/* REVIEWS ------------------------------------------------------- */}
@@ -476,8 +635,14 @@ const EditRoomModal = ({ open, onClose, room, onConfirm }: EditModelProps) => {
                 setFormData({ ...formData, reviews: Number(e.target.value) })
               }
               sx={{ mb: 2 }}
-              InputProps={{ sx: { color: "#fff" } }}
-              InputLabelProps={{ sx: { color: "#909090" } }}
+              slotProps={{
+                input: {
+                  sx: {
+                    color: "text.primary",
+                    "&::placeholder": { color: "text.secondary" },
+                  },
+                },
+              }}
             />
 
             {/* DESCRIPTION --------------------------------------------------- */}
@@ -491,8 +656,14 @@ const EditRoomModal = ({ open, onClose, room, onConfirm }: EditModelProps) => {
                 setFormData({ ...formData, description: e.target.value })
               }
               sx={{ mb: 3 }}
-              InputProps={{ sx: { color: "#fff" } }}
-              InputLabelProps={{ sx: { color: "#909090" } }}
+              slotProps={{
+                input: {
+                  sx: {
+                    color: "text.primary",
+                    "&::placeholder": { color: "text.secondary" },
+                  },
+                },
+              }}
             />
 
             {/* AMENITIES ----------------------------------------------------- */}
@@ -502,9 +673,12 @@ const EditRoomModal = ({ open, onClose, room, onConfirm }: EditModelProps) => {
               {formData.amenities.map((a, i) => (
                 <Chip
                   key={i}
-                  label={`${(a as { label: string }).label}`}
+                  label={a}
                   onDelete={() => removeAmenity(i)}
-                  sx={{ background: "#444", color: "#fff" }}
+                  sx={{
+                    bgcolor: "primary.main",
+                    color: "primary.contrastText",
+                  }}
                 />
               ))}
             </Box>
@@ -512,37 +686,27 @@ const EditRoomModal = ({ open, onClose, room, onConfirm }: EditModelProps) => {
             <Box sx={{ display: "flex", gap: 1, mb: 1 }}>
               <TextField
                 label="Amenity Label"
-                value={formData.newAmenity.label}
+                value={formData.newAmenity}
                 onChange={(e) =>
                   setFormData({
                     ...formData,
-                    newAmenity: {
-                      ...formData.newAmenity,
-                      label: e.target.value,
-                    },
+                    newAmenity: e.target.value,
                   })
                 }
-                InputProps={{ sx: { color: "#fff" } }}
-                InputLabelProps={{ sx: { color: "#909090" } }}
-              />
-
-              <TextField
-                label="Icon"
-                value={formData.newAmenity.icon}
-                onChange={(e) =>
-                  setFormData({
-                    ...formData,
-                    newAmenity: {
-                      ...formData.newAmenity,
-                      icon: e.target.value,
+                slotProps={{
+                  input: {
+                    sx: {
+                      color: "text.primary",
+                      "&::placeholder": { color: "text.secondary" },
                     },
-                  })
-                }
-                InputProps={{ sx: { color: "#fff" } }}
-                InputLabelProps={{ sx: { color: "#909090" } }}
+                  },
+                }}
               />
 
-              <IconButton onClick={addAmenity} sx={{ color: "#fff" }}>
+              <IconButton
+                onClick={addAmenity}
+                sx={{ color: "primary.main", width: 50, height: 50 }}
+              >
                 <AddIcon />
               </IconButton>
             </Box>
@@ -563,20 +727,25 @@ const EditRoomModal = ({ open, onClose, room, onConfirm }: EditModelProps) => {
                 mb: 2,
               }}
             >
-              {/* {imagePreview ? (
+              {imagePreview ? (
                 <>
-                  <Image
-                    src={imagePreview}
-                    width={300}
-                    height={200}
-                    alt="Preview"
-                    style={{
-                      borderRadius: "8px",
-                      marginBottom: "16px",
+                  <Box
+                    sx={{
+                      position: "relative",
                       width: "100%",
-                      height: "auto",
+                      height: 220, // now fill actually has something to fill
+                      borderRadius: "8px",
+                      overflow: "hidden",
+                      mb: 2,
                     }}
-                  />
+                  >
+                    <Image
+                      src={imagePreview}
+                      alt="Preview"
+                      fill
+                      style={{ objectFit: "cover" }}
+                    />
+                  </Box>
 
                   <Button
                     variant="outlined"
@@ -608,6 +777,7 @@ const EditRoomModal = ({ open, onClose, room, onConfirm }: EditModelProps) => {
                   <Typography sx={{ color: "#fff", mb: 1 }}>
                     No image selected
                   </Typography>
+
                   <Button
                     variant="outlined"
                     component="label"
@@ -623,7 +793,7 @@ const EditRoomModal = ({ open, onClose, room, onConfirm }: EditModelProps) => {
                     />
                   </Button>
                 </>
-              )} */}
+              )}
             </Box>
 
             <Alert
@@ -644,7 +814,23 @@ const EditRoomModal = ({ open, onClose, room, onConfirm }: EditModelProps) => {
         <Button
           onClick={onClose}
           variant="outlined"
-          sx={{ color: "#fff", borderColor: "#6F4E34" }}
+          sx={{
+            bgcolor: "primary.main",
+            color: "primary.contrastText",
+            border: "2px solid #7B2E2E",
+            borderRadius: 0.5,
+            mb: 2,
+            py: "10px",
+            px: "15px",
+            width: 200,
+            fontWeight: 600,
+            boxShadow: "5px 5px 10px rgba(123, 46, 46, 0.2)",
+            transition: "all 0.3s",
+            "&:hover": {
+              bgcolor: "secondary.main",
+              color: "primary.contrastText",
+            },
+          }}
         >
           Cancel
         </Button>
@@ -655,8 +841,21 @@ const EditRoomModal = ({ open, onClose, room, onConfirm }: EditModelProps) => {
           startIcon={<SaveIcon />}
           disabled={loading}
           sx={{
-            backgroundColor: "#6F4E34",
-            "&:hover": { backgroundColor: "#5a3e2a" },
+            bgcolor: "secondary.main",
+            color: "primary.contrastText",
+            border: "2px solid #7B2E2E",
+            borderRadius: 0.5,
+            mb: 2,
+            py: "10px",
+            px: "15px",
+            width: 200,
+            fontWeight: 600,
+            boxShadow: "5px 5px 10px rgba(123, 46, 46, 0.2)",
+            transition: "all 0.3s",
+            "&:hover": {
+              bgcolor: "primary.main",
+              color: "primary.contrastText",
+            },
           }}
         >
           {loading ? "Saving..." : "Update Room"}

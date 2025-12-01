@@ -1,0 +1,3 @@
+-- AlterTable
+ALTER TABLE "Room" ALTER COLUMN "amenities" DROP NOT NULL,
+ALTER COLUMN "amenities" SET DATA TYPE TEXT;

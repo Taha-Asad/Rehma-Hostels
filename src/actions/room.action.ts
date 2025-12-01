@@ -1,5 +1,6 @@
 "use server";
 import { prisma } from "@/lib/prisma";
+import { utapi } from "@/utils/uploadthing";
 import { revalidatePath } from "next/cache";
 
 export async function getAllRooms(): Promise<{
@@ -38,66 +39,68 @@ export async function getAllRooms(): Promise<{
   }
 }
 
-// -----------------------------------------------------
-// CREATE ROOM
-// -----------------------------------------------------
-export async function createRoom(data: Room) {
+export async function createRoom(formData: FormData) {
   try {
-    const {
-      id,
-      title,
-      content,
-      image,
-      serviceList,
-      chips,
-      price,
-      duration,
-      capacity,
-      size,
-      availability,
-      rating,
-      reviews,
-      description,
-      amenities,
-    } = data;
+    const title = formData.get("title") as string;
+    const content = formData.get("content") as string;
+    const price = formData.get("price") as string;
+    const duration = formData.get("duration") as string;
+    const capacity = Number(formData.get("capacity"));
+    const size = formData.get("size") as string;
+    const availability = formData.get("availability") as string;
+    const rating = Number(formData.get("rating"));
+    const reviews = Number(formData.get("reviews"));
+    const description = formData.get("description") as string;
 
+    // JSON fields
+    const serviceList = JSON.parse(formData.get("serviceList") as string);
+    const chips = JSON.parse(formData.get("chips") as string);
+    const amenities = JSON.parse(formData.get("amenities") as string);
+
+    // Image
+    const imageFile = formData.get("image") as File | null;
+
+    // Validate
     if (
-      !title ||
-      !content ||
-      !image ||
-      !serviceList ||
-      !chips ||
+      !title?.trim() ||
+      !content?.trim() ||
+      !imageFile ||
       !price ||
       !duration ||
-      !capacity ||
       !size ||
-      availability === undefined ||
-      !rating ||
-      !reviews ||
-      !description ||
-      !amenities
+      !availability?.trim() ||
+      !description?.trim()
     ) {
       return {
         success: false,
-        message: "Please fill in all required fields.",
+        message: "Please fill required fields",
       };
     }
 
-    const existence = await prisma.room.findFirst({ where: { title } });
-
-    if (existence) {
+    // Check duplicate
+    const exists = await prisma.room.findFirst({ where: { title } });
+    if (exists) {
       return {
         success: false,
         message: "Room with this title already exists",
       };
     }
 
+    // Upload image
+    let imageUrl: string | null = null;
+    if (imageFile && imageFile.size > 0) {
+      const uploaded = await utapi.uploadFiles(imageFile);
+
+      // Correct property: uploaded.data.url
+      imageUrl = uploaded?.data?.ufsUrl ?? null;
+    }
+
+    // Create room
     const newRoom = await prisma.room.create({
       data: {
-        id,
         title,
         content,
-        image,
+        image: imageUrl,
         serviceList,
         chips,
         price,
@@ -131,22 +134,15 @@ export async function createRoom(data: Room) {
 
     revalidatePath("/admin/rooms");
 
-    return {
-      success: true,
-      data: newRoom,
-    };
+    return { success: true, data: newRoom };
   } catch (error) {
-    console.log("Error in Creating Rooms ", error);
+    console.log("Error in Creating Rooms", error);
     return {
       success: false,
       message: `Internal Server Error. ${error}`,
     };
   }
 }
-
-// -----------------------------------------------------
-// GET ROOM BY ID
-// -----------------------------------------------------
 export async function getRoomById(roomId: string) {
   try {
     const room = await prisma.room.findUnique({
@@ -164,13 +160,9 @@ export async function getRoomById(roomId: string) {
   }
 }
 
-// -----------------------------------------------------
-// UPDATE ROOM
-// -----------------------------------------------------
 export async function UpdateRoom(roomId: string, formData: FormData) {
   try {
     const title = formData.get("title") as string;
-    const image = formData.get("image") as string;
     const content = formData.get("content") as string;
     const price = formData.get("price") as string;
     const duration = formData.get("duration") as string;
@@ -181,17 +173,26 @@ export async function UpdateRoom(roomId: string, formData: FormData) {
     const reviews = Number(formData.get("reviews"));
     const description = formData.get("description") as string;
 
-    const serviceListRaw = formData.get("serviceList") as string;
-    const chipsRaw = formData.get("chips") as string;
+    const serviceList = JSON.parse(formData.get("serviceList") as string);
+    const chips = JSON.parse(formData.get("chips") as string);
+    const amenities = JSON.parse(formData.get("amenities") as string);
 
-    const serviceList = serviceListRaw ? JSON.parse(serviceListRaw) : [];
-    const chips = chipsRaw ? JSON.parse(chipsRaw) : [];
+    const imageFile = formData.get("image") as File | null;
 
-    const UpdatedRoom = await prisma.room.update({
+    let imageUrl: string | undefined | null = null;
+
+    if (imageFile && imageFile.size > 0) {
+      const uploadRes = await utapi.uploadFiles(imageFile);
+
+      // Correct path
+      imageUrl = uploadRes?.data?.ufsUrl;
+    }
+
+    // ********** APPLY UPDATE **********
+    const updated = await prisma.room.update({
       where: { id: roomId },
       data: {
         title,
-        image,
         content,
         price,
         duration,
@@ -203,36 +204,26 @@ export async function UpdateRoom(roomId: string, formData: FormData) {
         description,
         serviceList,
         chips,
+        amenities,
+        ...(imageUrl && { image: imageUrl }), // update only if new image was uploaded
       },
     });
-
     revalidatePath("/admin/rooms");
-
-    return { success: true, data: UpdatedRoom };
-  } catch (error) {
-    console.error("Error updating room:", error);
-    return { success: false, error: "Failed to update room" };
+    return { success: true, data: updated };
+  } catch (e) {
+    console.error("UpdateRoom error:", e);
+    return { success: false, message: "Room update failed" };
   }
 }
 
-// -----------------------------------------------------
-// DELETE ROOM
-// -----------------------------------------------------
 export async function deleteRoom(roomId: string) {
   try {
     const existence = await prisma.room.findFirst({ where: { id: roomId } });
-
     if (!existence) {
-      return {
-        success: false,
-        message: "Room does not exist",
-      };
+      return { success: false, message: "Room does not exist" };
     }
-
     await prisma.room.delete({ where: { id: roomId } });
-
     revalidatePath("/admin/rooms");
-
     return { success: true };
   } catch (error) {
     console.error("Delete room error:", error);

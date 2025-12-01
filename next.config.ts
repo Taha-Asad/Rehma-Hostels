@@ -29,7 +29,16 @@ const nextConfig: NextConfig = {
   reactStrictMode: true,
   images: {
     formats: ["image/avif", "image/webp"],
-    remotePatterns: [{ protocol: "https", hostname: "images.unsplash.com" }],
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "46avwlzt0a.ufs.sh",
+      },
+      {
+        protocol: "https",
+        hostname: "*.ufs.sh",
+      },
+    ],
   },
   output: "standalone",
 };

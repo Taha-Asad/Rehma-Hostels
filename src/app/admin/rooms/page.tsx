@@ -1,5 +1,8 @@
 import { getAllRooms } from "@/actions/room.action";
-import RoomListClient from "@/components/admin/rooms/RoomListClient";
+import {
+  RoomCreateClient,
+  RoomListCardClient,
+} from "@/components/admin/rooms/RoomListClient";
 import { iconMap } from "@/utils/iconMap";
 import {
   Box,
@@ -32,9 +35,18 @@ export default async function Page() {
   return (
     <Box>
       <Container sx={{ py: 3 }}>
-        <Typography variant="h2" mb={4}>
-          Rooms
-        </Typography>
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+          }}
+        >
+          <Typography variant="h2" mb={4}>
+            Rooms
+          </Typography>
+          <RoomCreateClient />
+        </Box>
         <Grid container spacing={4}>
           {rooms?.data?.map((room, i) => {
             const chips = room.chips as unknown as ChipItem[];
@@ -278,66 +290,8 @@ export default async function Page() {
                           {room.duration}
                         </Typography>
                       </Box>
-                      {/* <Box
-                        sx={{
-                          mt: 10,
-                        }}
-                      >
-                        <Box
-                          sx={{
-                            display: "flex",
-                            justifyContent: "center",
-                            mt: "auto",
-                            mb: 2,
-                            gap: 2,
-                          }}
-                        >
-                          <Button
-                            // onClick={() => handleOpen(items)}
-                            sx={{
-                              bgcolor: "secondary.main",
-                              color: "text.secondary",
-                              border: "2px solid #7B2E2E",
-                              borderRadius: 0.5,
-                              mb: 2,
-                              py: "10px",
-                              px: "15px",
-                              width: 200,
-                              fontWeight: 600,
-                              boxShadow: "5px 5px 10px rgba(123, 46, 46, 0.2)",
-                              transition: "all 0.3s",
-                              "&:hover": {
-                                bgcolor: "primary.main",
-                                color: "text.main",
-                              },
-                            }}
-                          >
-                            Edit
-                          </Button>
-                          <Button
-                            sx={{
-                              bgcolor: "primary.main",
-                              color: "text.secondary",
-                              border: "2px solid #7B2E2E",
-                              borderRadius: 0.5,
-                              mb: 2,
-                              py: "10px",
-                              px: "15px",
-                              width: 200,
-                              fontWeight: 600,
-                              boxShadow: "5px 5px 10px rgba(123, 46, 46, 0.2)",
-                              transition: "all 0.3s",
-                              "&:hover": {
-                                bgcolor: "secondary.main",
-                                color: "text.main",
-                              },
-                            }}
-                          >
-                            Delete
-                          </Button>
-                        </Box>
-                      </Box> */}
-                      <RoomListClient rooms={[room]} />
+
+                      <RoomListCardClient rooms={[room]} />
                     </CardContent>
                   </Stack>
                 </Card>

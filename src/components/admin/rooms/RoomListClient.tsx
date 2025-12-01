@@ -1,14 +1,14 @@
 "use client";
 
-import RoomModal from "./RoomModal";
-import { deleteRoom, UpdateRoom } from "@/actions/room.action";
+import { createRoom, deleteRoom, UpdateRoom } from "@/actions/room.action";
 import { useTransition } from "react";
+import { CreateRoomCardModal, RoomCardModal } from "./RoomModal";
 
 interface RoomListClientProps {
   rooms: Room[];
 }
 
-export default function RoomListClient({ rooms }: RoomListClientProps) {
+export function RoomListCardClient({ rooms }: RoomListClientProps) {
   const [, startTransition] = useTransition();
 
   const handleDelete = (room: Room) => {
@@ -25,13 +25,29 @@ export default function RoomListClient({ rooms }: RoomListClientProps) {
   return (
     <>
       {rooms.map((room) => (
-        <RoomModal
+        <RoomCardModal
           key={room.id}
           room={room}
           onDelete={() => handleDelete(room)}
           onEdit={(id, data) => handleEdit(id, data)}
         />
       ))}
+    </>
+  );
+}
+
+export function RoomCreateClient() {
+  const [, startTransition] = useTransition();
+
+  const handleCreate = (formData: FormData) => {
+    startTransition(async () => {
+      const res = await createRoom(formData);
+      console.log("SERVER RESULT:", res); // add this
+    });
+  };
+  return (
+    <>
+      <CreateRoomCardModal onCreate={(data) => handleCreate(data)} />
     </>
   );
 }

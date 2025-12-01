@@ -16,7 +16,7 @@ declare global {
     rating: number | null;
     reviews: number | null;
     description: string | null;
-    amenities: JsonArray[];
+    amenities: string[];
   }
 }
 
