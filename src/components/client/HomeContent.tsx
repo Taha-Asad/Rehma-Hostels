@@ -1,3 +1,4 @@
+"use client";
 const Hero = dynamic(() => import("@/components/home/Hero"), { ssr: false });
 import dynamic from "next/dynamic";
 const About = dynamic(() => import("@/components/home/About"), { ssr: false });

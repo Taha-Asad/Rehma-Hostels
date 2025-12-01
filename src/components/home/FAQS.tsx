@@ -33,7 +33,7 @@ import {
 } from "@mui/icons-material";
 import { motion, useReducedMotion } from "framer-motion";
 import { Cctv } from "lucide-react";
-import { scrollToSection } from "@/utils/SscrollToSection";
+import { scrollToSection } from "@/utils/scrollToSection";
 
 // --------------------------------------------
 // 1️⃣ Move Static Data and Variants Outside Render

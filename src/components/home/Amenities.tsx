@@ -16,7 +16,6 @@ import {
 import { Cctv, Wifi } from "lucide-react";
 import React from "react";
 import { motion, Variants } from "framer-motion";
-import { scrollToSection } from "@/utils/SscrollToSection";
 import {
   DinnerDining,
   Diversity3,
@@ -24,6 +23,7 @@ import {
   Explore,
   Weekend,
 } from "@mui/icons-material";
+import { scrollToSection } from "@/utils/scrollToSection";
 
 const cards = [
   {

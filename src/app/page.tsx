@@ -8,7 +8,7 @@ import RoomPage from "@/components/home/Rooms/RoomPage";
 import Testimonials from "@/components/home/Testimonials";
 import FAQs from "@/components/home/FAQS";
 import Client from "@/components/client/Client";
-import NewsPage from "@/components/News/NewsPage";
+import NewsComponentPage from "@/components/home/News/NewsComponentPage";
 export default async function HomePage() {
   let session = null;
 
@@ -48,8 +48,8 @@ export default async function HomePage() {
         <section id="faqs">
           <FAQs />
         </section>
-        <section>
-          <NewsPage />
+        <section id="news">
+          <NewsComponentPage />
         </section>
         <Client />
       </ClientScrollProvider>
