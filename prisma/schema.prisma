@@ -49,8 +49,8 @@ model Post {
   date        DateTime @default(now())
   authorId    String
   readTime    String
-  category    String
-  chips       String[] // list of chips/tags as strings
+  category    String?
+  chips       Json[] // list of chips/tags as strings
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 

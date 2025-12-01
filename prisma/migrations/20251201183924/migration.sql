@@ -1,0 +1,3 @@
+-- AlterTable
+ALTER TABLE "Post" ALTER COLUMN "category" DROP NOT NULL,
+ALTER COLUMN "category" SET DATA TYPE TEXT;

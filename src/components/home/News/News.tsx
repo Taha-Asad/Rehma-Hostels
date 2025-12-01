@@ -368,222 +368,222 @@
 //               <Grid container spacing={3}>
 //                 {initialCards.map((item, index) => (
 //                   <Grid size={{ xs: 12, sm: 6, md: 4 }} key={item.id}>
-//                     <Card
-//                       sx={{
-//                         height: "100%",
-//                         display: "flex",
-//                         flexDirection: "column",
-//                         transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
-//                         backgroundColor: "#FFFFFF",
-//                         boxShadow:
-//                           index === 1
-//                             ? "0 20px 40px rgba(123,46,46,0.25)"
-//                             : "0 8px 20px rgba(123,46,46,0.15)",
-//                         borderRadius: 2,
-//                         overflow: "hidden",
-//                         "&:hover": {
-//                           transform: "translateY(-8px) scale(1.02)",
-//                           boxShadow: "0 25px 50px rgba(123,46,46,0.3)",
+//         <Card
+//           sx={{
+//             height: "100%",
+//             display: "flex",
+//             flexDirection: "column",
+//             transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+//             backgroundColor: "#FFFFFF",
+//             boxShadow:
+//               index === 1
+//                 ? "0 20px 40px rgba(123,46,46,0.25)"
+//                 : "0 8px 20px rgba(123,46,46,0.15)",
+//             borderRadius: 2,
+//             overflow: "hidden",
+//             "&:hover": {
+//               transform: "translateY(-8px) scale(1.02)",
+//               boxShadow: "0 25px 50px rgba(123,46,46,0.3)",
+//             },
+//           }}
+//         >
+//           <Box sx={{ position: "relative" }}>
+//             <CardMedia
+//               component="div"
+//               sx={{
+//                 width: "100%",
+//                 height: 250,
+//                 objectFit: "cover",
+//                 overflow: "hidden",
+//               }}
+//             >
+//               <Image
+//                 src={item.image}
+//                 alt={item.title}
+//                 fill
+//                 style={{
+//                   objectFit: "cover",
+//                   width: "100%",
+//                   height: "100%",
+//                 }}
+//                 loading="lazy"
+//               />
+//             </CardMedia>
+
+//             {/* Chips on image */}
+//             {item.chips.map((chip, i) => (
+//               <Chip
+//                 key={i}
+//                 icon={chip.icon}
+//                 label={chip.label}
+//                 sx={{
+//                   position: "absolute",
+//                   ...(chip.position === "top-right" && {
+//                     top: 16,
+//                     right: 16,
+//                   }),
+//                   ...(chip.position === "bottom-left" && {
+//                     bottom: 16,
+//                     left: 16,
+//                   }),
+//                   display: "flex",
+//                   alignItems: "center",
+//                   gap: 0.5,
+//                   px: 2,
+//                   py: 0.5,
+//                   borderRadius: "20px",
+//                   fontWeight: 600,
+//                   fontSize: "0.875rem",
+//                   backdropFilter: "blur(10px)",
+//                   transition: "all 0.3s ease",
+//                   ...(chip.position === "top-right"
+//                     ? {
+//                         background: "rgba(123,46,46,0.85)",
+//                         color: "#FFFFFF",
+//                         border: "1px solid rgba(255,255,255,0.2)",
+//                         "& .MuiChip-icon": {
+//                           color: "#FFFFFF",
 //                         },
-//                       }}
-//                     >
-//                       <Box sx={{ position: "relative" }}>
-//                         <CardMedia
-//                           component="div"
-//                           sx={{
-//                             width: "100%",
-//                             height: 250,
-//                             objectFit: "cover",
-//                             overflow: "hidden",
-//                           }}
-//                         >
-//                           <Image
-//                             src={item.image}
-//                             alt={item.title}
-//                             fill
-//                             style={{
-//                               objectFit: "cover",
-//                               width: "100%",
-//                               height: "100%",
-//                             }}
-//                             loading="lazy"
-//                           />
-//                         </CardMedia>
+//                       }
+//                     : {
+//                         background: "rgba(255,255,255,0.85)",
+//                         color: "#7B2E2E",
+//                         border: "1px solid rgba(123,46,46,0.2)",
+//                         "& .MuiChip-icon": {
+//                           color: "#7B2E2E",
+//                         },
+//                       }),
+//                   "&:hover": {
+//                     transform: "scale(1.05)",
+//                     boxShadow: "0 4px 12px rgba(0,0,0,0.2)",
+//                   },
+//                 }}
+//               />
+//             ))}
+//           </Box>
 
-//                         {/* Chips on image */}
-//                         {item.chips.map((chip, i) => (
-//                           <Chip
-//                             key={i}
-//                             icon={chip.icon}
-//                             label={chip.label}
-//                             sx={{
-//                               position: "absolute",
-//                               ...(chip.position === "top-right" && {
-//                                 top: 16,
-//                                 right: 16,
-//                               }),
-//                               ...(chip.position === "bottom-left" && {
-//                                 bottom: 16,
-//                                 left: 16,
-//                               }),
-//                               display: "flex",
-//                               alignItems: "center",
-//                               gap: 0.5,
-//                               px: 2,
-//                               py: 0.5,
-//                               borderRadius: "20px",
-//                               fontWeight: 600,
-//                               fontSize: "0.875rem",
-//                               backdropFilter: "blur(10px)",
-//                               transition: "all 0.3s ease",
-//                               ...(chip.position === "top-right"
-//                                 ? {
-//                                     background: "rgba(123,46,46,0.85)",
-//                                     color: "#FFFFFF",
-//                                     border: "1px solid rgba(255,255,255,0.2)",
-//                                     "& .MuiChip-icon": {
-//                                       color: "#FFFFFF",
-//                                     },
-//                                   }
-//                                 : {
-//                                     background: "rgba(255,255,255,0.85)",
-//                                     color: "#7B2E2E",
-//                                     border: "1px solid rgba(123,46,46,0.2)",
-//                                     "& .MuiChip-icon": {
-//                                       color: "#7B2E2E",
-//                                     },
-//                                   }),
-//                               "&:hover": {
-//                                 transform: "scale(1.05)",
-//                                 boxShadow: "0 4px 12px rgba(0,0,0,0.2)",
-//                               },
-//                             }}
-//                           />
-//                         ))}
-//                       </Box>
-
-//                       <CardContent
-//                         sx={{
-//                           flex: 1,
-//                           display: "flex",
-//                           flexDirection: "column",
-//                           p: 3,
-//                         }}
-//                       >
-//                         {/* Date */}
-//                         <Box
-//                           sx={{
-//                             display: "flex",
-//                             alignItems: "center",
-//                             gap: 1,
-//                             mb: 2,
-//                             color: "#7B2E2E",
-//                           }}
-//                         >
-//                           <CalendarMonth sx={{ fontSize: 18 }} />
-//                           <Typography
-//                             variant="caption"
-//                             sx={{
-//                               fontWeight: 600,
-//                               fontSize: "0.875rem",
-//                             }}
-//                           >
-//                             {item.date}
-//                           </Typography>
-//                         </Box>
-
-//                         {/* Title */}
-//                         <Typography
-//                           variant="h5"
-//                           sx={{
-//                             fontFamily: "Poppins, sans-serif",
-//                             fontWeight: 700,
-//                             color: "#3D444B",
-//                             mb: 2,
-//                             lineHeight: 1.3,
-//                           }}
-//                         >
-//                           {item.title}
-//                         </Typography>
-
-//                         {/* Content */}
-//                         <Typography
-//                           variant="body2"
-//                           sx={{
-//                             color: "#505A63",
-//                             lineHeight: 1.7,
-//                             mb: 3,
-//                             flex: 1,
-//                           }}
-//                         >
-//                           {item.content}
-//                         </Typography>
-
-//                         {/* Read More - Modal Trigger */}
-//                         <Box
-//                           onClick={() => handleOpenModal(item)}
-//                           sx={{
-//                             display: "inline-flex",
-//                             alignItems: "center",
-//                             gap: 1,
-//                             color: "#7B2E2E",
-//                             textDecoration: "none",
-//                             fontWeight: 600,
-//                             fontSize: "0.95rem",
-//                             mt: "auto",
-//                             cursor: "pointer",
-//                             transition: "all 0.3s ease",
-//                             "&:hover": {
-//                               color: "#D4A373",
-//                               gap: 1.5,
-//                               "& .arrow-icon": {
-//                                 transform: "translateX(4px)",
-//                               },
-//                             },
-//                           }}
-//                         >
-//                           Read More
-//                           <ArrowForward
-//                             className="arrow-icon"
-//                             sx={{
-//                               fontSize: 18,
-//                               transition: "transform 0.3s ease",
-//                             }}
-//                           />
-//                         </Box>
-//                       </CardContent>
-//                     </Card>
-//                   </Grid>
-//                 ))}
-//               </Grid>
-//               <Box sx={{ display: "grid", placeItems: "center", py: 4 }}>
-//                 <Button
-//                   component={Link}
-//                   href="/news"
-//                   variant="contained"
-//                   sx={{
-//                     bgcolor: "#D4A373",
-//                     color: "#FDF9F6",
-//                     borderRadius: 0.5,
-//                     width: 220,
-//                     py: "10px",
-//                     px: "15px",
-//                     fontWeight: 600,
-//                     border: "1px solid #D4A373",
-//                     boxShadow: "5px 5px 10px rgba(123, 46, 46, 0.25)",
-//                     transition: "all 0.3s",
-//                     "&:hover": {
-//                       border: "1px solid #7B2E2E",
-//                       bgcolor: "primary.contrastText",
-//                       color: "#7B2E2E",
-//                       boxShadow: "0 4px 15px rgba(212, 163, 115, 0.4)",
-//                     },
-//                   }}
-//                 >
-//                   Show More
-//                 </Button>
-//               </Box>
+//           <CardContent
+//             sx={{
+//               flex: 1,
+//               display: "flex",
+//               flexDirection: "column",
+//               p: 3,
+//             }}
+//           >
+//             {/* Date */}
+//             <Box
+//               sx={{
+//                 display: "flex",
+//                 alignItems: "center",
+//                 gap: 1,
+//                 mb: 2,
+//                 color: "#7B2E2E",
+//               }}
+//             >
+//               <CalendarMonth sx={{ fontSize: 18 }} />
+//               <Typography
+//                 variant="caption"
+//                 sx={{
+//                   fontWeight: 600,
+//                   fontSize: "0.875rem",
+//                 }}
+//               >
+//                 {item.date}
+//               </Typography>
 //             </Box>
+
+//             {/* Title */}
+//             <Typography
+//               variant="h5"
+//               sx={{
+//                 fontFamily: "Poppins, sans-serif",
+//                 fontWeight: 700,
+//                 color: "#3D444B",
+//                 mb: 2,
+//                 lineHeight: 1.3,
+//               }}
+//             >
+//               {item.title}
+//             </Typography>
+
+//             {/* Content */}
+//             <Typography
+//               variant="body2"
+//               sx={{
+//                 color: "#505A63",
+//                 lineHeight: 1.7,
+//                 mb: 3,
+//                 flex: 1,
+//               }}
+//             >
+//               {item.content}
+//             </Typography>
+
+//             {/* Read More - Modal Trigger */}
+//             <Box
+//               onClick={() => handleOpenModal(item)}
+//               sx={{
+//                 display: "inline-flex",
+//                 alignItems: "center",
+//                 gap: 1,
+//                 color: "#7B2E2E",
+//                 textDecoration: "none",
+//                 fontWeight: 600,
+//                 fontSize: "0.95rem",
+//                 mt: "auto",
+//                 cursor: "pointer",
+//                 transition: "all 0.3s ease",
+//                 "&:hover": {
+//                   color: "#D4A373",
+//                   gap: 1.5,
+//                   "& .arrow-icon": {
+//                     transform: "translateX(4px)",
+//                   },
+//                 },
+//               }}
+//             >
+//               Read More
+//               <ArrowForward
+//                 className="arrow-icon"
+//                 sx={{
+//                   fontSize: 18,
+//                   transition: "transform 0.3s ease",
+//                 }}
+//               />
+//             </Box>
+//           </CardContent>
+//         </Card>
+//       </Grid>
+//     ))}
+//   </Grid>
+//   <Box sx={{ display: "grid", placeItems: "center", py: 4 }}>
+//     <Button
+//       component={Link}
+//       href="/news"
+//       variant="contained"
+//       sx={{
+//         bgcolor: "#D4A373",
+//         color: "#FDF9F6",
+//         borderRadius: 0.5,
+//         width: 220,
+//         py: "10px",
+//         px: "15px",
+//         fontWeight: 600,
+//         border: "1px solid #D4A373",
+//         boxShadow: "5px 5px 10px rgba(123, 46, 46, 0.25)",
+//         transition: "all 0.3s",
+//         "&:hover": {
+//           border: "1px solid #7B2E2E",
+//           bgcolor: "primary.contrastText",
+//           color: "#7B2E2E",
+//           boxShadow: "0 4px 15px rgba(212, 163, 115, 0.4)",
+//         },
+//       }}
+//     >
+//       Show More
+//     </Button>
+//   </Box>
+// </Box>
 
 //             {/* Article Modal */}
 //             <Dialog
