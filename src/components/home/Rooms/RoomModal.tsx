@@ -1,4 +1,4 @@
-import { scrollToSection } from "@/utils/scrollToSection";
+import { scrollToSection } from "@/utils/SscrollToSection";
 import {
   Box,
   Button,

@@ -20,7 +20,7 @@ import Stats from "../ui/Stats";
 import { ArrowLeft, ArrowRight, People } from "@mui/icons-material";
 import { Quote } from "lucide-react";
 import { motion, Variants } from "framer-motion";
-import { scrollToSection } from "@/utils/scrollToSection";
+import { scrollToSection } from "@/utils/SscrollToSection";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay, FreeMode, Navigation, Pagination } from "swiper/modules";
 import "swiper/css";

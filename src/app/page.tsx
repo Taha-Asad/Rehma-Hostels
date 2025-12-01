@@ -2,8 +2,13 @@ import { auth } from "@/auth";
 import Navbar from "@/components/Navbar/Navbar";
 import { Footer } from "@/components/Footer/Footer";
 import { redirect } from "next/navigation";
-import HomeContent from "./HomeContent";
-
+import HomeContent from "../components/client/HomeContent";
+import { ClientScrollProvider } from "../utils/ClientScrollProvider";
+import RoomPage from "@/components/home/Rooms/RoomPage";
+import Testimonials from "@/components/home/Testimonials";
+import FAQs from "@/components/home/FAQS";
+import Client from "@/components/client/Client";
+import NewsPage from "@/components/News/NewsPage";
 export default async function HomePage() {
   let session = null;
 
@@ -32,8 +37,22 @@ export default async function HomePage() {
       />
 
       {showNavbarFooter && <Navbar />}
-      <HomeContent />
-
+      <ClientScrollProvider>
+        <HomeContent />
+        <section id="rooms">
+          <RoomPage />
+        </section>
+        <section id="reviews">
+          <Testimonials />
+        </section>
+        <section id="faqs">
+          <FAQs />
+        </section>
+        <section>
+          <NewsPage />
+        </section>
+        <Client />
+      </ClientScrollProvider>
       {showNavbarFooter && <Footer />}
     </>
   );

@@ -16,7 +16,7 @@ import {
 import { Cctv, Wifi } from "lucide-react";
 import React from "react";
 import { motion, Variants } from "framer-motion";
-import { scrollToSection } from "@/utils/scrollToSection";
+import { scrollToSection } from "@/utils/SscrollToSection";
 import {
   DinnerDining,
   Diversity3,
