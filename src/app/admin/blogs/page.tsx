@@ -1,5 +1,6 @@
 import { getAllBlogs } from "@/actions/blogs.action";
-import { ArrowForward, CalendarMonth } from "@mui/icons-material";
+import { BlogClient } from "@/components/admin/blogs/BlogClient";
+import { CalendarMonth } from "@mui/icons-material";
 import {
   Box,
   Card,
@@ -30,7 +31,7 @@ async function page() {
           }}
         >
           <Typography variant="h2" mb={4}>
-            Rooms
+            Blogs
           </Typography>
           {/* <RoomCreateClient /> */}
         </Box>
@@ -189,39 +190,7 @@ async function page() {
                     >
                       {item.content}
                     </Typography>
-
-                    {/* Read More - Modal Trigger */}
-                    <Box
-                      // onClick={() => handleOpenModal(item)}
-                      sx={{
-                        display: "inline-flex",
-                        alignItems: "center",
-                        gap: 1,
-                        color: "secondary.main",
-                        textDecoration: "none",
-                        fontWeight: 600,
-                        fontSize: "0.95rem",
-                        mt: "auto",
-                        cursor: "pointer",
-                        transition: "all 0.3s ease",
-                        "&:hover": {
-                          color: "#D4A373",
-                          gap: 1.5,
-                          "& .arrow-icon": {
-                            transform: "translateX(4px)",
-                          },
-                        },
-                      }}
-                    >
-                      Read More
-                      <ArrowForward
-                        className="arrow-icon"
-                        sx={{
-                          fontSize: 18,
-                          transition: "transform 0.3s ease",
-                        }}
-                      />
-                    </Box>
+                    <BlogClient blogs={[item]} />
                   </CardContent>
                 </Card>
               </Grid>

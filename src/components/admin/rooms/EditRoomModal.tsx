@@ -26,8 +26,8 @@ import {
 
 // import Image from "next/image";
 import toast from "react-hot-toast";
-import { Prisma } from "@prisma/client";
 import Image from "next/image";
+import { JsonValue } from "@prisma/client/runtime/client";
 
 interface EditModelProps {
   open: boolean;
@@ -62,7 +62,7 @@ const EditRoomModal = ({ open, onClose, room, onConfirm }: EditModelProps) => {
     content: "",
     serviceList: [] as string[],
     newServiceItem: "",
-    chips: [] as Prisma.JsonValue[],
+    chips: [] as JsonValue[],
     newChip: { icon: "", label: "", position: "" },
     price: "",
     duration: "",
