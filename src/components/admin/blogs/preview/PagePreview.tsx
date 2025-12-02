@@ -1,33 +1,33 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import React from "react";
 import {
-  Container,
-  Box,
-  Typography,
-  Chip,
-  Divider,
-  Button,
-  IconButton,
-  Breadcrumbs,
-  Paper,
-  Stack,
-  Avatar,
-} from "@mui/material";
-import Grid from "@mui/material/Grid";
-import {
-  CalendarMonth,
   AccessTime,
   ArrowBack,
+  CalendarMonth,
   Person,
-  Email,
-  WhatsApp,
-  Twitter,
   Facebook,
+  Twitter,
+  WhatsApp,
+  Email,
 } from "@mui/icons-material";
+import {
+  Avatar,
+  Box,
+  Chip,
+  Container,
+  IconButton,
+  Stack,
+  Typography,
+  Paper,
+  Breadcrumbs,
+  Divider,
+  Button,
+  Grid,
+} from "@mui/material";
 import Link from "next/link";
-import { notFound } from "next/navigation";
-import { getArticleById } from "@/actions/blogs.action";
 
-// Structured content blocks (same shape as editor/preview)
-type ContentBlock =
+// Import ContentBlock type
+export type ContentBlock =
   | { type: "heading"; level: 1 | 2 | 3; text: string }
   | { type: "paragraph"; text: string }
   | { type: "list"; ordered: boolean; items: string[] }
@@ -36,244 +36,287 @@ type ContentBlock =
   | { type: "image"; src: string; alt?: string }
   | { type: "link"; href: string; text: string };
 
-// Renders content blocks with your styling (no dangerous HTML)
-function RenderContent({ content }: { content: ContentBlock[] }) {
-  if (!content || content.length === 0) {
+interface PagePreviewProps {
+  pagePost: {
+    title: string;
+    content: string;
+    chips: { label: string; position: string }[];
+    fullContent: ContentBlock[];
+    image: string;
+    date: string;
+    readTime: string;
+    category: string;
+    author?: string;
+  };
+}
+
+// Type guards
+const hasText = (
+  block: ContentBlock
+): block is ContentBlock & { text: string } => {
+  return "text" in block;
+};
+
+const hasLevel = (
+  block: ContentBlock
+): block is ContentBlock & { level: 1 | 2 | 3 } => {
+  return "level" in block;
+};
+
+const hasSrc = (
+  block: ContentBlock
+): block is ContentBlock & { src: string; alt?: string } => {
+  return "src" in block;
+};
+
+const hasHref = (
+  block: ContentBlock
+): block is ContentBlock & { href: string; text: string } => {
+  return "href" in block;
+};
+
+const hasItems = (
+  block: ContentBlock
+): block is ContentBlock & { items: string[] } => {
+  return "items" in block;
+};
+
+const hasInline = (
+  block: ContentBlock
+): block is ContentBlock & { inline: boolean } => {
+  return "inline" in block;
+};
+
+function PagePreview({ pagePost }: PagePreviewProps) {
+  const article = {
+    ...pagePost,
+    author: pagePost.author || "Admin",
+  };
+
+  // Render content blocks
+  const RenderContent = ({ content }: { content: ContentBlock[] }) => {
+    if (!content || content.length === 0) {
+      return (
+        <Typography variant="body1" sx={{ color: "#505A63", lineHeight: 1.9 }}>
+          {article.content || "No content available"}
+        </Typography>
+      );
+    }
+
     return (
-      <Typography
-        sx={{ color: "#505A63", lineHeight: 1.9, fontSize: "1.125rem" }}
-      >
-        No content available
-      </Typography>
-    );
-  }
-
-  return (
-    <>
-      {content.map((block, i) => {
-        switch (block.type) {
-          case "heading":
-            if (!("text" in block)) return null;
-            return (
-              <Typography
-                key={i}
-                variant={
-                  block.level === 1 ? "h3" : block.level === 2 ? "h4" : "h5"
-                }
-                sx={{
-                  fontFamily: "Poppins, sans-serif",
-                  fontWeight: 600,
-                  color: "#3D444B",
-                  mt: 5,
-                  mb: 3,
-                  fontSize:
-                    block.level === 1
-                      ? "1.75rem"
-                      : block.level === 2
-                      ? "1.5rem"
-                      : "1.25rem",
-                  position: "relative",
-                  paddingLeft: 3,
-                  "&::before": {
-                    content: '""',
-                    position: "absolute",
-                    left: 0,
-                    top: "50%",
-                    transform: "translateY(-50%)",
-                    width: 4,
-                    height: "100%",
-                    bgcolor: "#7B2E2E",
-                    borderRadius: 2,
-                  },
-                }}
-              >
-                {block.text}
-              </Typography>
-            );
-
-          case "paragraph":
-            if (!("text" in block)) return null;
-            return (
-              <Typography
-                key={i}
-                sx={{
-                  color: "#505A63",
-                  lineHeight: 1.9,
-                  mb: 3,
-                  fontSize: "1.125rem",
-                }}
-              >
-                {block.text}
-              </Typography>
-            );
-
-          case "list":
-            if (!("items" in block)) return null;
-            return (
-              <Box
-                key={i}
-                component={block.ordered ? "ol" : "ul"}
-                sx={{
-                  color: "#505A63",
-                  pl: 4,
-                  mb: 3,
-                  "& li": {
-                    mb: 2,
-                    lineHeight: 1.8,
-                    fontSize: "1.1rem",
-                    position: "relative",
-                    "&::marker": {
-                      color: "#7B2E2E",
-                    },
-                  },
-                }}
-              >
-                {block.items.map((item, j) => (
-                  <Box key={j} component="li">
-                    {item}
-                  </Box>
-                ))}
-              </Box>
-            );
-
-          case "blockquote":
-            if (!("text" in block)) return null;
-            return (
-              <Box
-                key={i}
-                sx={{
-                  borderLeft: "4px solid #7B2E2E",
-                  pl: 3,
-                  ml: 2,
-                  my: 3,
-                  py: 2,
-                  bgcolor: "rgba(123,46,46,0.03)",
-                }}
-              >
+      <>
+        {content.map((block, i) => {
+          switch (block.type) {
+            case "heading":
+              return hasLevel(block) && hasText(block) ? (
                 <Typography
+                  key={i}
+                  variant={
+                    block.level === 1 ? "h3" : block.level === 2 ? "h4" : "h5"
+                  }
                   sx={{
-                    fontStyle: "italic",
-                    color: "#505A63",
-                    lineHeight: 1.8,
-                    fontSize: "1.1rem",
+                    fontFamily: "Poppins, sans-serif",
+                    fontWeight: 600,
+                    color: "#3D444B",
+                    mt: 5,
+                    mb: 3,
+                    fontSize:
+                      block.level === 1
+                        ? "1.75rem"
+                        : block.level === 2
+                        ? "1.5rem"
+                        : "1.25rem",
+                    position: "relative",
+                    paddingLeft: 3,
+                    "&::before": {
+                      content: '""',
+                      position: "absolute",
+                      left: 0,
+                      top: "50%",
+                      transform: "translateY(-50%)",
+                      width: 4,
+                      height: "100%",
+                      bgcolor: "#7B2E2E",
+                      borderRadius: 2,
+                    },
                   }}
                 >
                   {block.text}
                 </Typography>
-              </Box>
-            );
+              ) : null;
 
-          case "code":
-            if (!("text" in block) || !("inline" in block)) return null;
-            return block.inline ? (
-              <Box
-                key={i}
-                component="code"
-                sx={{
-                  bgcolor: "#F1E9E9",
-                  px: 1,
-                  py: 0.5,
-                  borderRadius: 0.5,
-                  fontFamily: "monospace",
-                  fontSize: "0.95em",
-                  color: "#7B2E2E",
-                }}
-              >
-                {block.text}
-              </Box>
-            ) : (
-              <Box
-                key={i}
-                component="pre"
-                sx={{
-                  bgcolor: "#F1E9E9",
-                  p: 3,
-                  borderRadius: 1,
-                  overflow: "auto",
-                  mb: 3,
-                  border: "1px solid rgba(123,46,46,0.1)",
-                  fontFamily: "monospace",
-                  fontSize: "0.95em",
-                }}
-              >
-                <code style={{ color: "#3D444B" }}>{block.text}</code>
-              </Box>
-            );
-
-          case "image":
-            if (!("src" in block)) return null;
-            return (
-              <Box key={i} sx={{ my: 4, textAlign: "center" }}>
-                <Box
-                  component="img"
-                  src={block.src}
-                  alt={block.alt || ""}
+            case "paragraph":
+              return hasText(block) ? (
+                <Typography
+                  key={i}
                   sx={{
-                    maxWidth: "100%",
-                    height: "auto",
-                    borderRadius: 1,
-                    boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
+                    color: "#505A63",
+                    lineHeight: 1.9,
+                    mb: 3,
+                    fontSize: "1.125rem",
                   }}
-                />
-                {block.alt && (
+                >
+                  {block.text}
+                </Typography>
+              ) : null;
+
+            case "list":
+              return hasItems(block) ? (
+                <Box
+                  key={i}
+                  component={(block as any).ordered ? "ol" : "ul"}
+                  sx={{
+                    color: "#505A63",
+                    pl: 4,
+                    mb: 3,
+                    "& li": {
+                      mb: 2,
+                      lineHeight: 1.8,
+                      fontSize: "1.1rem",
+                      position: "relative",
+                      "&::marker": {
+                        color: "#7B2E2E",
+                      },
+                    },
+                  }}
+                >
+                  {block.items.map((item, j) => (
+                    <Box component="li" key={j}>
+                      {item}
+                    </Box>
+                  ))}
+                </Box>
+              ) : null;
+
+            case "blockquote":
+              return hasText(block) ? (
+                <Box
+                  key={i}
+                  sx={{
+                    borderLeft: "4px solid #7B2E2E",
+                    pl: 3,
+                    ml: 2,
+                    my: 3,
+                    py: 2,
+                    bgcolor: "rgba(123,46,46,0.03)",
+                  }}
+                >
                   <Typography
-                    variant="caption"
                     sx={{
-                      display: "block",
-                      color: "#909090",
-                      mt: 2,
                       fontStyle: "italic",
+                      color: "#505A63",
+                      lineHeight: 1.8,
+                      fontSize: "1.1rem",
                     }}
                   >
-                    {block.alt}
+                    {block.text}
                   </Typography>
-                )}
-              </Box>
-            );
+                </Box>
+              ) : null;
 
-          case "link":
-            if (!("href" in block) || !("text" in block)) return null;
-            return (
-              <Box
-                key={i}
-                component="a"
-                href={block.href}
-                target="_blank"
-                rel="noopener noreferrer"
-                sx={{
-                  color: "#7B2E2E",
-                  textDecoration: "none",
-                  fontWeight: 500,
-                  "&:hover": {
-                    textDecoration: "underline",
-                    color: "#D4A373",
-                  },
-                }}
-              >
-                {block.text}
-              </Box>
-            );
+            case "code":
+              return hasText(block) && hasInline(block) ? (
+                block.inline ? (
+                  <Box
+                    key={i}
+                    component="code"
+                    sx={{
+                      bgcolor: "#F1E9E9",
+                      px: 1,
+                      py: 0.5,
+                      borderRadius: 0.5,
+                      fontFamily: "monospace",
+                      fontSize: "0.95em",
+                      color: "#7B2E2E",
+                    }}
+                  >
+                    {block.text}
+                  </Box>
+                ) : (
+                  <Box
+                    key={i}
+                    component="pre"
+                    sx={{
+                      bgcolor: "#F1E9E9",
+                      p: 3,
+                      borderRadius: 1,
+                      overflow: "auto",
+                      mb: 3,
+                      border: "1px solid rgba(123,46,46,0.1)",
+                      fontFamily: "monospace",
+                      fontSize: "0.95em",
+                    }}
+                  >
+                    <code style={{ color: "#3D444B" }}>{block.text}</code>
+                  </Box>
+                )
+              ) : null;
 
-          default:
-            return null;
-        }
-      })}
-    </>
-  );
-}
+            case "image":
+              return hasSrc(block) && block.src ? (
+                <Box
+                  key={i}
+                  sx={{
+                    my: 4,
+                    textAlign: "center",
+                  }}
+                >
+                  <Box
+                    component="img"
+                    src={block.src}
+                    alt={block.alt || ""}
+                    sx={{
+                      maxWidth: "100%",
+                      height: "auto",
+                      borderRadius: 1,
+                      boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
+                    }}
+                  />
+                  {block.alt && (
+                    <Typography
+                      variant="caption"
+                      sx={{
+                        display: "block",
+                        color: "#909090",
+                        mt: 2,
+                        fontStyle: "italic",
+                      }}
+                    >
+                      {block.alt}
+                    </Typography>
+                  )}
+                </Box>
+              ) : null;
 
-interface PageProps {
-  params: { id: string };
-}
+            case "link":
+              return hasHref(block) && hasText(block) ? (
+                <Box
+                  key={i}
+                  component="a"
+                  href={block.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  sx={{
+                    color: "#7B2E2E",
+                    textDecoration: "none",
+                    fontWeight: 500,
+                    "&:hover": {
+                      textDecoration: "underline",
+                      color: "#D4A373",
+                    },
+                  }}
+                >
+                  {block.text}
+                </Box>
+              ) : null;
 
-export default async function BlogPost({ params }: PageProps) {
-  const article = await getArticleById(params.id);
-  if (!article) notFound();
-
-  const bgStyle =
-    article.image && article.image.length > 0
-      ? `linear-gradient(180deg, rgba(123,46,46,0.8) 0%, rgba(0,0,0,0.9) 100%), url(${article.image})`
-      : `linear-gradient(180deg, rgba(123,46,46,0.8) 0%, rgba(0,0,0,0.9) 100%)`;
+            default:
+              return null;
+          }
+        })}
+      </>
+    );
+  };
 
   return (
     <Box sx={{ bgcolor: "#FAFAFA", minHeight: "100vh", pt: 10 }}>
@@ -282,7 +325,9 @@ export default async function BlogPost({ params }: PageProps) {
         sx={{
           position: "relative",
           height: { xs: 450, md: 500 },
-          background: bgStyle,
+          background: article.image
+            ? `linear-gradient(180deg, rgba(123,46,46,0.8) 0%, rgba(0,0,0,0.9) 100%), url(${article.image})`
+            : `linear-gradient(180deg, rgba(123,46,46,0.8) 0%, rgba(0,0,0,0.9) 100%)`,
           backgroundSize: "cover",
           backgroundPosition: "center",
           backgroundAttachment: { md: "fixed" },
@@ -290,17 +335,16 @@ export default async function BlogPost({ params }: PageProps) {
       >
         {/* Back Button */}
         <IconButton
-          component={Link}
-          href="/news"
           sx={{
             display: { xs: "none", sm: "grid" },
             position: "absolute",
             top: 100,
             left: { xs: 20, md: 40 },
-            bgcolor: "rgba(255,255,255,0.9)",
+            bgcolor: "primary.main",
             backdropFilter: "blur(10px)",
             "&:hover": {
               bgcolor: "white",
+              color: "primary.main",
               transform: "scale(1.1)",
             },
           }}
@@ -342,7 +386,7 @@ export default async function BlogPost({ params }: PageProps) {
                 lineHeight: 1.2,
               }}
             >
-              {article.title}
+              {article.title || "Untitled Article"}
             </Typography>
             <Stack
               direction="row"
@@ -390,7 +434,7 @@ export default async function BlogPost({ params }: PageProps) {
       >
         <Grid container spacing={4}>
           {/* Main Content */}
-          <Grid size={{ xs: 12, md: 8 }}>
+          <Grid size={{ xs: 12 }}>
             <Paper
               elevation={16}
               sx={{
@@ -418,7 +462,25 @@ export default async function BlogPost({ params }: PageProps) {
                 <Typography color="text.primary">Article</Typography>
               </Breadcrumbs>
 
-              {/* Article Content (rendered safely) */}
+              {/* Display Chips if any */}
+              {article.chips && article.chips.length > 0 && (
+                <Box sx={{ mb: 4, display: "flex", gap: 1, flexWrap: "wrap" }}>
+                  {article.chips.map((chip, i) => (
+                    <Chip
+                      key={i}
+                      label={chip.label}
+                      sx={{
+                        bgcolor: "rgba(123,46,46,0.1)",
+                        color: "#7B2E2E",
+                        border: "1px solid rgba(123,46,46,0.2)",
+                        fontWeight: 500,
+                      }}
+                    />
+                  ))}
+                </Box>
+              )}
+
+              {/* Article Content */}
               <Box>
                 <RenderContent content={article.fullContent} />
               </Box>
@@ -477,7 +539,7 @@ export default async function BlogPost({ params }: PageProps) {
           </Grid>
 
           {/* Sidebar */}
-          <Grid size={{ xs: 12, md: 4 }}>
+          <Grid size={{ xs: 12 }}>
             {/* Author Card */}
             <Paper
               elevation={16}
@@ -486,7 +548,7 @@ export default async function BlogPost({ params }: PageProps) {
                 pb: 8,
                 px: 2,
                 mb: 7,
-                bgcolor: "#F6F4F4",
+                bgcolor: "primary.contrastText",
                 boxShadow: "0 20px 40px rgba(123,46,46,0.4)",
               }}
             >
@@ -513,8 +575,12 @@ export default async function BlogPost({ params }: PageProps) {
                   <Person />
                 </Avatar>
                 <Box>
-                  <Typography variant="subtitle1" sx={{ fontWeight: 600 }}>
-                    {article.author}
+                  <Typography
+                    variant="subtitle1"
+                    sx={{ fontWeight: 600 }}
+                    color="#3D444B"
+                  >
+                    {article.author || "Admin"}
                   </Typography>
                   <Typography variant="body2" color="text.secondary">
                     Content Writer
@@ -613,3 +679,5 @@ export default async function BlogPost({ params }: PageProps) {
     </Box>
   );
 }
+
+export default PagePreview;

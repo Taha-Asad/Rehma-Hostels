@@ -1,7 +1,3 @@
-import { auth } from "@/auth";
-import Navbar from "@/components/Navbar/Navbar";
-import { Footer } from "@/components/Footer/Footer";
-import { redirect } from "next/navigation";
 import HomeContent from "../components/client/HomeContent";
 import { ClientScrollProvider } from "../utils/ClientScrollProvider";
 import RoomPage from "@/components/home/Rooms/RoomPage";
@@ -10,22 +6,6 @@ import FAQs from "@/components/home/FAQS";
 import Client from "@/components/client/Client";
 import NewsComponentPage from "@/components/home/News/NewsComponentPage";
 export default async function HomePage() {
-  let session = null;
-
-  try {
-    session = await auth();
-  } catch (err) {
-    console.error("Auth failed:", err);
-  }
-
-  const role = session?.user?.role;
-  const showNavbarFooter = role !== "ADMIN";
-
-  if (role === "ADMIN") {
-    // Only redirect if session exists
-    return redirect("/admin");
-  }
-
   return (
     <>
       {/* Favicon (can leave this for now) */}
@@ -36,7 +16,6 @@ export default async function HomePage() {
         style={{ borderRadius: "50%" }}
       />
 
-      {showNavbarFooter && <Navbar />}
       <ClientScrollProvider>
         <HomeContent />
         <section id="rooms">
@@ -53,7 +32,6 @@ export default async function HomePage() {
         </section>
         <Client />
       </ClientScrollProvider>
-      {showNavbarFooter && <Footer />}
     </>
   );
 }

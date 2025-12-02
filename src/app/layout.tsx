@@ -5,6 +5,10 @@ import ClientThemeProvider from "@/components/ClientThemeProvider";
 import { Toaster } from "react-hot-toast";
 import { SessionProvider } from "next-auth/react";
 import { Metadata } from "next";
+import { auth } from "@/auth";
+import Navbar from "@/components/Navbar/Navbar";
+import { Footer } from "@/components/Footer/Footer";
+import { redirect } from "next/navigation";
 const poppins = Poppins({
   subsets: ["latin"],
   weight: ["400", "500", "600", "700"],
@@ -28,11 +32,27 @@ export const metadata: Metadata = {
     type: "website",
   },
 };
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  let session = null;
+
+  try {
+    session = await auth();
+  } catch (err) {
+    console.error("Auth failed:", err);
+  }
+
+  const role = session?.user?.role;
+  const showNavbarFooter = role !== "ADMIN";
+
+  if (role === "ADMIN") {
+    // Only redirect if session exists
+    return redirect("/admin");
+  }
+
   return (
     <html
       lang="en"
@@ -42,7 +62,12 @@ export default function RootLayout({
       <body suppressHydrationWarning>
         <SessionProvider>
           <AppRouterCacheProvider>
-            <ClientThemeProvider>{children}</ClientThemeProvider>
+            <ClientThemeProvider>
+              {showNavbarFooter && <Navbar />}
+              {children}
+              {showNavbarFooter && <Footer />}
+            </ClientThemeProvider>
+
             <Toaster />
           </AppRouterCacheProvider>
         </SessionProvider>

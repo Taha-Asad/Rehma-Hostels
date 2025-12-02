@@ -1,5 +1,8 @@
 import { getAllBlogs } from "@/actions/blogs.action";
-import { BlogClient } from "@/components/admin/blogs/BlogClient";
+import {
+  BlogClient,
+  BlogCreateClient,
+} from "@/components/admin/blogs/BlogClient";
 import { CalendarMonth } from "@mui/icons-material";
 import {
   Box,
@@ -33,7 +36,7 @@ async function page() {
           <Typography variant="h2" mb={4}>
             Blogs
           </Typography>
-          {/* <RoomCreateClient /> */}
+          <BlogCreateClient />
         </Box>
         <Grid container spacing={3}>
           {res?.data?.map((item, index) => {

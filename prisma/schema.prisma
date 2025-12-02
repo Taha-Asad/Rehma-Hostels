@@ -44,7 +44,7 @@ model Post {
   id          String   @id @default(cuid())
   title       String
   content     String
-  fullContent String
+  fullContent Json[]
   image       String?
   date        DateTime @default(now())
   authorId    String

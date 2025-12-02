@@ -1,7 +1,7 @@
 "use client";
 import React, { useTransition } from "react";
-import { BlogCardModal } from "./BlogsModal";
-import { DeleteBlog, UpdateBlog } from "@/actions/blogs.action";
+import { BlogCardModal, CreateBlogCardModal } from "./BlogsModal";
+import { CreateBlog, DeleteBlog, UpdateBlog } from "@/actions/blogs.action";
 import type { Post } from "@prisma/client";
 
 interface BlogsClientProps {
@@ -14,9 +14,9 @@ export function BlogClient({ blogs }: BlogsClientProps) {
       DeleteBlog(blog.id);
     });
   };
-  const handleEdit = (blogId: string, formData: FormData) => {
+  const handleEdit = (formData: FormData) => {
     startTransition(() => {
-      UpdateBlog(blogId, formData);
+      UpdateBlog(formData);
     });
   };
 
@@ -27,25 +27,25 @@ export function BlogClient({ blogs }: BlogsClientProps) {
           key={blog.id}
           blogs={blog}
           onDelete={() => handleDelete(blog)}
-          onEdit={(id, data) => handleEdit(id, data)}
+          onEdit={(id, data) => handleEdit(data)}
         />
       ))}
     </>
   );
 }
 
-// export function RoomCreateClient() {
-//   const [, startTransition] = useTransition();
+export function BlogCreateClient() {
+  const [, startTransition] = useTransition();
 
-//   const handleCreate = (formData: FormData) => {
-//     startTransition(async () => {
-//       const res = await createRoom(formData);
-//       console.log("SERVER RESULT:", res); // add this
-//     });
-//   };
-//   return (
-//     <>
-//       <CreateRoomCardModal onCreate={(data) => handleCreate(data)} />
-//     </>
-//   );
-// }
+  const handleCreate = (formData: FormData) => {
+    startTransition(async () => {
+      const res = await CreateBlog(formData);
+      console.log("SERVER RESULT:", res); // add this
+    });
+  };
+  return (
+    <>
+      <CreateBlogCardModal onCreate={(data) => handleCreate(data)} />
+    </>
+  );
+}

@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import {
   Box,
   TextField,
@@ -32,7 +32,6 @@ import {
 
 import toast from "react-hot-toast";
 import Image from "next/image";
-import type { Post } from "@prisma/client";
 import CardPreview from "./preview/CardPreview";
 import ModalPreview from "./preview/ModalPreview";
 import PagePreview from "./preview/PagePreview";
@@ -55,7 +54,7 @@ const statusOptions = [
   { label: "ARCHIVED", value: "ARCHIVED" },
 ];
 
-// Improved ContentBlock types with discriminated unions
+// Discriminated union for content blocks
 export type ContentBlock =
   | { type: "heading"; level: 1 | 2 | 3; text: string }
   | { type: "paragraph"; text: string }
@@ -65,51 +64,38 @@ export type ContentBlock =
   | { type: "image"; src: string; alt?: string }
   | { type: "link"; href: string; text: string };
 
-interface EditModelProps {
+interface CreateModalProps {
   open: boolean;
   onClose: () => void;
-  blog: Post | null;
-  onConfirm: (data: FormData) => void;
+  onConfirm: (data: FormData) => void; // SERVER ACTION
 }
 
 // Type guards for ContentBlock
 const hasText = (
   block: ContentBlock
-): block is ContentBlock & { text: string } => {
-  return "text" in block;
-};
+): block is ContentBlock & { text: string } => "text" in block;
 
 const hasLevel = (
   block: ContentBlock
-): block is ContentBlock & { level: 1 | 2 | 3 } => {
-  return "level" in block;
-};
+): block is ContentBlock & { level: 1 | 2 | 3 } => "level" in block;
 
 const hasSrc = (
   block: ContentBlock
-): block is ContentBlock & { src: string; alt?: string } => {
-  return "src" in block;
-};
+): block is ContentBlock & { src: string; alt?: string } => "src" in block;
 
 const hasHref = (
   block: ContentBlock
-): block is ContentBlock & { href: string; text: string } => {
-  return "href" in block;
-};
+): block is ContentBlock & { href: string; text: string } => "href" in block;
 
 const hasItems = (
   block: ContentBlock
-): block is ContentBlock & { items: string[] } => {
-  return "items" in block;
-};
+): block is ContentBlock & { items: string[] } => "items" in block;
 
 const hasInline = (
   block: ContentBlock
-): block is ContentBlock & { inline: boolean } => {
-  return "inline" in block;
-};
+): block is ContentBlock & { inline: boolean } => "inline" in block;
 
-const EditBlogModal = ({ onClose, open, blog, onConfirm }: EditModelProps) => {
+const CreateBlogModal = ({ onClose, open, onConfirm }: CreateModalProps) => {
   const [previewMode, setPreviewMode] = useState<"card" | "modal" | "page">(
     "card"
   );
@@ -124,62 +110,23 @@ const EditBlogModal = ({ onClose, open, blog, onConfirm }: EditModelProps) => {
     date: "",
     readTime: "",
     category: "",
-    status: "",
+    status: "DRAFT",
   });
 
   const [image, setImage] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState("");
   const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    if (!blog) return;
-    try {
-      // Parse fullContent if it's a string
-      let parsedFullContent: ContentBlock[] = [];
-      if (typeof blog.fullContent === "string") {
-        try {
-          parsedFullContent = JSON.parse(blog.fullContent);
-        } catch {
-          parsedFullContent = [];
-        }
-      } else if (Array.isArray(blog.fullContent)) {
-        parsedFullContent = blog.fullContent as ContentBlock[];
-      }
-
-      setFormData({
-        title: blog.title || "",
-        content: blog.content || "",
-        chips:
-          (blog.chips as any[])?.map((c) => ({
-            label: c.label || "",
-            position: c.position || "",
-          })) || [],
-        newChip: { label: "", position: "" },
-        fullContent: parsedFullContent,
-        image: blog.image || "",
-        date: blog.date ? new Date(blog.date).toISOString().split("T")[0] : "",
-        readTime: blog.readTime || "",
-        category: blog.category || "",
-        status: blog.status || "",
-      });
-      setImagePreview(blog.image ?? "");
-      setImage(null);
-    } catch (error) {
-      console.error(`Error getting Data ${error}`);
-      toast.error(`Error getting Data`);
-    }
-  }, [blog]);
-
   const addChip = () => {
     if (!formData.newChip.label || !formData.newChip.position) {
       toast.error("Please fill chip label and position");
       return;
     }
-    setFormData({
-      ...formData,
-      chips: [...formData.chips, formData.newChip],
+    setFormData((prev) => ({
+      ...prev,
+      chips: [...prev.chips, prev.newChip],
       newChip: { label: "", position: "" },
-    });
+    }));
   };
 
   const removeChip = (index: number) => {
@@ -221,32 +168,29 @@ const EditBlogModal = ({ onClose, open, blog, onConfirm }: EditModelProps) => {
     try {
       setLoading(true);
 
-      // Validation
-      if (!formData.title) {
+      if (!formData.title.trim()) {
         toast.error("Title is required");
         return;
       }
 
       const data = new FormData();
-      data.append("id", blog?.id.toString() ?? "");
-
+      // Do NOT append id for create
       Object.entries(formData).forEach(([key, value]) => {
-        if (key !== "newChip") {
-          if (Array.isArray(value) || typeof value === "object") {
-            data.append(key, JSON.stringify(value));
-          } else if (value !== null && value !== undefined) {
-            data.append(key, value.toString());
-          }
+        if (key === "newChip") return;
+        if (Array.isArray(value) || typeof value === "object") {
+          data.append(key, JSON.stringify(value));
+        } else if (value !== null && value !== undefined) {
+          data.append(key, value.toString());
         }
       });
 
       if (image) data.append("image", image);
 
       await onConfirm(data);
-      toast.success("Blog updated successfully");
+      toast.success("Blog created successfully");
       onClose();
     } catch (error) {
-      toast.error(`Update failed: ${error}`);
+      toast.error(`Create failed: ${error}`);
     } finally {
       setLoading(false);
     }
@@ -275,7 +219,7 @@ const EditBlogModal = ({ onClose, open, blog, onConfirm }: EditModelProps) => {
           borderBottom: "1px solid background.main",
         }}
       >
-        Edit Blog Post
+        Create Blog Post
         <IconButton onClick={onClose}>
           <CloseIcon />
         </IconButton>
@@ -286,9 +230,7 @@ const EditBlogModal = ({ onClose, open, blog, onConfirm }: EditModelProps) => {
         sx={{
           pb: 4,
           bgcolor: "background.default",
-          "&::-webkit-scrollbar": {
-            width: "6px",
-          },
+          "&::-webkit-scrollbar": { width: "6px" },
           "&::-webkit-scrollbar-thumb": {
             backgroundColor: "rgba(123,46,46,0.5)",
             borderRadius: "4px",
@@ -296,7 +238,6 @@ const EditBlogModal = ({ onClose, open, blog, onConfirm }: EditModelProps) => {
           "&::-webkit-scrollbar-thumb:hover": {
             backgroundColor: "rgba(123,46,46,0.8)",
           },
-          // top fade
           "&::before": {
             content: '""',
             position: "sticky",
@@ -308,7 +249,6 @@ const EditBlogModal = ({ onClose, open, blog, onConfirm }: EditModelProps) => {
               "linear-gradient(to bottom, rgba(246,244,244,1), rgba(246,244,244,0))",
             zIndex: 1,
           },
-          // bottom fade
           "&::after": {
             content: '""',
             position: "sticky",
@@ -699,7 +639,6 @@ const EditBlogModal = ({ onClose, open, blog, onConfirm }: EditModelProps) => {
                   </Button>
                 </Box>
 
-                {/* Content Fields */}
                 {(block.type === "paragraph" ||
                   block.type === "heading" ||
                   block.type === "blockquote") &&
@@ -941,11 +880,11 @@ const EditBlogModal = ({ onClose, open, blog, onConfirm }: EditModelProps) => {
             },
           }}
         >
-          {loading ? "Saving..." : "Update Room"}
+          {loading ? "Saving..." : "Create Blog"}
         </Button>
       </DialogActions>
     </Dialog>
   );
 };
 
-export default EditBlogModal;
+export default CreateBlogModal;
