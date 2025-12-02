@@ -6,6 +6,6 @@ export const metadata = {
     "Explore rental tips, guides, and updates from Rehma Hostels. Learn how to find the best rooms, hostels, and apartments for rent in Lahore with ease. ",
 };
 export default async function page() {
-  const initialArticles = await getPublishedNews(100); // adjust limit as needed
+  const initialArticles = await getPublishedNews(10); // adjust limit as needed
   return <NewsPage initialArticles={initialArticles} />;
 }

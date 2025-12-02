@@ -1,21 +1,22 @@
-export const runtime = "nodejs";
-
+import { getToken } from "next-auth/jwt";
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
-import { auth } from "@/auth"; // <-- THIS is correct for v5
+
+export const runtime = "nodejs";
 
 export async function middleware(req: NextRequest) {
   const pathname = req.nextUrl.pathname;
 
-  // Allow this route
-  if (pathname.startsWith("/not-authorized")) {
-    return NextResponse.next();
-  }
+  // Allow public route
+  if (pathname.startsWith("/not-authorized")) return NextResponse.next();
 
-  const session = await auth();
+  const secret = process.env.AUTH_SECRET;
+
+  const token = await getToken({ req, secret });
+
   const isAdminRoute = pathname.startsWith("/admin");
 
-  if (isAdminRoute && (!session || session.user.role !== "ADMIN")) {
+  if (isAdminRoute && (!token || token.role !== "ADMIN")) {
     return NextResponse.redirect(new URL("/not-authorized", req.url));
   }
 

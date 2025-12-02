@@ -468,8 +468,6 @@ export type NewsArticle = {
   featured?: boolean;
 };
 export async function getArticleById(id: string) {
-  // Adjust if your Post.id is numeric:
-  // const post = await prisma.post.findUnique({ where: { id: Number(id) } });
   const post = await prisma.post.findUnique({
     where: { id },
     include: {
@@ -480,17 +478,16 @@ export async function getArticleById(id: string) {
   if (!post) return null;
 
   const fullContent = parseJSONSafe<ContentBlock[]>(post.fullContent, []);
-  // chips are not used here, but they could be parsed similarly if needed
 
   return {
     id: post.id,
-    title: post.title || "",
-    content: post.content || "",
-    image: post.image || "",
-    date: post.date ? new Date(post.date).toLocaleDateString() : "",
-    author: post.author?.name || "Admin",
-    readTime: post.readTime || "5 min read",
-    category: post.category || "General",
+    title: post.title ?? "",
+    content: post.content ?? "",
+    image: post.image ?? "",
+    date: post.date ? new Date(post.date).toLocaleDateString("en-US") : "",
+    author: post.author?.name ?? "Admin",
+    readTime: post.readTime ?? "5 min read",
+    category: post.category ?? "General",
     fullContent,
   };
 }
