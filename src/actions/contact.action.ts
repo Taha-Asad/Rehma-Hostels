@@ -1,6 +1,14 @@
 "use server";
 import { sendMail } from "@/lib/mailer";
 import { prisma } from "@/lib/prisma";
+import { ContactStatus } from "@prisma/client";
+import { revalidatePath } from "next/cache";
+
+const generateContactID = () => {
+  const prefix = "CNT-";
+  const numberGenerator = Math.floor(100000 + Math.random() * 900000);
+  return prefix + numberGenerator;
+};
 
 export async function contactForm(
   name: string,
@@ -40,11 +48,12 @@ export async function contactForm(
       };
     }
 
-    // Save contact form data to the database
+    const contactId = generateContactID();
     let contact;
     try {
       contact = await prisma.contact.create({
         data: {
+          id: contactId,
           name,
           email,
           phone,
@@ -389,5 +398,58 @@ export async function contactForm(
   } catch (err) {
     console.error("Error in contact form function:", err);
     return { success: false, message: "Error In Submitting Contact Form" };
+  }
+}
+
+export async function getAllForms() {
+  try {
+    const contacts = await prisma.contact.findMany({
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        phone: true,
+        roomType: true,
+        message: true,
+        status: true,
+        createdAt: true,
+      },
+    });
+    return { success: true, data: contacts };
+  } catch (error) {
+    console.error("Error in getting all form function:", error);
+    return { success: false, message: "Error In getting all Contact Form" };
+  }
+}
+
+export async function UpdateContactStatus(contactID: string, status: string) {
+  try {
+    const updatedContact = await prisma.contact.update({
+      where: { id: contactID },
+      data: {
+        status: status as ContactStatus, // ✔️ fixed
+      },
+    });
+
+    return { success: true, data: updatedContact };
+  } catch (error) {
+    console.error("Error updating contact status:", error);
+    return { success: false, error: "Failed to update contact status" };
+  }
+}
+export async function DeleteContactForm(contactID: string) {
+  try {
+    const existence = await prisma.contact.findFirst({
+      where: { id: contactID },
+    });
+    if (!existence) {
+      return { success: false, message: "Room does not exist" };
+    }
+    await prisma.contact.delete({ where: { id: contactID } });
+    revalidatePath("/admin/contacts");
+    return { success: true };
+  } catch (error) {
+    console.error("Delete contact error:", error);
+    return { success: false, error: "Failed to delete contact" };
   }
 }

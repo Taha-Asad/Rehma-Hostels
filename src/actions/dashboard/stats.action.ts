@@ -4,24 +4,24 @@ import { prisma } from "@/lib/prisma";
 
 export async function getDashboardStats() {
   try {
-    const usersByRole = await prisma.user.groupBy({
-      by: ["role"],
-      _count: { _all: true }, // Corrected for the user query as well
-    });
+    const [usersByRole, postsByStatus, roomsCount] = await Promise.all([
+      prisma.user.groupBy({
+        by: ["role"],
+        _count: { _all: true },
+        orderBy: {
+          role: "asc",
+        },
+      }),
 
-    // --- Corrected Code Here ---
-    const postsByStatus = await prisma.post.groupBy({
-      by: ["status"],
-      _count: { _all: true }, // Use _all to count all records in the group
-      // You can also use an alias if preferred:
-      // _count: { count: true }
-    });
-    // --- End Correction ---
+      prisma.post.groupBy({
+        by: ["status"],
+        _count: { _all: true },
+        orderBy: {
+          status: "asc",
+        },
+      }),
 
-    const [roomsCount, comments, likes] = await Promise.all([
       prisma.room.count(),
-      prisma.comment.count(),
-      prisma.like.count(),
     ]);
 
     return {
@@ -30,8 +30,6 @@ export async function getDashboardStats() {
         usersByRole,
         postsByStatus,
         rooms: roomsCount,
-        comments,
-        likes,
       },
     };
   } catch (error) {

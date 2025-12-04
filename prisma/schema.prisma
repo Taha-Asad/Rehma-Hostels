@@ -1,13 +1,7 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider   = "prisma-client-js"
-  seed       = "tsx prisma/seed.ts"
   engineType = "library"
+  seed       = "tsx prisma/seed.ts"
 }
 
 datasource db {
@@ -15,56 +9,43 @@ datasource db {
 }
 
 model User {
-  id        String   @id @default(cuid())
-  name      String
-  userCode  String   @unique
-  email     String   @unique
-  image     String?
-  phone     String
-  role      ROLE     @default(USER)
-  password  String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  rooms                Room[]
-  posts                Post[] //One to many 
-  comments             Comment[] //One to many
-  likes                Like[] // one to many}
-  subscription         Subscription? // just the relation name
-  notifications        Notification[] @relation("userNotifications") // notifications recived by user
+  id                   String         @id @default(cuid())
+  name                 String
+  email                String         @unique
+  image                String?
+  role                 ROLE           @default(USER)
+  password             String
+  createdAt            DateTime       @default(now())
+  updatedAt            DateTime       @updatedAt
+  phone                String
+  userCode             String         @unique
+  comments             Comment[]
+  likes                Like[]
   notificationsCreated Notification[] @relation("notificationCreator")
-}
-
-enum ROLE {
-  ADMIN
-  USER
+  notifications        Notification[] @relation("userNotifications")
+  posts                Post[]
+  rooms                Room[]
+  subscription         Subscription?
 }
 
 model Post {
-  id          String   @id @default(cuid())
-  title       String
-  content     String
-  fullContent Json[]
-  image       String?
-  date        DateTime @default(now())
-  authorId    String
-  readTime    String
-  category    String?
-  chips       Json[] // list of chips/tags as strings
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-
-  author        User           @relation(fields: [authorId], references: [id])
+  id            String         @id @default(cuid())
+  title         String
+  content       String
+  image         String?
+  date          DateTime       @default(now())
+  authorId      String
+  readTime      String
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+  status        PostStatus     @default(PUBLISHED)
+  category      String?
+  chips         Json[]
+  fullContent   Json[]
   comments      Comment[]
   likes         Like[]
   notifications Notification[]
-  status        PostStatus     @default(PUBLISHED)
-}
-
-enum PostStatus {
-  DRAFT
-  PUBLISHED
-  ARCHIVED
+  author        User           @relation(fields: [authorId], references: [id])
 }
 
 model Room {
@@ -73,7 +54,6 @@ model Room {
   content      String
   image        String?
   serviceList  String[]
-  chips        Json[]
   price        String
   duration     String
   capacity     Int?
@@ -82,21 +62,20 @@ model Room {
   rating       Float?
   reviews      Int?
   description  String?
-  amenities    String[]
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
-
-  createdById String?
-  createdBy   User?   @relation(fields: [createdById], references: [id])
+  createdById  String?
+  chips        Json[]
+  amenities    String[]
+  createdBy    User?    @relation(fields: [createdById], references: [id])
 }
 
 model Comment {
-  id        String   @id @default(cuid())
-  content   String
-  authorId  String
-  postId    String
-  createdAt DateTime @default(now())
-
+  id           String         @id @default(cuid())
+  content      String
+  authorId     String
+  postId       String
+  createdAt    DateTime       @default(now())
   author       User           @relation(fields: [authorId], references: [id], onDelete: Cascade)
   post         Post           @relation(fields: [postId], references: [id], onDelete: Cascade)
   notification Notification[]
@@ -107,13 +86,11 @@ model Like {
   postId    String
   userId    String
   createdAt DateTime @default(now())
+  post      Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  // Relations
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-  post Post @relation(fields: [postId], references: [id], onDelete: Cascade)
-
-  @@unique([userId, postId]) // Prevents a user from liking more then one time 
-  @@index([userId, postId]) // search about it don't understand it
+  @@unique([userId, postId])
+  @@index([userId, postId])
 }
 
 model Notification {
@@ -125,14 +102,49 @@ model Notification {
   postId    String?
   commentId String?
   createdAt DateTime         @default(now())
-
-  //Relations
-  user    User     @relation("userNotifications", fields: [userId], references: [id], onDelete: Cascade)
-  creator User     @relation("notificationCreator", fields: [creatorId], references: [id], onDelete: Cascade)
-  post    Post?    @relation(fields: [postId], references: [id], onDelete: Cascade)
-  comment Comment? @relation(fields: [commentId], references: [id], onDelete: Cascade)
+  comment   Comment?         @relation(fields: [commentId], references: [id], onDelete: Cascade)
+  creator   User             @relation("notificationCreator", fields: [creatorId], references: [id], onDelete: Cascade)
+  post      Post?            @relation(fields: [postId], references: [id], onDelete: Cascade)
+  user      User             @relation("userNotifications", fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId, createdAt])
+}
+
+model Contact {
+  id        String        @id @default(cuid())
+  name      String
+  email     String
+  phone     String
+  roomType  String?
+  message   String?
+  status    ContactStatus @default(PENDING)
+  createdAt DateTime      @default(now())
+}
+
+enum ContactStatus {
+  PENDING
+  REPLIED
+  IGNORED
+}
+
+model Subscription {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  createdAt DateTime @default(now())
+  userId    String?  @unique
+  name      String
+  user      User?    @relation(fields: [userId], references: [id])
+}
+
+enum ROLE {
+  ADMIN
+  USER
+}
+
+enum PostStatus {
+  DRAFT
+  PUBLISHED
+  ARCHIVED
 }
 
 enum NotificationType {
@@ -140,23 +152,4 @@ enum NotificationType {
   COMMENT
   SUBSCRIPTION
   CONTACT
-}
-
-model Contact {
-  id        Int      @id @default(autoincrement())
-  name      String
-  email     String
-  phone     String
-  roomType  String?
-  message   String?
-  createdAt DateTime @default(now())
-}
-
-model Subscription {
-  id        String   @id @default(cuid())
-  email     String   @unique
-  name      String
-  userId    String?  @unique
-  user      User?    @relation(fields: [userId], references: [id])
-  createdAt DateTime @default(now())
 }

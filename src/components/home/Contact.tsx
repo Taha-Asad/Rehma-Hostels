@@ -32,7 +32,7 @@ import {
 import Stats from "../ui/Stats";
 import { motion, Variants } from "framer-motion";
 import toast from "react-hot-toast";
-import { contactForm } from "@/actions/email.action";
+import { contactForm } from "@/actions/contact.action";
 
 const primary = "#7B2E2E";
 const primaryDark = "#5f2424";

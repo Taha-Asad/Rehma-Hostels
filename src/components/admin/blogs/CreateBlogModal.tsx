@@ -106,7 +106,6 @@ const CreateBlogModal = ({ onClose, open, onConfirm }: CreateModalProps) => {
     chips: [] as { label: string; position: string }[],
     newChip: { label: "", position: "" },
     fullContent: [] as ContentBlock[],
-    image: "",
     date: "",
     readTime: "",
     category: "",

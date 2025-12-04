@@ -20,23 +20,11 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
     },
 
     async session({ session, token }) {
-      session.user.id = token.id;
-      session.user.role = token.role;
-      return session;
-    },
-
-    authorized({ auth, request }) {
-      // not logged in
-      if (!auth?.user) return false;
-
-      // admin route check
-      const isAdminRoute = request.nextUrl.pathname.startsWith("/admin");
-
-      if (isAdminRoute && auth.user.role !== "ADMIN") {
-        return false;
+      if (session.user) {
+        session.user.id = token.id;
+        session.user.role = token.role;
       }
-
-      return true;
+      return session;
     },
   },
 

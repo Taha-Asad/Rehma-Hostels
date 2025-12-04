@@ -29,24 +29,22 @@ const chartColors = {
   gray: "#E0E0E0",
 };
 type ChartDataType = ChartData<"pie", number[], string>;
-type MetricKey = "users" | "posts" | "rooms" | "comments" | "likes";
+type MetricKey = "users" | "posts" | "rooms";
+// DashboardStats.tsx (Your component file)
+
 interface DashboardStatsProps {
   stats: {
+    // This is the desired and now correct structure:
     usersByRole: { role: string; _count: { _all: number } }[];
     postsByStatus: { status: string; _count: { _all: number } }[];
     rooms: number;
-    comments: number;
-    likes: number;
   } | null;
 }
-
 // ... (metricsOption array remains the same) ...
 const metricsOption: { label: string; value: MetricKey }[] = [
   { value: "users", label: "Users" },
   { value: "posts", label: "Posts" },
   { value: "rooms", label: "Rooms" },
-  { value: "comments", label: "Comments" },
-  { value: "likes", label: "Likes" },
 ];
 
 export default function DashboardStats({ stats }: DashboardStatsProps) {
@@ -71,18 +69,6 @@ export default function DashboardStats({ stats }: DashboardStatsProps) {
       breakdownLabels: [],
       breakdownData: [],
       totalValue: stats?.rooms || 0,
-    },
-    comments: {
-      label: "Comments",
-      breakdownLabels: [],
-      breakdownData: [],
-      totalValue: stats?.comments || 0,
-    },
-    likes: {
-      label: "Likes",
-      breakdownLabels: [],
-      breakdownData: [],
-      totalValue: stats?.likes || 0,
     },
   };
 

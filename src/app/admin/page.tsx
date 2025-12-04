@@ -1,8 +1,8 @@
+import { getDashboardStats } from "@/actions/dashboard/stats.action";
 import DashboardStats from "@/components/admin/dashboard/DashboardStats";
 import RightSidebar from "@/components/admin/dashboard/RightSidebar";
 import { Box } from "@mui/material";
 import React from "react";
-import { getDashboardStats } from "@/actions/dashboard/stats.action";
 async function Dashboard() {
   const stats = await getDashboardStats();
 
