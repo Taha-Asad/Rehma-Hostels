@@ -12,8 +12,8 @@ import {
 interface DeleteRoomModalProps {
   open: boolean;
   onClose: () => void;
-  room: { title: string; price: string } | null;
-  onConfirm: (data: { title: string; price: string }) => void;
+  room: { title: string; price: number } | null;
+  onConfirm: (data: { title: string; price: number }) => void;
 }
 
 export default function DeleteRoomModal({
