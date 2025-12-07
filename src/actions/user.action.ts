@@ -1,7 +1,7 @@
 "use server";
 
 import { auth, signIn, signOut } from "@/auth";
-import { prisma } from "@/lib/prisma";
+import prisma from "@/lib/prisma";
 import { utapi } from "@/utils/uploadthing";
 import { compare, hash } from "bcryptjs";
 import { revalidatePath } from "next/cache";

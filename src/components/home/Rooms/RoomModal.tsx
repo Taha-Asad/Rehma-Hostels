@@ -388,7 +388,7 @@ export const RoomDetailsModal: React.FC<RoomDetailsModalProps> = ({
                       variant="h4"
                       sx={{ fontWeight: 700, color: "#D4A373" }}
                     >
-                      {room.price}
+                      PKR {room.price}
                     </Typography>
                     <Typography variant="body2" sx={{ opacity: 0.8 }}>
                       {room.duration}

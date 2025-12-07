@@ -1,6 +1,6 @@
 "use server";
 import { sendMail } from "@/lib/mailer";
-import { prisma } from "@/lib/prisma";
+import prisma from "@/lib/prisma";
 import { ContactStatus } from "@prisma/client";
 import { revalidatePath } from "next/cache";
 

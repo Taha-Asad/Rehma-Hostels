@@ -4,7 +4,7 @@ import { ContentBlock } from "@/components/admin/email/BlockEditor";
 import { EmailContent } from "@/components/admin/email/ReplyModal";
 import { generateEmailHtml, generateEmailText } from "@/lib/emailTemplate";
 import { sendMail } from "@/lib/mailer";
-import { prisma } from "@/lib/prisma";
+import prisma from "@/lib/prisma";
 
 export async function GetAllEmails() {
   try {

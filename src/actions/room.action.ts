@@ -1,13 +1,9 @@
 "use server";
-import { prisma } from "@/lib/prisma";
+import prisma from "@/lib/prisma";
 import { utapi } from "@/utils/uploadthing";
 import { revalidatePath } from "next/cache";
 
-export async function getAllRooms(): Promise<{
-  success: boolean;
-  data?: Room[];
-  message?: string;
-}> {
+export async function getAllRooms() {
   try {
     const rooms = await prisma.room.findMany({
       select: {
@@ -17,6 +13,7 @@ export async function getAllRooms(): Promise<{
         image: true,
         serviceList: true,
         chips: true,
+        featured: true,
         price: true,
         duration: true,
         capacity: true,
@@ -39,54 +36,58 @@ export async function getAllRooms(): Promise<{
   }
 }
 
+// Retry utility function
+async function withRetry<T>(
+  fn: () => Promise<T>,
+  retries = 3,
+  delay = 1000
+): Promise<T> {
+  try {
+    return await fn();
+  } catch (error: any) {
+    if (retries > 0 && error?.code === "ETIMEDOUT") {
+      console.log(`Retrying... ${retries} attempts left`);
+      await new Promise((resolve) => setTimeout(resolve, delay));
+      return withRetry(fn, retries - 1, delay * 2);
+    }
+    throw error;
+  }
+}
+
 export async function createRoom(formData: FormData) {
   try {
-    const title = formData.get("title") as string;
-    const content = formData.get("content") as string;
-    const price = formData.get("price") as string;
-    const duration = formData.get("duration") as string;
-    const capacity = Number(formData.get("capacity"));
-    const size = formData.get("size") as string;
-    const availability = formData.get("availability") as string;
-    const rating = Number(formData.get("rating"));
-    const reviews = Number(formData.get("reviews"));
-    const description = formData.get("description") as string;
+    // Parse price as integer
+    const priceString = formData.get("price") as string;
+    const price = priceString ? parseInt(priceString, 10) : 0;
 
-    // JSON fields
-    const serviceList = JSON.parse(formData.get("serviceList") as string);
-    const chips = JSON.parse(formData.get("chips") as string);
-    const amenities = JSON.parse(formData.get("amenities") as string);
+    if (isNaN(price) || price <= 0) {
+      return { success: false, message: "Invalid price value" };
+    }
 
-    // Image
+    // Parse featured as boolean
+    const featuredString = formData.get("featured") as string;
+    const featured = featuredString === "true";
+
+    // Parse other numeric fields
+    const capacityString = formData.get("capacity") as string;
+    const capacity = capacityString ? parseInt(capacityString, 10) : 1;
+
+    const ratingString = formData.get("rating") as string;
+    const rating = ratingString ? parseFloat(ratingString) : 0;
+
+    const reviewsString = formData.get("reviews") as string;
+    const reviews = reviewsString ? parseInt(reviewsString, 10) : 0;
+
+    // Parse JSON arrays
+    const serviceList = JSON.parse(
+      (formData.get("serviceList") as string) || "[]"
+    );
+    const chips = JSON.parse((formData.get("chips") as string) || "[]");
+    const amenities = JSON.parse((formData.get("amenities") as string) || "[]");
+
+    // Get image URL (already uploaded by UploadThing)
     const imageFile = formData.get("image") as File | null;
 
-    // Validate
-    if (
-      !title?.trim() ||
-      !content?.trim() ||
-      !imageFile ||
-      !price ||
-      !duration ||
-      !size ||
-      !availability?.trim() ||
-      !description?.trim()
-    ) {
-      return {
-        success: false,
-        message: "Please fill required fields",
-      };
-    }
-
-    // Check duplicate
-    const exists = await prisma.room.findFirst({ where: { title } });
-    if (exists) {
-      return {
-        success: false,
-        message: "Room with this title already exists",
-      };
-    }
-
-    // Upload image
     let imageUrl: string | null = null;
     if (imageFile && imageFile.size > 0) {
       const uploaded = await utapi.uploadFiles(imageFile);
@@ -94,55 +95,65 @@ export async function createRoom(formData: FormData) {
       // Correct property: uploaded.data.url
       imageUrl = uploaded?.data?.ufsUrl ?? null;
     }
-
-    // Create room
-    const newRoom = await prisma.room.create({
-      data: {
-        title,
-        content,
-        image: imageUrl,
-        serviceList,
-        chips,
-        price,
-        duration,
-        capacity,
-        size,
-        availability,
-        rating,
-        reviews,
-        description,
-        amenities,
-      },
-      select: {
-        id: true,
-        title: true,
-        content: true,
-        image: true,
-        serviceList: true,
-        chips: true,
-        price: true,
-        duration: true,
-        capacity: true,
-        size: true,
-        availability: true,
-        rating: true,
-        reviews: true,
-        description: true,
-        amenities: true,
-      },
+    // Create room with retry logic
+    const newRoom = await withRetry(async () => {
+      return prisma.room.create({
+        data: {
+          title: formData.get("title") as string,
+          content: formData.get("content") as string,
+          image: imageUrl,
+          serviceList,
+          chips,
+          price,
+          duration: formData.get("duration") as string,
+          capacity,
+          size: formData.get("size") as string,
+          availability: formData.get("availability") as string,
+          rating,
+          reviews,
+          description: formData.get("description") as string,
+          amenities,
+          featured,
+        },
+      });
     });
 
+    // Revalidate paths
+    revalidatePath("/rooms");
     revalidatePath("/admin/rooms");
 
-    return { success: true, data: newRoom };
-  } catch (error) {
-    console.log("Error in Creating Rooms", error);
+    return {
+      success: true,
+      data: newRoom,
+      message: "Room created successfully",
+    };
+  } catch (error: any) {
+    console.error("Error creating room:", error);
+
+    // Provide more specific error messages
+    if (error?.code === "ETIMEDOUT") {
+      return {
+        success: false,
+        message: "Database connection timed out. Please try again.",
+      };
+    }
+
+    if (error?.code === "P2002") {
+      return {
+        success: false,
+        message: "A room with this title already exists.",
+      };
+    }
+
     return {
       success: false,
-      message: `Internal Server Error. ${error}`,
+      message: `Failed to create room: ${
+        error instanceof Error ? error.message : "Unknown error"
+      }`,
     };
   }
 }
+
 export async function getRoomById(roomId: string) {
   try {
     const room = await prisma.room.findUnique({
@@ -160,26 +171,46 @@ export async function getRoomById(roomId: string) {
   }
 }
 
-export async function UpdateRoom(roomId: string, formData: FormData) {
+export async function UpdateRoom(formData: FormData) {
   try {
-    const title = formData.get("title") as string;
-    const content = formData.get("content") as string;
-    const price = formData.get("price") as string;
-    const duration = formData.get("duration") as string;
-    const capacity = Number(formData.get("capacity"));
-    const size = formData.get("size") as string;
-    const availability = formData.get("availability") as string;
-    const rating = Number(formData.get("rating"));
-    const reviews = Number(formData.get("reviews"));
-    const description = formData.get("description") as string;
+    const id = formData.get("id") as string;
 
-    const serviceList = JSON.parse(formData.get("serviceList") as string);
-    const chips = JSON.parse(formData.get("chips") as string);
-    const amenities = JSON.parse(formData.get("amenities") as string);
+    if (!id) {
+      return { success: false, message: "Room ID is required" };
+    }
 
+    // Parse price as integer
+    const priceString = formData.get("price") as string;
+    const price = priceString ? parseInt(priceString, 10) : 0;
+
+    if (isNaN(price) || price <= 0) {
+      return { success: false, message: "Invalid price value" };
+    }
+
+    // Parse featured as boolean
+    const featuredString = formData.get("featured") as string;
+    const featured = featuredString === "true";
+
+    // Parse other numeric fields
+    const capacityString = formData.get("capacity") as string;
+    const capacity = capacityString ? parseInt(capacityString, 10) : null;
+
+    const ratingString = formData.get("rating") as string;
+    const rating = ratingString ? parseFloat(ratingString) : null;
+
+    const reviewsString = formData.get("reviews") as string;
+    const reviews = reviewsString ? parseInt(reviewsString, 10) : null;
+
+    // Parse JSON arrays
+    const serviceList = JSON.parse(
+      (formData.get("serviceList") as string) || "[]"
+    );
+    const chips = JSON.parse((formData.get("chips") as string) || "[]");
+    const amenities = JSON.parse((formData.get("amenities") as string) || "[]");
+
+    // Handle image upload
     const imageFile = formData.get("image") as File | null;
-
-    let imageUrl: string | undefined | null = null;
+    let imageUrl: string | undefined;
 
     if (imageFile && imageFile.size > 0) {
       const uploadRes = await utapi.uploadFiles(imageFile);
@@ -188,31 +219,54 @@ export async function UpdateRoom(roomId: string, formData: FormData) {
       imageUrl = uploadRes?.data?.ufsUrl;
     }
 
-    // ********** APPLY UPDATE **********
-    const updated = await prisma.room.update({
-      where: { id: roomId },
-      data: {
-        title,
-        content,
-        price,
-        duration,
-        capacity,
-        size,
-        availability,
-        rating,
-        reviews,
-        description,
-        serviceList,
-        chips,
-        amenities,
-        ...(imageUrl && { image: imageUrl }), // update only if new image was uploaded
-      },
+    // Build update data
+    const updateData: Room = {
+      id: id,
+      title: formData.get("title") as string,
+      content: formData.get("content") as string,
+      serviceList,
+      chips,
+      price, // Integer
+      duration: formData.get("duration") as string,
+      capacity,
+      size: formData.get("size") as string,
+      availability: formData.get("availability") as string,
+      rating,
+      reviews,
+      image: imageUrl || "",
+      description: formData.get("description") as string,
+      amenities,
+      featured, // Boolean
+    };
+
+    // Only update image if new one was uploaded
+    if (imageUrl) {
+      updateData.image = imageUrl;
+    }
+
+    // Update in database
+    const updatedRoom = await prisma.room.update({
+      where: { id },
+      data: updateData,
     });
+
+    // Revalidate paths
+    revalidatePath("/rooms");
     revalidatePath("/admin/rooms");
-    return { success: true, data: updated };
-  } catch (e) {
-    console.error("UpdateRoom error:", e);
-    return { success: false, message: "Room update failed" };
+
+    return {
+      success: true,
+      data: updatedRoom,
+      message: "Room updated successfully",
+    };
+  } catch (error) {
+    console.error("Error updating room:", error);
+    return {
+      success: false,
+      message: `Failed to update room: ${
+        error instanceof Error ? error.message : "Unknown error"
+      }`,
+    };
   }
 }
 

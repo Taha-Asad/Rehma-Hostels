@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-
 "use client";
 
 import React, { useState } from "react";
@@ -16,15 +14,20 @@ import {
   DialogContent,
   DialogActions,
   Autocomplete,
+  InputAdornment,
+  Switch,
+  FormControlLabel,
+  Paper,
 } from "@mui/material";
 
 import {
   Save as SaveIcon,
   Add as AddIcon,
   Close as CloseIcon,
+  Star as StarIcon,
+  StarBorder as StarBorderIcon,
 } from "@mui/icons-material";
 
-// import Image from "next/image";
 import toast from "react-hot-toast";
 import Image from "next/image";
 import { JsonValue } from "@prisma/client/runtime/client";
@@ -32,28 +35,47 @@ import { JsonValue } from "@prisma/client/runtime/client";
 interface CreateModelProps {
   open: boolean;
   onClose: () => void;
-  onConfirm: (data: FormData) => void; // SERVER ACTION
+  onConfirm: (data: FormData) => void;
 }
 
 const availability = [
-  {
-    label: "Available",
-    value: "Available",
-  },
-  {
-    label: "Unavailable",
-    value: "Unavailable",
-  },
+  { label: "Available", value: "Available" },
+  { label: "Unavailable", value: "Unavailable" },
 ];
+
 const chipPosition = [
-  {
-    label: "top-right",
-    value: "top-right",
-  },
-  {
-    label: "bottom-left",
-    value: "bottom-left",
-  },
+  { label: "top-right", value: "top-right" },
+  { label: "bottom-left", value: "bottom-left" },
+];
+
+// Common amenities for quick add
+const commonAmenities = [
+  "Wi-Fi",
+  "AC",
+  "TV",
+  "Refrigerator",
+  "Attached Bath",
+  "Parking",
+  "Security",
+  "Laundry",
+  "Kitchen",
+  "Geyser",
+  "Power Backup",
+  "CCTV",
+  "Lift",
+  "Gym",
+  "Furnished",
+];
+
+// Common services for quick add
+const commonServices = [
+  "Room Cleaning",
+  "24/7 Security",
+  "Electricity Included",
+  "Water Supply",
+  "Internet",
+  "Maintenance",
+  "Garbage Collection",
 ];
 
 function CreateRoomModal({ open, onClose, onConfirm }: CreateModelProps) {
@@ -64,7 +86,7 @@ function CreateRoomModal({ open, onClose, onConfirm }: CreateModelProps) {
     newServiceItem: "",
     chips: [] as JsonValue[],
     newChip: { icon: "", label: "", position: "" },
-    price: "",
+    price: "" as string, // Keep as string for input, convert on submit
     duration: "",
     capacity: null as number | null,
     size: "",
@@ -72,16 +94,48 @@ function CreateRoomModal({ open, onClose, onConfirm }: CreateModelProps) {
     rating: null as number | null,
     reviews: null as number | null,
     description: "",
-    amenities: [] as string[], // [{icon, label}]
+    amenities: [] as string[],
     newAmenity: "",
+    featured: false, // Added featured field
   });
 
   const [image, setImage] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState("");
   const [loading, setLoading] = useState(false);
 
+  // Reset form when modal opens
+  const resetForm = () => {
+    setFormData({
+      title: "",
+      content: "",
+      serviceList: [],
+      newServiceItem: "",
+      chips: [],
+      newChip: { icon: "", label: "", position: "" },
+      price: "",
+      duration: "",
+      capacity: null,
+      size: "",
+      availability: "",
+      rating: null,
+      reviews: null,
+      description: "",
+      amenities: [],
+      newAmenity: "",
+      featured: false,
+    });
+    setImage(null);
+    setImagePreview("");
+  };
+
+  // MULTI FIELD ADDERS --------------------------------------------------------
+
   const addServiceItem = () => {
     if (!formData.newServiceItem.trim()) return;
+    if (formData.serviceList.includes(formData.newServiceItem.trim())) {
+      toast.error("Service already added");
+      return;
+    }
     setFormData({
       ...formData,
       serviceList: [...formData.serviceList, formData.newServiceItem.trim()],
@@ -90,7 +144,10 @@ function CreateRoomModal({ open, onClose, onConfirm }: CreateModelProps) {
   };
 
   const addChip = () => {
-    if (!formData.newChip.label) return;
+    if (!formData.newChip.label || !formData.newChip.position) {
+      toast.error("Please enter chip label and position");
+      return;
+    }
 
     setFormData({
       ...formData,
@@ -113,7 +170,10 @@ function CreateRoomModal({ open, onClose, onConfirm }: CreateModelProps) {
 
   const addAmenity = () => {
     if (!formData.newAmenity.trim()) return;
-
+    if (formData.amenities.includes(formData.newAmenity.trim())) {
+      toast.error("Amenity already added");
+      return;
+    }
     setFormData({
       ...formData,
       amenities: [...formData.amenities, formData.newAmenity.trim()],
@@ -127,49 +187,153 @@ function CreateRoomModal({ open, onClose, onConfirm }: CreateModelProps) {
     setFormData({ ...formData, amenities: updated });
   };
 
+  // Quick add handlers
+  const quickAddAmenity = (amenity: string) => {
+    if (!formData.amenities.includes(amenity)) {
+      setFormData({
+        ...formData,
+        amenities: [...formData.amenities, amenity],
+      });
+    }
+  };
+
+  const quickAddService = (service: string) => {
+    if (!formData.serviceList.includes(service)) {
+      setFormData({
+        ...formData,
+        serviceList: [...formData.serviceList, service],
+      });
+    }
+  };
+
+  // PRICE HANDLER -------------------------------------------------------------
+
+  const handlePriceChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    // Only allow numbers
+    if (value === "" || /^\d+$/.test(value)) {
+      setFormData({ ...formData, price: value });
+    }
+  };
+
+  // Format price for display with commas
+  const formatPriceDisplay = (price: string): string => {
+    if (!price) return "";
+    return parseInt(price).toLocaleString("en-PK");
+  };
+
   // IMAGE ---------------------------------------------------------------------
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
     const file = e.target.files?.[0];
     if (!file) return;
 
+    // Validate file size (5MB max)
+    if (file.size > 5 * 1024 * 1024) {
+      toast.error("Image size should be less than 5MB");
+      return;
+    }
+
+    // Validate file type
+    if (
+      !["image/jpeg", "image/png", "image/gif", "image/webp"].includes(
+        file.type
+      )
+    ) {
+      toast.error("Please upload a valid image (JPG, PNG, GIF, WEBP)");
+      return;
+    }
+
     setImage(file);
     setImagePreview(URL.createObjectURL(file));
+  };
+
+  // VALIDATION ----------------------------------------------------------------
+
+  const validateForm = (): boolean => {
+    if (!formData.title.trim()) {
+      toast.error("Title is required");
+      return false;
+    }
+
+    if (!formData.content.trim()) {
+      toast.error("Content is required");
+      return false;
+    }
+
+    if (!formData.price || parseInt(formData.price) <= 0) {
+      toast.error("Please enter a valid price");
+      return false;
+    }
+
+    if (!formData.capacity || formData.capacity <= 0) {
+      toast.error("Please enter a valid capacity");
+      return false;
+    }
+
+    if (!formData.availability) {
+      toast.error("Please select availability status");
+      return false;
+    }
+
+    if (!image) {
+      toast.error("Please upload a room image");
+      return false;
+    }
+
+    return true;
   };
 
   // SUBMIT (SERVER ACTION) ----------------------------------------------------
 
   const handleSubmit = async () => {
+    if (!validateForm()) return;
+
     try {
       setLoading(true);
 
       const data = new FormData();
 
-      // VERY IMPORTANT
-      Object.entries(formData).forEach(([key, value]) => {
-        if (Array.isArray(value)) {
-          data.append(key, JSON.stringify(value));
-        } else if (value !== null) {
-          data.append(key, value.toString());
-        }
-      });
+      // Handle each field appropriately
+      data.append("title", formData.title.trim());
+      data.append("content", formData.content.trim());
+      data.append("serviceList", JSON.stringify(formData.serviceList));
+      data.append("chips", JSON.stringify(formData.chips));
+      data.append("price", parseInt(formData.price).toString()); // Convert to integer
+      data.append("duration", formData.duration.trim());
+      data.append("capacity", formData.capacity?.toString() ?? "");
+      data.append("size", formData.size.trim());
+      data.append("availability", formData.availability);
+      data.append("rating", formData.rating?.toString() ?? "0");
+      data.append("reviews", formData.reviews?.toString() ?? "0");
+      data.append("description", formData.description.trim());
+      data.append("amenities", JSON.stringify(formData.amenities));
+      data.append("featured", formData.featured.toString()); // Add featured
 
       if (image) data.append("image", image);
 
       await onConfirm(data);
 
-      toast.success("Room Created successfully");
+      toast.success("Room created successfully");
+      resetForm();
       onClose();
     } catch (error) {
-      toast.error(`Room Creation failed: ${error}`);
+      toast.error(`Room creation failed: ${error}`);
     } finally {
       setLoading(false);
     }
   };
+
+  // Handle modal close
+  const handleClose = () => {
+    resetForm();
+    onClose();
+  };
+
   return (
     <Dialog
       open={open}
-      onClose={onClose}
+      onClose={handleClose}
       fullWidth
       disableScrollLock
       disableEnforceFocus
@@ -184,8 +348,8 @@ function CreateRoomModal({ open, onClose, onConfirm }: CreateModelProps) {
       }}
     >
       <DialogTitle sx={{ display: "flex", justifyContent: "space-between" }}>
-        Create Room
-        <IconButton onClick={onClose} sx={{ color: "primary.main" }}>
+        Create New Room
+        <IconButton onClick={handleClose} sx={{ color: "primary.main" }}>
           <CloseIcon />
         </IconButton>
       </DialogTitle>
@@ -205,7 +369,6 @@ function CreateRoomModal({ open, onClose, onConfirm }: CreateModelProps) {
           "&::-webkit-scrollbar-thumb:hover": {
             backgroundColor: "rgba(123,46,46,0.8)",
           },
-          // top fade
           "&::before": {
             content: '""',
             position: "sticky",
@@ -217,7 +380,6 @@ function CreateRoomModal({ open, onClose, onConfirm }: CreateModelProps) {
               "linear-gradient(to bottom, rgba(246,244,244,1), rgba(246,244,244,0))",
             zIndex: 1,
           },
-          // bottom fade
           "&::after": {
             content: '""',
             position: "sticky",
@@ -240,9 +402,110 @@ function CreateRoomModal({ open, onClose, onConfirm }: CreateModelProps) {
         >
           {/* LEFT COLUMN ----------------------------------------------------- */}
           <Box sx={{ flex: 1 }}>
+            {/* FEATURED TOGGLE ----------------------------------------------- */}
+            <Paper
+              elevation={0}
+              sx={{
+                p: 2,
+                mb: 3,
+                borderRadius: 2,
+                border: formData.featured
+                  ? "2px solid #D4A373"
+                  : "2px solid #E0E0E0",
+                bgcolor: formData.featured
+                  ? "rgba(212, 163, 115, 0.1)"
+                  : "transparent",
+                transition: "all 0.3s ease",
+              }}
+            >
+              <Box
+                sx={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                }}
+              >
+                <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                  {formData.featured ? (
+                    <StarIcon sx={{ color: "#D4A373", fontSize: 28 }} />
+                  ) : (
+                    <StarBorderIcon sx={{ color: "#9E9E9E", fontSize: 28 }} />
+                  )}
+                  <Box>
+                    <Typography
+                      variant="subtitle1"
+                      sx={{
+                        fontWeight: 600,
+                        color: formData.featured ? "#D4A373" : "text.primary",
+                      }}
+                    >
+                      Featured Room
+                    </Typography>
+                    <Typography variant="caption" color="text.secondary">
+                      {formData.featured
+                        ? "This room will be highlighted in listings"
+                        : "Enable to highlight this room in listings"}
+                    </Typography>
+                  </Box>
+                </Box>
+
+                <FormControlLabel
+                  control={
+                    <Switch
+                      checked={formData.featured}
+                      onChange={(e) =>
+                        setFormData({ ...formData, featured: e.target.checked })
+                      }
+                      sx={{
+                        "& .MuiSwitch-switchBase.Mui-checked": {
+                          color: "#D4A373",
+                          "&:hover": {
+                            backgroundColor: "rgba(212, 163, 115, 0.08)",
+                          },
+                        },
+                        "& .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track":
+                          {
+                            backgroundColor: "#D4A373",
+                          },
+                      }}
+                    />
+                  }
+                  label=""
+                  sx={{ m: 0 }}
+                />
+              </Box>
+
+              {/* Featured Badge Preview */}
+              {formData.featured && (
+                <Box
+                  sx={{ mt: 2, display: "flex", alignItems: "center", gap: 1 }}
+                >
+                  <Typography variant="caption" color="text.secondary">
+                    Badge Preview:
+                  </Typography>
+                  <Chip
+                    icon={<StarIcon sx={{ fontSize: 16 }} />}
+                    label="Featured"
+                    size="small"
+                    sx={{
+                      bgcolor: "#D4A373",
+                      color: "white",
+                      fontWeight: 600,
+                      "& .MuiChip-icon": {
+                        color: "white",
+                      },
+                    }}
+                  />
+                </Box>
+              )}
+            </Paper>
+
+            {/* TITLE --------------------------------------------------------- */}
             <TextField
               fullWidth
+              required
               label="Title"
+              placeholder="e.g., Deluxe Double Room"
               value={formData.title}
               onChange={(e) =>
                 setFormData({ ...formData, title: e.target.value })
@@ -258,9 +521,12 @@ function CreateRoomModal({ open, onClose, onConfirm }: CreateModelProps) {
               }}
             />
 
+            {/* CONTENT ------------------------------------------------------- */}
             <TextField
               fullWidth
+              required
               label="Content"
+              placeholder="Short description of the room..."
               multiline
               rows={3}
               value={formData.content}
@@ -279,16 +545,25 @@ function CreateRoomModal({ open, onClose, onConfirm }: CreateModelProps) {
             />
 
             {/* SERVICE LIST ------------------------------------------------ */}
-            <Typography sx={{ mb: 1 }}>Service List</Typography>
+            <Typography sx={{ mb: 1, fontWeight: 600 }}>
+              Service List
+            </Typography>
 
             <Box sx={{ display: "flex", gap: 1, mb: 1 }}>
               <TextField
                 fullWidth
                 label="Add service"
+                placeholder="e.g., Room Cleaning"
                 value={formData.newServiceItem}
                 onChange={(e) =>
                   setFormData({ ...formData, newServiceItem: e.target.value })
                 }
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    e.preventDefault();
+                    addServiceItem();
+                  }
+                }}
                 slotProps={{
                   input: {
                     sx: {
@@ -300,10 +575,52 @@ function CreateRoomModal({ open, onClose, onConfirm }: CreateModelProps) {
               />
               <IconButton
                 onClick={addServiceItem}
-                sx={{ color: "primary.main", width: 50, height: 50 }}
+                sx={{
+                  color: "primary.main",
+                  width: 50,
+                  height: 50,
+                  border: "1px solid",
+                  borderColor: "primary.main",
+                  "&:hover": {
+                    bgcolor: "primary.main",
+                    color: "white",
+                  },
+                }}
               >
                 <AddIcon />
               </IconButton>
+            </Box>
+
+            {/* Quick Add Services */}
+            <Box sx={{ mb: 2 }}>
+              <Typography variant="caption" color="text.secondary">
+                Quick Add:
+              </Typography>
+              <Box
+                sx={{ display: "flex", flexWrap: "wrap", gap: 0.5, mt: 0.5 }}
+              >
+                {commonServices
+                  .filter((s) => !formData.serviceList.includes(s))
+                  .slice(0, 4)
+                  .map((service) => (
+                    <Chip
+                      key={service}
+                      label={service}
+                      size="small"
+                      onClick={() => quickAddService(service)}
+                      sx={{
+                        cursor: "pointer",
+                        bgcolor: "transparent",
+                        border: "1px dashed",
+                        borderColor: "primary.main",
+                        color: "primary.main",
+                        "&:hover": {
+                          bgcolor: "rgba(123, 46, 46, 0.1)",
+                        },
+                      }}
+                    />
+                  ))}
+              </Box>
             </Box>
 
             <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1, mb: 3 }}>
@@ -315,15 +632,19 @@ function CreateRoomModal({ open, onClose, onConfirm }: CreateModelProps) {
                   sx={{
                     color: "primary.main",
                     bgcolor: "primary.contrastText",
-                    border: "1px solid primary.main",
+                    border: "1px solid",
+                    borderColor: "primary.main",
                   }}
                 />
               ))}
             </Box>
 
             {/* CHIPS -------------------------------------------------------- */}
+            <Typography sx={{ mb: 1, fontWeight: 600 }}>
+              Chips / Badges
+            </Typography>
 
-            <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1, mb: 3 }}>
+            <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1, mb: 2 }}>
               {formData.chips.map((c, i) => (
                 <Chip
                   key={i}
@@ -338,42 +659,12 @@ function CreateRoomModal({ open, onClose, onConfirm }: CreateModelProps) {
                 />
               ))}
             </Box>
-            {/* CHIP SUGGESTIONS */}
-            {formData.newChip.label && (
-              <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1, mb: 1 }}>
-                {formData.chips
-                  .filter((c) =>
-                    (c as any).label
-                      .toLowerCase()
-                      .includes(formData.newChip.label.toLowerCase())
-                  )
-                  .map((c, i) => (
-                    <Chip
-                      key={i}
-                      label={(c as any).label}
-                      onClick={() =>
-                        setFormData({
-                          ...formData,
-                          newChip: {
-                            ...formData.newChip,
-                            label: (c as any).label,
-                          },
-                        })
-                      }
-                      sx={{
-                        bgcolor: "primary.main",
-                        color: "primary.contrastText",
-                        cursor: "pointer",
-                      }}
-                    />
-                  ))}
-              </Box>
-            )}
 
-            <Box sx={{ display: "flex", gap: 1, mb: 1 }}>
+            <Box sx={{ display: "flex", gap: 1, mb: 3 }}>
               <TextField
                 fullWidth
                 label="Chip Label"
+                placeholder="e.g., New, Popular"
                 value={formData.newChip.label}
                 onChange={(e) =>
                   setFormData({
@@ -384,7 +675,8 @@ function CreateRoomModal({ open, onClose, onConfirm }: CreateModelProps) {
               />
 
               <TextField
-                label="Icon"
+                label="Icon (optional)"
+                placeholder="Icon name"
                 value={formData.newChip.icon}
                 onChange={(e) =>
                   setFormData({
@@ -392,6 +684,7 @@ function CreateRoomModal({ open, onClose, onConfirm }: CreateModelProps) {
                     newChip: { ...formData.newChip, icon: e.target.value },
                   })
                 }
+                sx={{ minWidth: 120 }}
               />
 
               <Autocomplete
@@ -414,7 +707,6 @@ function CreateRoomModal({ open, onClose, onConfirm }: CreateModelProps) {
                 }
                 getOptionLabel={(option) => option.label}
                 renderOption={(props, option) => {
-                  // remove the `key` property before spreading
                   const { key, ...rest } = props;
                   return (
                     <Box key={key} component="li" {...rest}>
@@ -427,19 +719,25 @@ function CreateRoomModal({ open, onClose, onConfirm }: CreateModelProps) {
                     {...params}
                     label="Position"
                     variant="outlined"
-                    InputLabelProps={{
-                      shrink: true,
-                    }}
+                    InputLabelProps={{ shrink: true }}
                   />
                 )}
-                sx={{
-                  mb: 2,
-                }}
+                sx={{ minWidth: 140 }}
               />
 
               <IconButton
                 onClick={addChip}
-                sx={{ color: "primary.main", width: 50, height: 50 }}
+                sx={{
+                  color: "primary.main",
+                  width: 50,
+                  height: 50,
+                  border: "1px solid",
+                  borderColor: "primary.main",
+                  "&:hover": {
+                    bgcolor: "primary.main",
+                    color: "white",
+                  },
+                }}
               >
                 <AddIcon />
               </IconButton>
@@ -448,26 +746,46 @@ function CreateRoomModal({ open, onClose, onConfirm }: CreateModelProps) {
             {/* PRICE --------------------------------------------------------- */}
             <TextField
               fullWidth
+              required
               label="Price"
+              type="text"
               value={formData.price}
-              onChange={(e) =>
-                setFormData({ ...formData, price: e.target.value })
-              }
+              onChange={handlePriceChange}
+              placeholder="Enter price"
               sx={{ mb: 2 }}
               slotProps={{
                 input: {
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <Typography
+                        sx={{
+                          color: "primary.main",
+                          fontWeight: 600,
+                          fontSize: "0.95rem",
+                        }}
+                      >
+                        PKR
+                      </Typography>
+                    </InputAdornment>
+                  ),
                   sx: {
                     color: "text.primary",
                     "&::placeholder": { color: "text.secondary" },
                   },
                 },
               }}
+              helperText={
+                formData.price
+                  ? `Formatted: PKR ${formatPriceDisplay(formData.price)}`
+                  : "Enter price in Pakistani Rupees"
+              }
             />
 
             {/* DURATION ------------------------------------------------------ */}
             <TextField
               fullWidth
               label="Duration"
+              placeholder="e.g., per month, per night"
               value={formData.duration}
               onChange={(e) =>
                 setFormData({ ...formData, duration: e.target.value })
@@ -486,15 +804,28 @@ function CreateRoomModal({ open, onClose, onConfirm }: CreateModelProps) {
             {/* CAPACITY ------------------------------------------------------ */}
             <TextField
               fullWidth
+              required
               label="Capacity"
               type="number"
+              placeholder="Number of persons"
               value={formData.capacity ?? ""}
               onChange={(e) =>
-                setFormData({ ...formData, capacity: Number(e.target.value) })
+                setFormData({
+                  ...formData,
+                  capacity: e.target.value ? Number(e.target.value) : null,
+                })
               }
               sx={{ mb: 2 }}
               slotProps={{
                 input: {
+                  inputProps: { min: 1 },
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <Typography variant="body2" color="text.secondary">
+                        persons
+                      </Typography>
+                    </InputAdornment>
+                  ),
                   sx: {
                     color: "text.primary",
                     "&::placeholder": { color: "text.secondary" },
@@ -507,6 +838,7 @@ function CreateRoomModal({ open, onClose, onConfirm }: CreateModelProps) {
             <TextField
               fullWidth
               label="Size"
+              placeholder="e.g., 250 sq ft"
               value={formData.size}
               onChange={(e) =>
                 setFormData({ ...formData, size: e.target.value })
@@ -522,6 +854,7 @@ function CreateRoomModal({ open, onClose, onConfirm }: CreateModelProps) {
               }}
             />
 
+            {/* AVAILABILITY -------------------------------------------------- */}
             <Autocomplete
               disablePortal
               options={availability}
@@ -535,10 +868,27 @@ function CreateRoomModal({ open, onClose, onConfirm }: CreateModelProps) {
               }
               getOptionLabel={(option) => option.label}
               renderOption={(props, option) => {
-                // remove the `key` property before spreading
                 const { key, ...rest } = props;
                 return (
-                  <Box key={key} component="li" {...rest}>
+                  <Box
+                    key={key}
+                    component="li"
+                    {...rest}
+                    sx={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: 1,
+                    }}
+                  >
+                    <Box
+                      sx={{
+                        width: 10,
+                        height: 10,
+                        borderRadius: "50%",
+                        bgcolor:
+                          option.value === "Available" ? "#4CAF50" : "#F44336",
+                      }}
+                    />
                     <Typography variant="body2">{option.label}</Typography>
                   </Box>
                 );
@@ -546,18 +896,15 @@ function CreateRoomModal({ open, onClose, onConfirm }: CreateModelProps) {
               renderInput={(params) => (
                 <TextField
                   {...params}
+                  required
                   label="Availability"
                   variant="outlined"
                   slotProps={{
-                    inputLabel: {
-                      shrink: true,
-                    },
+                    inputLabel: { shrink: true },
                   }}
                 />
               )}
-              sx={{
-                my: 2,
-              }}
+              sx={{ my: 2 }}
             />
 
             {/* RATING -------------------------------------------------------- */}
@@ -565,13 +912,25 @@ function CreateRoomModal({ open, onClose, onConfirm }: CreateModelProps) {
               fullWidth
               label="Rating"
               type="number"
+              placeholder="0-5"
               value={formData.rating ?? ""}
               onChange={(e) =>
-                setFormData({ ...formData, rating: Number(e.target.value) })
+                setFormData({
+                  ...formData,
+                  rating: e.target.value ? Number(e.target.value) : null,
+                })
               }
               sx={{ mb: 2 }}
               slotProps={{
                 input: {
+                  inputProps: { min: 0, max: 5, step: 0.1 },
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <Typography variant="body2" color="text.secondary">
+                        / 5
+                      </Typography>
+                    </InputAdornment>
+                  ),
                   sx: {
                     color: "text.primary",
                     "&::placeholder": { color: "text.secondary" },
@@ -585,13 +944,25 @@ function CreateRoomModal({ open, onClose, onConfirm }: CreateModelProps) {
               fullWidth
               label="Reviews"
               type="number"
+              placeholder="Number of reviews"
               value={formData.reviews ?? ""}
               onChange={(e) =>
-                setFormData({ ...formData, reviews: Number(e.target.value) })
+                setFormData({
+                  ...formData,
+                  reviews: e.target.value ? Number(e.target.value) : null,
+                })
               }
               sx={{ mb: 2 }}
               slotProps={{
                 input: {
+                  inputProps: { min: 0 },
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <Typography variant="body2" color="text.secondary">
+                        reviews
+                      </Typography>
+                    </InputAdornment>
+                  ),
                   sx: {
                     color: "text.primary",
                     "&::placeholder": { color: "text.secondary" },
@@ -604,6 +975,7 @@ function CreateRoomModal({ open, onClose, onConfirm }: CreateModelProps) {
             <TextField
               fullWidth
               label="Description"
+              placeholder="Detailed description of the room..."
               multiline
               rows={3}
               value={formData.description}
@@ -622,9 +994,9 @@ function CreateRoomModal({ open, onClose, onConfirm }: CreateModelProps) {
             />
 
             {/* AMENITIES ----------------------------------------------------- */}
-            <Typography sx={{ mb: 1 }}>Amenities</Typography>
+            <Typography sx={{ mb: 1, fontWeight: 600 }}>Amenities</Typography>
 
-            <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1, mb: 3 }}>
+            <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1, mb: 2 }}>
               {formData.amenities.map((a, i) => (
                 <Chip
                   key={i}
@@ -640,7 +1012,9 @@ function CreateRoomModal({ open, onClose, onConfirm }: CreateModelProps) {
 
             <Box sx={{ display: "flex", gap: 1, mb: 1 }}>
               <TextField
+                fullWidth
                 label="Amenity Label"
+                placeholder="e.g., Wi-Fi, AC"
                 value={formData.newAmenity}
                 onChange={(e) =>
                   setFormData({
@@ -648,6 +1022,12 @@ function CreateRoomModal({ open, onClose, onConfirm }: CreateModelProps) {
                     newAmenity: e.target.value,
                   })
                 }
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    e.preventDefault();
+                    addAmenity();
+                  }
+                }}
                 slotProps={{
                   input: {
                     sx: {
@@ -660,17 +1040,59 @@ function CreateRoomModal({ open, onClose, onConfirm }: CreateModelProps) {
 
               <IconButton
                 onClick={addAmenity}
-                sx={{ color: "primary.main", width: 50, height: 50 }}
+                sx={{
+                  color: "primary.main",
+                  width: 50,
+                  height: 50,
+                  border: "1px solid",
+                  borderColor: "primary.main",
+                  "&:hover": {
+                    bgcolor: "primary.main",
+                    color: "white",
+                  },
+                }}
               >
                 <AddIcon />
               </IconButton>
             </Box>
+
+            {/* Quick Add Amenities */}
+            <Box sx={{ mb: 3 }}>
+              <Typography variant="caption" color="text.secondary">
+                Quick Add:
+              </Typography>
+              <Box
+                sx={{ display: "flex", flexWrap: "wrap", gap: 0.5, mt: 0.5 }}
+              >
+                {commonAmenities
+                  .filter((a) => !formData.amenities.includes(a))
+                  .slice(0, 6)
+                  .map((amenity) => (
+                    <Chip
+                      key={amenity}
+                      label={amenity}
+                      size="small"
+                      onClick={() => quickAddAmenity(amenity)}
+                      sx={{
+                        cursor: "pointer",
+                        bgcolor: "transparent",
+                        border: "1px dashed",
+                        borderColor: "primary.main",
+                        color: "primary.main",
+                        "&:hover": {
+                          bgcolor: "rgba(123, 46, 46, 0.1)",
+                        },
+                      }}
+                    />
+                  ))}
+              </Box>
+            </Box>
           </Box>
 
           {/* RIGHT COLUMN ---------------------------------------------------- */}
-          <Box sx={{ width: { xs: "100%", lg: 300 } }}>
-            <Typography variant="h6" sx={{ color: "#fff", mb: 2 }}>
-              Featured Image
+          <Box sx={{ width: { xs: "100%", lg: 320 } }}>
+            <Typography variant="h6" sx={{ color: "text.primary", mb: 2 }}>
+              Featured Image *
             </Typography>
 
             <Box
@@ -680,6 +1102,9 @@ function CreateRoomModal({ open, onClose, onConfirm }: CreateModelProps) {
                 p: 2,
                 textAlign: "center",
                 mb: 2,
+                bgcolor: imagePreview
+                  ? "transparent"
+                  : "rgba(111, 78, 52, 0.05)",
               }}
             >
               {imagePreview ? (
@@ -688,7 +1113,7 @@ function CreateRoomModal({ open, onClose, onConfirm }: CreateModelProps) {
                     sx={{
                       position: "relative",
                       width: "100%",
-                      height: 220, // now fill actually has something to fill
+                      height: 220,
                       borderRadius: "8px",
                       overflow: "hidden",
                       mb: 2,
@@ -700,6 +1125,26 @@ function CreateRoomModal({ open, onClose, onConfirm }: CreateModelProps) {
                       fill
                       style={{ objectFit: "cover" }}
                     />
+
+                    {/* Featured overlay badge */}
+                    {formData.featured && (
+                      <Chip
+                        icon={<StarIcon sx={{ fontSize: 14 }} />}
+                        label="Featured"
+                        size="small"
+                        sx={{
+                          position: "absolute",
+                          top: 8,
+                          right: 8,
+                          bgcolor: "#D4A373",
+                          color: "white",
+                          fontWeight: 600,
+                          "& .MuiChip-icon": {
+                            color: "white",
+                          },
+                        }}
+                      />
+                    )}
                   </Box>
 
                   <Button
@@ -722,59 +1167,201 @@ function CreateRoomModal({ open, onClose, onConfirm }: CreateModelProps) {
                       setImage(null);
                       setImagePreview("");
                     }}
-                    sx={{ color: "#f44336", display: "block", mt: 1 }}
+                    sx={{
+                      color: "#f44336",
+                      display: "block",
+                      mt: 1,
+                      mx: "auto",
+                    }}
                   >
                     Remove
                   </Button>
                 </>
               ) : (
                 <>
-                  <Typography sx={{ color: "#fff", mb: 1 }}>
-                    No image selected
-                  </Typography>
-
-                  <Button
-                    variant="outlined"
-                    component="label"
-                    startIcon={<AddIcon />}
-                    sx={{ color: "#6F4E34", borderColor: "#6F4E34" }}
+                  <Box
+                    sx={{
+                      py: 4,
+                      display: "flex",
+                      flexDirection: "column",
+                      alignItems: "center",
+                      gap: 2,
+                    }}
                   >
-                    Upload Image
-                    <input
-                      hidden
-                      type="file"
-                      accept="image/*"
-                      onChange={handleImageChange}
-                    />
-                  </Button>
+                    <Box
+                      sx={{
+                        width: 60,
+                        height: 60,
+                        borderRadius: "50%",
+                        bgcolor: "rgba(111, 78, 52, 0.1)",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                      }}
+                    >
+                      <AddIcon sx={{ fontSize: 30, color: "#6F4E34" }} />
+                    </Box>
+                    <Typography sx={{ color: "text.secondary" }}>
+                      No image selected
+                    </Typography>
+
+                    <Button
+                      variant="outlined"
+                      component="label"
+                      startIcon={<AddIcon />}
+                      sx={{ color: "#6F4E34", borderColor: "#6F4E34" }}
+                    >
+                      Upload Image
+                      <input
+                        hidden
+                        type="file"
+                        accept="image/*"
+                        onChange={handleImageChange}
+                      />
+                    </Button>
+                  </Box>
                 </>
               )}
             </Box>
 
             <Alert
               severity="info"
-              sx={{ background: "#1e1e1e", color: "#fff" }}
+              sx={{ background: "#1e1e1e", color: "#fff", mb: 2 }}
             >
-              Recommended size 1200x630
+              Recommended size: 1200x630
               <br />
-              JPG, PNG, GIF
+              Formats: JPG, PNG, GIF, WEBP
               <br />
-              Max 5MB
+              Max size: 5MB
             </Alert>
+
+            {/* Price Summary Card */}
+            {formData.price && (
+              <Paper
+                elevation={0}
+                sx={{
+                  p: 2,
+                  mb: 2,
+                  borderRadius: 2,
+                  bgcolor: "rgba(123, 46, 46, 0.05)",
+                  border: "1px solid rgba(123, 46, 46, 0.2)",
+                }}
+              >
+                <Typography variant="caption" color="text.secondary">
+                  Price Preview
+                </Typography>
+                <Typography
+                  variant="h5"
+                  sx={{
+                    color: "primary.main",
+                    fontWeight: 700,
+                    mt: 0.5,
+                  }}
+                >
+                  PKR {formatPriceDisplay(formData.price)}
+                </Typography>
+                {formData.duration && (
+                  <Typography variant="body2" color="text.secondary">
+                    {formData.duration}
+                  </Typography>
+                )}
+              </Paper>
+            )}
+
+            {/* Room Summary Card */}
+            {formData.title && (
+              <Paper
+                elevation={0}
+                sx={{
+                  p: 2,
+                  borderRadius: 2,
+                  bgcolor: "rgba(123, 46, 46, 0.05)",
+                  border: "1px solid rgba(123, 46, 46, 0.2)",
+                }}
+              >
+                <Typography variant="caption" color="text.secondary">
+                  Room Summary
+                </Typography>
+                <Typography
+                  variant="subtitle1"
+                  sx={{
+                    fontWeight: 600,
+                    color: "text.primary",
+                    mt: 0.5,
+                  }}
+                >
+                  {formData.title}
+                </Typography>
+                <Box
+                  sx={{ mt: 1, display: "flex", flexWrap: "wrap", gap: 0.5 }}
+                >
+                  {formData.capacity && (
+                    <Chip
+                      label={`${formData.capacity} person${
+                        formData.capacity > 1 ? "s" : ""
+                      }`}
+                      size="small"
+                      sx={{ bgcolor: "rgba(123, 46, 46, 0.1)" }}
+                    />
+                  )}
+                  {formData.size && (
+                    <Chip
+                      label={formData.size}
+                      size="small"
+                      sx={{ bgcolor: "rgba(123, 46, 46, 0.1)" }}
+                    />
+                  )}
+                  {formData.availability && (
+                    <Chip
+                      label={formData.availability}
+                      size="small"
+                      sx={{
+                        bgcolor:
+                          formData.availability === "Available"
+                            ? "rgba(76, 175, 80, 0.1)"
+                            : "rgba(244, 67, 54, 0.1)",
+                        color:
+                          formData.availability === "Available"
+                            ? "#4CAF50"
+                            : "#F44336",
+                      }}
+                    />
+                  )}
+                  {formData.featured && (
+                    <Chip
+                      icon={<StarIcon sx={{ fontSize: 14 }} />}
+                      label="Featured"
+                      size="small"
+                      sx={{
+                        bgcolor: "#D4A373",
+                        color: "white",
+                        "& .MuiChip-icon": { color: "white" },
+                      }}
+                    />
+                  )}
+                </Box>
+                {formData.amenities.length > 0 && (
+                  <Box sx={{ mt: 1 }}>
+                    <Typography variant="caption" color="text.secondary">
+                      {formData.amenities.length} amenities
+                    </Typography>
+                  </Box>
+                )}
+              </Paper>
+            )}
           </Box>
         </Box>
       </DialogContent>
 
-      <DialogActions>
+      <DialogActions sx={{ p: 2, gap: 1 }}>
         <Button
-          onClick={onClose}
+          onClick={handleClose}
           variant="outlined"
           sx={{
             bgcolor: "primary.main",
             color: "primary.contrastText",
             border: "2px solid #7B2E2E",
             borderRadius: 0.5,
-            mb: 2,
             py: "10px",
             px: "15px",
             width: 200,
@@ -800,7 +1387,6 @@ function CreateRoomModal({ open, onClose, onConfirm }: CreateModelProps) {
             color: "primary.contrastText",
             border: "2px solid #7B2E2E",
             borderRadius: 0.5,
-            mb: 2,
             py: "10px",
             px: "15px",
             width: 200,
@@ -813,7 +1399,7 @@ function CreateRoomModal({ open, onClose, onConfirm }: CreateModelProps) {
             },
           }}
         >
-          {loading ? "Saving..." : "Create Room"}
+          {loading ? "Creating..." : "Create Room"}
         </Button>
       </DialogActions>
     </Dialog>

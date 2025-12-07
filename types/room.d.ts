@@ -8,7 +8,7 @@ declare global {
     image: string | null;
     serviceList: string[];
     chips: JsonArray[];
-    price: string;
+    price: number;
     duration: string;
     capacity: number | null;
     size: string | null;
@@ -17,6 +17,7 @@ declare global {
     reviews: number | null;
     description: string | null;
     amenities: string[];
+    featured: boolean;
   }
 }
 

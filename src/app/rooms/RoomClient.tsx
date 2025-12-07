@@ -1,0 +1,1211 @@
+"use client";
+import {
+  Box,
+  Button,
+  Card,
+  CardContent,
+  CardMedia,
+  Chip,
+  Container,
+  Grid,
+  Typography,
+  TextField,
+  InputAdornment,
+  FormControl,
+  Slider,
+  Checkbox,
+  FormControlLabel,
+  Paper,
+  Stack,
+  Divider,
+  ToggleButton,
+  ToggleButtonGroup,
+  Breadcrumbs,
+  Rating,
+  IconButton,
+  Drawer,
+  Badge,
+  Pagination,
+  Autocomplete,
+} from "@mui/material";
+import {
+  Search,
+  GridView,
+  ViewList,
+  People,
+  Star,
+  FilterAlt,
+  TrendingUp,
+  LocationOn,
+  CheckCircle,
+  TrendingDown,
+  Grade,
+} from "@mui/icons-material";
+import { serviceOptions, serviceIcons } from "../../utils/ServiceOptions";
+import React, { useState, useEffect } from "react";
+import Link from "next/link";
+import { X } from "lucide-react";
+import Image from "next/image";
+import { RoomDetailsModal } from "@/components/home/Rooms/RoomModal";
+import roomHero from "../../../public/Images/roomHero.png";
+const options = [
+  {
+    value: "featured",
+    label: "Featured",
+    icon: <Star sx={{ color: "#D4A373" }} />,
+  },
+  {
+    value: "priceLow",
+    label: "Price: Low to High",
+    icon: <TrendingUp sx={{ color: "#098698" }} />,
+  },
+  {
+    value: "priceHigh",
+    label: "Price: High to Low",
+    icon: <TrendingDown sx={{ color: "#C0392B" }} />,
+  },
+  {
+    value: "rating",
+    label: "Highest Rated",
+    icon: <Grade sx={{ color: "#F4B400" }} />,
+  },
+];
+export default function RoomClient({ allRooms }: { allRooms: Room[] }) {
+  const [rooms] = useState<Room[]>(allRooms);
+  const [filteredRooms, setFilteredRooms] = useState<Room[]>(allRooms);
+  const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
+  const [searchTerm, setSearchTerm] = useState("");
+  const [priceRange, setPriceRange] = useState<number[]>([0, 30000]);
+  const [selectedCapacity, setSelectedCapacity] = useState<number[] | null>([]);
+  const [selectedServices, setSelectedServices] = useState<string[]>([]);
+  const [sortBy, setSortBy] = useState("featured");
+  const [filterDrawerOpen, setFilterDrawerOpen] = useState(false);
+  const [page, setPage] = useState(1);
+  const [itemsPerPage] = useState(6);
+  const [availabilityFilter, setAvailabilityFilter] = useState<
+    "all" | "available" | "occupied"
+  >("all");
+
+  // Add modal state
+  const [selectedRoom, setSelectedRoom] = useState<Room | null>(null);
+  const [modalOpen, setModalOpen] = useState(false);
+
+  useEffect(() => {
+    let filtered = [...rooms];
+
+    if (searchTerm) {
+      filtered = filtered.filter(
+        (room) =>
+          room.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          room.content.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+    }
+
+    if (availabilityFilter !== "all") {
+      filtered = filtered.filter((room) =>
+        availabilityFilter === "available"
+          ? room.availability
+          : !room.availability
+      );
+    }
+
+    filtered = filtered.filter(
+      (room) => room.price >= priceRange[0] && room.price <= priceRange[1]
+    );
+
+    if (selectedCapacity != null) {
+      if (selectedCapacity.length > 0) {
+        filtered = filtered.filter(
+          (room) =>
+            room.capacity !== null && selectedCapacity.includes(room.capacity)
+        );
+      }
+    }
+
+    if (selectedServices.length > 0) {
+      filtered = filtered.filter((room) =>
+        selectedServices.every((service) => room.serviceList.includes(service))
+      );
+    }
+
+    switch (sortBy) {
+      case "priceLow":
+        filtered.sort((a, b) => a.price - b.price);
+        break;
+      case "priceHigh":
+        filtered.sort((a, b) => b.price - a.price);
+        break;
+      case "rating":
+        filtered.sort((a, b) => {
+          const ratingA = a.rating ?? 0;
+          const ratingB = b.rating ?? 0;
+          return ratingB - ratingA;
+        });
+        break;
+      case "featured":
+        filtered.sort((a, b) => (b.featured ? 1 : 0) - (a.featured ? 1 : 0));
+        break;
+    }
+
+    setFilteredRooms(filtered);
+    setPage(1);
+  }, [
+    rooms,
+    searchTerm,
+    priceRange,
+    selectedCapacity,
+    selectedServices,
+    sortBy,
+    availabilityFilter,
+  ]);
+  useEffect(() => {
+    if (filterDrawerOpen) {
+      document.body.style.overflow = "hidden";
+      document.body.style.position = "fixed";
+      document.body.style.width = "100%";
+    } else {
+      document.body.style.overflow = "";
+      document.body.style.position = "";
+      document.body.style.width = "";
+    }
+
+    return () => {
+      document.body.style.overflow = "";
+      document.body.style.position = "";
+      document.body.style.width = "";
+    };
+  }, [filterDrawerOpen]);
+  const totalPages = Math.ceil(filteredRooms.length / itemsPerPage);
+  const paginatedRooms = filteredRooms.slice(
+    (page - 1) * itemsPerPage,
+    page * itemsPerPage
+  );
+
+  const handleCapacityChange = (capacity: number) => {
+    setSelectedCapacity((prev) => {
+      const current = prev ?? []; // default to empty array if null
+      return current.includes(capacity)
+        ? current.filter((c) => c !== capacity)
+        : [...current, capacity];
+    });
+  };
+
+  const handleServiceChange = (service: string) => {
+    setSelectedServices((prev) =>
+      prev.includes(service)
+        ? prev.filter((s) => s !== service)
+        : [...prev, service]
+    );
+  };
+
+  const clearFilters = () => {
+    setSearchTerm("");
+    setPriceRange([0, 30000]);
+    setSelectedCapacity([]);
+    setSelectedServices([]);
+    setSortBy("featured");
+    setAvailabilityFilter("all");
+  };
+
+  // Add modal handlers
+  const handleOpenModal = (room: Room) => {
+    setSelectedRoom(room);
+    setModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setModalOpen(false);
+    setSelectedRoom(null);
+  };
+
+  const activeFiltersCount =
+    (searchTerm ? 1 : 0) +
+    (priceRange[0] > 0 || priceRange[1] < 30000 ? 1 : 0) +
+    (selectedCapacity?.length ?? 0) +
+    (selectedServices.length > 0 ? 1 : 0) +
+    (availabilityFilter !== "all" ? 1 : 0);
+
+  const FilterSidebar = () => (
+    <Box sx={{ p: 3 }}>
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          mb: 3,
+        }}
+      >
+        <Typography
+          variant="h6"
+          sx={{
+            fontWeight: 700,
+            fontFamily: "Poppins, sans-serif",
+            background: "linear-gradient(135deg, #7B2E2E 0%, #D4A373 100%)",
+            backgroundClip: "text",
+            WebkitBackgroundClip: "text",
+            WebkitTextFillColor: "transparent",
+          }}
+        >
+          Filters
+        </Typography>
+        <IconButton
+          onClick={() => setFilterDrawerOpen(false)}
+          sx={{ display: { md: "none" } }}
+        >
+          <X />
+        </IconButton>
+      </Box>
+
+      <Divider sx={{ mb: 3, borderColor: "#F1E9E9" }} />
+
+      <Box sx={{ mb: 4 }}>
+        <Typography
+          variant="subtitle1"
+          sx={{ fontWeight: 600, mb: 2, color: "#3D444B" }}
+        >
+          Availability
+        </Typography>
+        <ToggleButtonGroup
+          value={availabilityFilter}
+          exclusive
+          onChange={(e, newValue) =>
+            newValue && setAvailabilityFilter(newValue)
+          }
+          fullWidth
+          sx={{
+            "& .MuiToggleButton-root": {
+              borderRadius: 2,
+              border: "1px solid #F1E9E9",
+              py: 1,
+              textTransform: "none",
+              fontWeight: 500,
+              "&.Mui-selected": {
+                bgcolor: "#7B2E2E",
+                color: "white",
+                "&:hover": {
+                  bgcolor: "#5f2424",
+                },
+              },
+              "&:hover": {
+                bgcolor: "#7B2E2E08",
+              },
+            },
+          }}
+        >
+          <ToggleButton value="all">All</ToggleButton>
+          <ToggleButton value="available">Available</ToggleButton>
+          <ToggleButton value="occupied">Occupied</ToggleButton>
+        </ToggleButtonGroup>
+      </Box>
+
+      <Box sx={{ mb: 4 }}>
+        <Typography
+          variant="subtitle1"
+          sx={{ fontWeight: 600, mb: 2, color: "#3D444B" }}
+        >
+          Price Range (PKR)
+        </Typography>
+        <Box sx={{ px: 1 }}>
+          <Slider
+            value={priceRange}
+            onChange={(e, newValue) => setPriceRange(newValue as number[])}
+            valueLabelDisplay="auto"
+            min={0}
+            max={30000}
+            step={1000}
+            sx={{
+              color: "#7B2E2E",
+              "& .MuiSlider-thumb": {
+                bgcolor: "#7B2E2E",
+                boxShadow: "0 3px 10px rgba(123,46,46,0.3)",
+                "&:hover": {
+                  boxShadow: "0 5px 15px rgba(123,46,46,0.5)",
+                },
+              },
+              "& .MuiSlider-track": {
+                background: "linear-gradient(90deg, #7B2E2E 0%, #D4A373 100%)",
+              },
+              "& .MuiSlider-rail": {
+                bgcolor: "#F1E9E9",
+              },
+            }}
+          />
+        </Box>
+        <Box sx={{ display: "flex", justifyContent: "space-between", px: 1 }}>
+          <Chip
+            label={`PKR ${priceRange[0].toLocaleString()}`}
+            size="small"
+            sx={{ bgcolor: "#F1E9E9", color: "#7B2E2E", fontWeight: 600 }}
+          />
+          <Chip
+            label={`PKR ${priceRange[1].toLocaleString()}`}
+            size="small"
+            sx={{ bgcolor: "#F1E9E9", color: "#7B2E2E", fontWeight: 600 }}
+          />
+        </Box>
+      </Box>
+
+      <Box sx={{ mb: 4 }}>
+        <Typography
+          variant="subtitle1"
+          sx={{ fontWeight: 600, mb: 2, color: "#3D444B" }}
+        >
+          Room Capacity
+        </Typography>
+        <Stack spacing={1}>
+          {[2, 3, 4].map((capacity) => (
+            <Paper
+              key={capacity}
+              elevation={0}
+              sx={{
+                p: 1.5,
+                bgcolor: selectedCapacity?.includes(capacity)
+                  ? "#7B2E2E08"
+                  : "#FAFAFA",
+                border: `1px solid ${
+                  selectedCapacity?.includes(capacity) ? "#7B2E2E" : "#F1E9E9"
+                }`,
+                borderRadius: 2,
+                transition: "all 0.3s ease",
+                "&:hover": {
+                  borderColor: "#7B2E2E",
+                  bgcolor: "#7B2E2E08",
+                },
+              }}
+            >
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    checked={selectedCapacity?.includes(capacity)}
+                    onChange={() => handleCapacityChange(capacity)}
+                    sx={{
+                      color: "#7B2E2E",
+                      "&.Mui-checked": {
+                        color: "#7B2E2E",
+                      },
+                    }}
+                  />
+                }
+                label={
+                  <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                    <People sx={{ fontSize: 18, color: "#7B2E2E" }} />
+                    <Typography sx={{ fontWeight: 500 }}>
+                      {capacity} Person{capacity > 1 ? "s" : ""}
+                    </Typography>
+                  </Box>
+                }
+              />
+            </Paper>
+          ))}
+        </Stack>
+      </Box>
+
+      <Box sx={{ mb: 4 }}>
+        <Box sx={{ mb: 4 }}>
+          <Typography
+            variant="subtitle1"
+            sx={{ fontWeight: 600, mb: 2, color: "#3D444B" }}
+          >
+            Services & Amenities
+          </Typography>
+          <Stack spacing={1}>
+            {serviceOptions.map((service) => (
+              <Paper
+                key={service}
+                elevation={0}
+                sx={{
+                  p: 1.5,
+                  bgcolor: selectedServices.includes(service)
+                    ? "#09869808"
+                    : "#FAFAFA",
+                  border: `1px solid ${
+                    selectedServices.includes(service) ? "#098698" : "#F1E9E9"
+                  }`,
+                  borderRadius: 2,
+                  transition: "all 0.3s ease",
+                  "&:hover": {
+                    borderColor: "#098698",
+                    bgcolor: "#09869808",
+                  },
+                }}
+              >
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      checked={selectedServices.includes(service)}
+                      onChange={() => handleServiceChange(service)}
+                      size="small"
+                      sx={{
+                        color: "#098698",
+                        "&.Mui-checked": {
+                          color: "#098698",
+                        },
+                      }}
+                    />
+                  }
+                  label={
+                    <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                      {serviceIcons[service]}
+                      <Typography sx={{ fontSize: "0.9rem", fontWeight: 500 }}>
+                        {service}
+                      </Typography>
+                    </Box>
+                  }
+                />
+              </Paper>
+            ))}
+          </Stack>
+        </Box>
+      </Box>
+
+      <Button
+        fullWidth
+        variant="outlined"
+        onClick={clearFilters}
+        sx={{
+          borderColor: "#7B2E2E",
+          color: "#7B2E2E",
+          borderRadius: 2,
+          py: 1.5,
+          fontWeight: 600,
+          background: "linear-gradient(135deg, #FFFFFF 0%, #F1E9E9 100%)",
+          "&:hover": {
+            borderColor: "#5f2424",
+            background: "linear-gradient(135deg, #7B2E2E 0%, #5f2424 100%)",
+            color: "white",
+          },
+        }}
+      >
+        Clear All Filters
+      </Button>
+    </Box>
+  );
+
+  return (
+    <Box
+      sx={{
+        bgcolor: "#FAFAFA",
+        minHeight: "100vh",
+        pt: 18,
+        width: "100%",
+        overflow: "hidden",
+      }}
+    >
+      <Box
+        sx={{
+          position: "relative",
+          height: { xs: "100vh", md: "100vh" },
+          mb: { xs: 10, sm: 2 },
+          overflow: "hidden",
+        }}
+      >
+        {/* Background Image with Overlay */}
+        <Box
+          sx={{
+            position: "absolute",
+            inset: 0,
+            zIndex: 0,
+          }}
+        >
+          <Image
+            src={roomHero}
+            alt="REHMA Hostel"
+            fill
+            priority
+            sizes="100vw"
+            style={{
+              objectFit: "cover",
+            }}
+          />
+          {/* Sophisticated overlay */}
+          <Box
+            sx={{
+              position: "absolute",
+              inset: 0,
+              background:
+                "linear-gradient(to right, rgba(61,68,75,0.95), rgba(61,68,75,0.85), rgba(61,68,75,0.75))",
+            }}
+          />
+          <Box
+            sx={{
+              position: "absolute",
+              inset: 0,
+              background:
+                "linear-gradient(to bottom, transparent, transparent, rgba(123,46,46,0.3))",
+            }}
+          />
+        </Box>
+
+        {/* Subtle pattern overlay */}
+        <Box
+          sx={{
+            position: "absolute",
+            inset: 0,
+            zIndex: 0,
+            opacity: 0.05,
+            backgroundImage:
+              "radial-gradient(circle at 1px 1px, white 1px, transparent 0)",
+            backgroundSize: "40px 40px",
+          }}
+        />
+        <Container
+          maxWidth="lg"
+          sx={{ position: "relative", zIndex: 1, pt: { xs: 1.5, sm: 5 } }}
+        >
+          <Typography
+            variant="h1"
+            sx={{
+              fontSize: { xs: "2rem", md: "3rem", lg: "3.5rem" },
+              fontWeight: 700,
+              color: "white",
+              mb: 3,
+              lineHeight: 1.1,
+              fontFamily: "Poppins, sans-serif",
+            }}
+          >
+            Apartments for Rent in Lahore
+            <Box
+              component="span"
+              sx={{
+                display: "block",
+                color: "#D9D4D1",
+                mt: 1,
+              }}
+            >
+              Explore Listings, Prices & Locations
+            </Box>
+          </Typography>
+
+          {/* Subtext */}
+          <Typography
+            variant="h5"
+            sx={{
+              color: "grey.200",
+              mb: 5,
+              lineHeight: 1.6,
+              maxWidth: { lg: "42rem" },
+              mx: { xs: "auto", lg: 0 },
+            }}
+          >
+            Discover expert insights, local guides, and the latest updates on
+            Lahore rentals — everything you need to find your next home with
+            confidence.
+          </Typography>
+        </Container>
+      </Box>
+
+      <Container maxWidth="lg" sx={{ mt: -6, position: "relative", zIndex: 1 }}>
+        <Paper
+          elevation={16}
+          sx={{
+            top: 100,
+            px: 5,
+            py: 4,
+            mb: 3,
+            bgcolor: "#F6F4F4",
+            boxShadow: "0 20px 40px rgba(123,46,46,0.4)",
+          }}
+        >
+          <Grid container spacing={2} alignItems="center">
+            <Grid size={{ xs: 12, md: 5 }}>
+              <TextField
+                fullWidth
+                placeholder="Search rooms..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                sx={{
+                  "& .MuiOutlinedInput-root": {
+                    borderRadius: 1,
+                    bgcolor: "#FAFAFA",
+                    "&:hover fieldset": {
+                      borderColor: "#7B2E2E",
+                    },
+                    "&.Mui-focused fieldset": {
+                      borderColor: "#7B2E2E",
+                    },
+                  },
+                }}
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <Search sx={{ color: "#7B2E2E" }} />
+                    </InputAdornment>
+                  ),
+                }}
+              />
+            </Grid>
+            <Grid size={{ xs: 12, md: 4 }}>
+              <FormControl fullWidth>
+                <Autocomplete
+                  disablePortal
+                  options={options}
+                  value={options.find((opt) => opt.value === sortBy) || null}
+                  onChange={(_, value) => setSortBy(value?.value || "")}
+                  getOptionLabel={(opt) => opt.label}
+                  renderOption={(props, option) => {
+                    // remove the `key` property before spreading
+                    const { key, ...rest } = props;
+                    return (
+                      <Box
+                        key={key}
+                        component="li"
+                        {...rest}
+                        sx={{ display: "flex", alignItems: "center", gap: 1 }}
+                      >
+                        {option.icon}
+                        <Typography variant="body2">{option.label}</Typography>
+                      </Box>
+                    );
+                  }}
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      label="Sort By"
+                      variant="outlined"
+                      InputLabelProps={{
+                        shrink: true,
+                      }}
+                    />
+                  )}
+                  sx={{
+                    bgcolor: "#FAFAFA",
+                    borderRadius: 2,
+                  }}
+                />
+              </FormControl>
+            </Grid>
+            <Grid
+              size={{ xs: 12, md: 2 }}
+              sx={{ display: { xs: "grid", md: "none" }, placeItems: "center" }}
+            >
+              <Badge
+                badgeContent={activeFiltersCount}
+                sx={{
+                  "& .MuiBadge-badge": {
+                    bgcolor: "#D4A373",
+                    color: "white",
+                    fontWeight: 600,
+                  },
+                }}
+              >
+                <Button
+                  fullWidth
+                  variant="contained"
+                  startIcon={<FilterAlt />}
+                  onClick={() => setFilterDrawerOpen(true)}
+                  sx={{
+                    bgcolor: "#7B2E2E",
+                    color: "white",
+                    border: "2px solid #7B2E2E",
+                    borderRadius: 0.5,
+                    py: "10px",
+                    px: "15px",
+                    width: { xs: 210, sm: 270 },
+                    fontWeight: 600,
+                    boxShadow: "5px 5px 10px rgba(123, 46, 46, 0.2)",
+                    transition: "all 0.3s",
+                    "&:hover": {
+                      bgcolor: "white",
+                      color: "#7B2E2E",
+                    },
+                  }}
+                >
+                  Filters
+                </Button>
+              </Badge>
+            </Grid>
+            <Grid
+              size={{ xs: 12, md: 3 }}
+              sx={{
+                display: { xs: "none", md: "block" },
+              }}
+            >
+              <ToggleButtonGroup
+                value={viewMode}
+                exclusive
+                onChange={(e, newMode) => newMode && setViewMode(newMode)}
+                fullWidth
+                sx={{
+                  "& .MuiToggleButton-root": {
+                    borderRadius: 2,
+                    border: "1px solid #F1E9E9",
+                    "&.Mui-selected": {
+                      bgcolor: "#7B2E2E",
+                      color: "white",
+                      "&:hover": {
+                        bgcolor: "#5f2424",
+                      },
+                    },
+                  },
+                }}
+              >
+                <ToggleButton value="grid">
+                  <GridView />
+                </ToggleButton>
+                <ToggleButton value="list">
+                  <ViewList />
+                </ToggleButton>
+              </ToggleButtonGroup>
+            </Grid>
+          </Grid>
+        </Paper>
+
+        <Breadcrumbs sx={{ mb: 3 }}>
+          <Link href="/" style={{ color: "#7B2E2E", textDecoration: "none" }}>
+            Home
+          </Link>
+          <Typography color="text.primary">Rooms</Typography>
+        </Breadcrumbs>
+
+        <Grid container spacing={3}>
+          <Grid
+            size={{ xs: 0, md: 3 }}
+            sx={{ display: { xs: "none", md: "block" } }}
+          >
+            <Paper
+              elevation={16}
+              sx={{
+                position: "sticky",
+                top: 100,
+                py: 4,
+                pb: 8,
+                mb: 4,
+                bgcolor: "#F6F4F4",
+                boxShadow: "0 20px 40px rgba(123,46,46,0.4)",
+                maxHeight: "calc(100% - 100px)",
+              }}
+            >
+              <FilterSidebar />
+            </Paper>
+          </Grid>
+
+          <Grid size={{ xs: 12, md: 9 }}>
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+                mb: 3,
+              }}
+            >
+              <Typography
+                variant="body1"
+                sx={{ color: "#505A63", fontWeight: 600 }}
+              >
+                Showing {paginatedRooms.length} of {filteredRooms.length} rooms
+              </Typography>
+              <Chip
+                icon={<LocationOn />}
+                label="Lahore, Pakistan"
+                sx={{
+                  bgcolor: "#09869815",
+                  color: "#098698",
+                  border: "1px solid #098698",
+                  fontWeight: 600,
+                }}
+              />
+            </Box>
+
+            {paginatedRooms.length > 0 ? (
+              <Grid container spacing={3} sx={{ mb: 5 }}>
+                {paginatedRooms.map((room) => (
+                  <Grid
+                    size={{
+                      xs: 12,
+                      sm: viewMode === "grid" ? 6 : 12,
+                      lg: viewMode === "grid" ? 4 : 12,
+                    }}
+                    key={room.id}
+                  >
+                    <Card
+                      sx={{
+                        height: {
+                          xs: 570,
+                          sm: viewMode === "grid" ? 650 : "auto",
+                        },
+                        display: "flex",
+                        // Stack on mobile; row only from sm+ when in list mode
+                        flexDirection: {
+                          xs: "column",
+                          sm: viewMode === "grid" ? "column" : "row",
+                        },
+                        overflow: "hidden",
+                        border: "1px solid #F1E9E9",
+                        transition: "all 0.3s ease-in-out",
+                        width: "100%",
+                        backgroundColor: "rgba(217,212,209,0.25)",
+                        backdropFilter: "blur(8px)",
+                        boxShadow:
+                          "0 8px 20px rgba(123,46,46,0.25), 0 2px 5px rgba(0,0,0,0.1)",
+                        "&:hover": {
+                          transform: "translateY(-6px)",
+                          boxShadow: "0 20px 40px rgba(123,46,46,0.4)",
+                        },
+                        bgcolor: "#FFFFFF",
+                        borderRadius: 1,
+                        cursor: "default",
+                        alignItems: "stretch",
+                      }}
+                    >
+                      <Box
+                        sx={{
+                          position: "relative",
+                          overflow: "hidden",
+                          // Do not let the image shrink in list row layout
+                          flex: {
+                            xs: "0 0 auto",
+                            sm: viewMode === "grid" ? "0 0 auto" : "0 0 300px",
+                            md: viewMode === "grid" ? "0 0 auto" : "0 0 320px",
+                          },
+                          minWidth: {
+                            xs: "100%",
+                            sm: viewMode === "grid" ? "auto" : 300,
+                            md: viewMode === "grid" ? "auto" : 320,
+                          },
+                        }}
+                      >
+                        <CardMedia
+                          component="div"
+                          sx={{
+                            display: "block",
+                            width: "100%",
+                            height: {
+                              xs: 220,
+                              sm: 240,
+                              md: viewMode === "grid" ? 250 : 220,
+                            },
+                            borderBottom: {
+                              xs: "1px solid rgba(0,0,0,0.08)",
+                              sm: "none",
+                            },
+                            borderRight: {
+                              xs: "none",
+                              sm:
+                                viewMode === "grid"
+                                  ? "none"
+                                  : "1px solid rgba(0,0,0,0.08)",
+                            },
+                            overflow: "hidden", // needed for hover scale
+                            transition: "transform 0.3s ease",
+                            "&:hover img": {
+                              transform: "scale(1.05)",
+                            },
+                          }}
+                        >
+                          <Image
+                            src={room.image || "/placeholder.png"}
+                            alt={room.title}
+                            fill // fills the CardMedia
+                            sizes="(max-width: 768px) 100vw, 400px"
+                            style={{
+                              objectFit: "cover",
+                              transition: "transform 0.3s ease",
+                            }}
+                            loading="lazy"
+                          />
+                        </CardMedia>
+                        <Box
+                          sx={{
+                            position: "absolute",
+                            inset: 0,
+                            background:
+                              "linear-gradient(to top, rgba(0,0,0,0.5) 0%, transparent 50%)",
+                          }}
+                        />
+                        {room.featured && (
+                          <Chip
+                            icon={<Star />}
+                            label="Featured"
+                            size="small"
+                            sx={{
+                              position: "absolute",
+                              top: { xs: 8, sm: 10 },
+                              right: { xs: 8, sm: 10 },
+                              bgcolor: "#D4A373",
+                              color: "white",
+                              fontWeight: 600,
+                              boxShadow: "0 4px 15px rgba(212,163,115,0.5)",
+                            }}
+                          />
+                        )}
+                        {!room.availability && (
+                          <Box
+                            sx={{
+                              position: "absolute",
+                              inset: 0,
+                              bgcolor: "rgba(0,0,0,0.8)",
+                              display: "flex",
+                              alignItems: "center",
+                              justifyContent: "center",
+                              backdropFilter: "blur(4px)",
+                            }}
+                          >
+                            <Typography
+                              variant="h6"
+                              sx={{
+                                color: "white",
+                                fontWeight: 700,
+                                textTransform: "uppercase",
+                                letterSpacing: 2,
+                              }}
+                            >
+                              Not Available
+                            </Typography>
+                          </Box>
+                        )}
+                      </Box>
+
+                      <CardContent
+                        sx={{
+                          flex: 1,
+                          display: "flex",
+                          flexDirection: "column",
+                          p: { xs: 2, sm: 3 },
+                          minWidth: 0, // prevents text overflow when in row layout
+                        }}
+                      >
+                        <Typography
+                          variant="h6"
+                          sx={{
+                            fontWeight: 700,
+                            color: "#3D444B",
+                            mb: 1,
+                            fontFamily: "Poppins, sans-serif",
+                          }}
+                        >
+                          {room.title}
+                        </Typography>
+
+                        <Typography
+                          variant="body2"
+                          color="text.secondary"
+                          sx={{ mb: 2, lineHeight: 1.6 }}
+                        >
+                          {room.content}
+                        </Typography>
+
+                        <Stack
+                          direction="row"
+                          spacing={1}
+                          sx={{ mb: 2, flexWrap: "wrap", gap: 1 }}
+                        >
+                          <Chip
+                            icon={<People />}
+                            label={`${room.capacity ?? "N/A"} Person${
+                              room.capacity && room.capacity > 1 ? "s" : ""
+                            }`}
+                            size="small"
+                            sx={{
+                              bgcolor: "#7B2E2E15",
+                              color: "#7B2E2E",
+                              border: "1px solid #7B2E2E30",
+                              fontWeight: 600,
+                            }}
+                          />
+                          <Chip
+                            label={room.size}
+                            size="small"
+                            sx={{
+                              bgcolor: "#09869815",
+                              color: "#098698",
+                              border: "1px solid #09869830",
+                              fontWeight: 600,
+                            }}
+                          />
+                        </Stack>
+
+                        <Box
+                          sx={{
+                            display: "flex",
+                            alignItems: "center",
+                            gap: 1,
+                            mb: 3,
+                          }}
+                        >
+                          <Rating
+                            value={room.rating}
+                            readOnly
+                            size="small"
+                            sx={{
+                              "& .MuiRating-iconFilled": {
+                                color: "#D4A373",
+                              },
+                            }}
+                          />
+                          <Typography
+                            variant="caption"
+                            sx={{ color: "#505A63", fontWeight: 600 }}
+                          >
+                            {room.rating} ({room.reviews} reviews)
+                          </Typography>
+                        </Box>
+
+                        <Divider
+                          sx={{
+                            mt: "auto",
+                            mb: "auto",
+                            borderColor: "#F1E9E9",
+                          }}
+                        />
+                        <Box
+                          sx={{
+                            display: "flex",
+                            alignItems: "center",
+                            mt: "auto",
+                            justifyContent: "space-between",
+                          }}
+                        >
+                          <Typography
+                            variant="h5"
+                            sx={{
+                              color: "#7B2E2E",
+                              fontWeight: 800,
+                              fontFamily: "Poppins, sans-serif",
+                            }}
+                          >
+                            PKR {room.price.toLocaleString()}
+                          </Typography>
+                          <Typography variant="caption" color="text.secondary">
+                            {room.duration}{" "}
+                          </Typography>
+                        </Box>
+                        <Button
+                          variant="contained"
+                          disabled={!room.availability}
+                          endIcon={<CheckCircle />}
+                          onClick={() => handleOpenModal(room)}
+                          sx={{
+                            bgcolor: "#7B2E2E",
+                            color: "primary.contrastText",
+                            borderRadius: 0.5,
+                            py: "10px",
+                            px: "15px",
+                            width: 220,
+                            fontWeight: 600,
+                            boxShadow: "5px 5px 10px rgba(123, 46, 46, 0.2)",
+                            transition: "all 0.3s",
+                            "&:hover": {
+                              bgcolor: "primary.contrastText",
+                              color: "#7B2E2E",
+                            },
+                            "&:disabled": {
+                              bgcolor: "#ccc",
+                            },
+                          }}
+                        >
+                          View Details
+                        </Button>
+                      </CardContent>
+                    </Card>
+                  </Grid>
+                ))}
+              </Grid>
+            ) : (
+              <Paper
+                sx={{
+                  p: 8,
+                  textAlign: "center",
+                  borderRadius: 3,
+                  background:
+                    "linear-gradient(135deg, #FFFFFF 0%, #FAFAFA 100%)",
+                  border: "1px solid #F1E9E9",
+                }}
+              >
+                <Typography
+                  variant="h5"
+                  sx={{
+                    mb: 2,
+                    color: "#3D444B",
+                    fontWeight: 700,
+                    fontFamily: "Poppins, sans-serif",
+                  }}
+                >
+                  No rooms found
+                </Typography>
+                <Typography color="text.secondary" sx={{ mb: 3 }}>
+                  Try adjusting your filters or search criteria
+                </Typography>
+                <Button
+                  variant="contained"
+                  onClick={clearFilters}
+                  sx={{
+                    bgcolor: "#7B2E2E",
+                    borderRadius: 2,
+                    px: 4,
+                    py: 1.2,
+                    "&:hover": {
+                      bgcolor: "#5f2424",
+                    },
+                  }}
+                >
+                  Clear Filters
+                </Button>
+              </Paper>
+            )}
+
+            {totalPages > 1 && (
+              <Box sx={{ display: "flex", justifyContent: "center", mt: 6 }}>
+                <Pagination
+                  count={totalPages}
+                  page={page}
+                  onChange={(e, value) => setPage(value)}
+                  size="large"
+                  sx={{
+                    "& .MuiPaginationItem-root": {
+                      borderRadius: 2,
+                      fontWeight: 600,
+                      "&.Mui-selected": {
+                        bgcolor: "#7B2E2E",
+                        boxShadow: "0 4px 15px rgba(123,46,46,0.3)",
+                        "&:hover": {
+                          bgcolor: "#5f2424",
+                        },
+                      },
+                      "&:hover": {
+                        bgcolor: "#7B2E2E15",
+                      },
+                    },
+                  }}
+                />
+              </Box>
+            )}
+          </Grid>
+        </Grid>
+      </Container>
+
+      {/* Add the RoomDetailsModal component */}
+      <RoomDetailsModal
+        open={modalOpen}
+        onClose={handleCloseModal}
+        room={selectedRoom}
+      />
+
+      <Drawer
+        anchor="right"
+        open={filterDrawerOpen}
+        onClose={() => setFilterDrawerOpen(false)}
+        ModalProps={{
+          keepMounted: true,
+          disableScrollLock: true,
+        }}
+        sx={{
+          "& .MuiDrawer-paper": {
+            width: 300,
+            boxSizing: "border-box",
+            backgroundColor: "#fff",
+            overflowY: "auto",
+            "&::-webkit-scrollbar": {
+              width: "4px",
+            },
+            "&::-webkit-scrollbar-thumb": {
+              backgroundColor: "#7B2E2E",
+              borderRadius: "2px",
+            },
+          },
+        }}
+      >
+        <FilterSidebar />
+      </Drawer>
+    </Box>
+  );
+}

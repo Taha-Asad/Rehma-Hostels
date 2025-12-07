@@ -1,7 +1,7 @@
 generator client {
-  provider   = "prisma-client-js"
-  engineType = "library"
-  seed       = "tsx prisma/seed.ts"
+  provider        = "prisma-client-js"
+  previewFeatures = ["driverAdapters"]
+  seed            = "tsx prisma/seed.ts"
 }
 
 datasource db {
@@ -54,7 +54,8 @@ model Room {
   content      String
   image        String?
   serviceList  String[]
-  price        String
+  featured     Boolean  @default(false)
+  price        Int
   duration     String
   capacity     Int?
   size         String?

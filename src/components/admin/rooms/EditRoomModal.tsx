@@ -16,15 +16,20 @@ import {
   DialogContent,
   DialogActions,
   Autocomplete,
+  InputAdornment,
+  Switch,
+  FormControlLabel,
+  Paper,
 } from "@mui/material";
 
 import {
   Save as SaveIcon,
   Add as AddIcon,
   Close as CloseIcon,
+  Star as StarIcon,
+  StarBorder as StarBorderIcon,
 } from "@mui/icons-material";
 
-// import Image from "next/image";
 import toast from "react-hot-toast";
 import Image from "next/image";
 import { JsonValue } from "@prisma/client/runtime/client";
@@ -33,29 +38,19 @@ interface EditModelProps {
   open: boolean;
   onClose: () => void;
   room: Room | null;
-  onConfirm: (data: FormData) => void; // SERVER ACTION
+  onConfirm: (data: FormData) => void;
 }
 
 const availability = [
-  {
-    label: "Available",
-    value: "Available",
-  },
-  {
-    label: "Unavailable",
-    value: "Unavailable",
-  },
+  { label: "Available", value: "Available" },
+  { label: "Unavailable", value: "Unavailable" },
 ];
+
 const chipPosition = [
-  {
-    label: "top-right",
-    value: "top-right",
-  },
-  {
-    label: "bottom-left",
-    value: "bottom-left",
-  },
+  { label: "top-right", value: "top-right" },
+  { label: "bottom-left", value: "bottom-left" },
 ];
+
 const EditRoomModal = ({ open, onClose, room, onConfirm }: EditModelProps) => {
   const [formData, setFormData] = useState({
     title: "",
@@ -64,7 +59,7 @@ const EditRoomModal = ({ open, onClose, room, onConfirm }: EditModelProps) => {
     newServiceItem: "",
     chips: [] as JsonValue[],
     newChip: { icon: "", label: "", position: "" },
-    price: "",
+    price: "" as string, // Keep as string for input, convert on submit
     duration: "",
     capacity: null as number | null,
     size: "",
@@ -72,8 +67,9 @@ const EditRoomModal = ({ open, onClose, room, onConfirm }: EditModelProps) => {
     rating: null as number | null,
     reviews: null as number | null,
     description: "",
-    amenities: [] as string[], // [{icon, label}]
+    amenities: [] as string[],
     newAmenity: "",
+    featured: false, // Added featured field
   });
 
   const [image, setImage] = useState<File | null>(null);
@@ -94,7 +90,7 @@ const EditRoomModal = ({ open, onClose, room, onConfirm }: EditModelProps) => {
             position: c.position || "",
           })) || [],
         newChip: { icon: "", label: "", position: "" },
-        price: room.price || "",
+        price: room.price?.toString() || "", // Convert to string for input
         duration: room.duration || "",
         capacity: room.capacity ?? null,
         size: room.size || "",
@@ -104,9 +100,9 @@ const EditRoomModal = ({ open, onClose, room, onConfirm }: EditModelProps) => {
         description: room.description || "",
         amenities: room.amenities || [],
         newAmenity: "",
+        featured: room.featured ?? false, // Set featured from room
       });
 
-      // FIX IMAGE PREVIEW
       setImagePreview(room.image ?? "");
       setImage(null);
     }
@@ -132,9 +128,6 @@ const EditRoomModal = ({ open, onClose, room, onConfirm }: EditModelProps) => {
       newChip: { label: "", icon: "", position: "" },
     });
   };
-  useEffect(() => {
-    console.log("chips updated", formData.chips);
-  }, [formData.chips]);
 
   const removeChip = (i: number) => {
     const updated = [...formData.chips];
@@ -164,6 +157,22 @@ const EditRoomModal = ({ open, onClose, room, onConfirm }: EditModelProps) => {
     setFormData({ ...formData, amenities: updated });
   };
 
+  // PRICE HANDLER -------------------------------------------------------------
+
+  const handlePriceChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    // Only allow numbers
+    if (value === "" || /^\d+$/.test(value)) {
+      setFormData({ ...formData, price: value });
+    }
+  };
+
+  // Format price for display with commas
+  const formatPriceDisplay = (price: string): string => {
+    if (!price) return "";
+    return parseInt(price).toLocaleString("en-PK");
+  };
+
   // IMAGE ---------------------------------------------------------------------
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
@@ -177,27 +186,45 @@ const EditRoomModal = ({ open, onClose, room, onConfirm }: EditModelProps) => {
   // SUBMIT (SERVER ACTION) ----------------------------------------------------
 
   const handleSubmit = async () => {
+    // Validation
+    if (!formData.title.trim()) {
+      toast.error("Title is required");
+      return;
+    }
+
+    if (!formData.price || parseInt(formData.price) <= 0) {
+      toast.error("Please enter a valid price");
+      return;
+    }
+
     try {
       setLoading(true);
 
       const data = new FormData();
 
-      // VERY IMPORTANT
       data.append("id", room?.id.toString() ?? "");
 
-      Object.entries(formData).forEach(([key, value]) => {
-        if (Array.isArray(value)) {
-          data.append(key, JSON.stringify(value));
-        } else if (value !== null) {
-          data.append(key, value.toString());
-        }
-      });
+      // Handle each field appropriately
+      data.append("title", formData.title);
+      data.append("content", formData.content);
+      data.append("serviceList", JSON.stringify(formData.serviceList));
+      data.append("chips", JSON.stringify(formData.chips));
+      data.append("price", parseInt(formData.price).toString()); // Convert to integer
+      data.append("duration", formData.duration);
+      data.append("capacity", formData.capacity?.toString() ?? "");
+      data.append("size", formData.size);
+      data.append("availability", formData.availability);
+      data.append("rating", formData.rating?.toString() ?? "");
+      data.append("reviews", formData.reviews?.toString() ?? "");
+      data.append("description", formData.description);
+      data.append("amenities", JSON.stringify(formData.amenities));
+      data.append("featured", formData.featured.toString()); // Add featured
 
       if (image) data.append("image", image);
 
       await onConfirm(data);
 
-      toast.success("Room updated");
+      toast.success("Room updated successfully");
       onClose();
     } catch (error) {
       toast.error(`Update failed: ${error}`);
@@ -245,7 +272,6 @@ const EditRoomModal = ({ open, onClose, room, onConfirm }: EditModelProps) => {
           "&::-webkit-scrollbar-thumb:hover": {
             backgroundColor: "rgba(123,46,46,0.8)",
           },
-          // top fade
           "&::before": {
             content: '""',
             position: "sticky",
@@ -257,7 +283,6 @@ const EditRoomModal = ({ open, onClose, room, onConfirm }: EditModelProps) => {
               "linear-gradient(to bottom, rgba(246,244,244,1), rgba(246,244,244,0))",
             zIndex: 1,
           },
-          // bottom fade
           "&::after": {
             content: '""',
             position: "sticky",
@@ -280,6 +305,104 @@ const EditRoomModal = ({ open, onClose, room, onConfirm }: EditModelProps) => {
         >
           {/* LEFT COLUMN ----------------------------------------------------- */}
           <Box sx={{ flex: 1 }}>
+            {/* FEATURED TOGGLE ----------------------------------------------- */}
+            <Paper
+              elevation={0}
+              sx={{
+                p: 2,
+                mb: 3,
+                borderRadius: 2,
+                border: formData.featured
+                  ? "2px solid #D4A373"
+                  : "2px solid #E0E0E0",
+                bgcolor: formData.featured
+                  ? "rgba(212, 163, 115, 0.1)"
+                  : "transparent",
+                transition: "all 0.3s ease",
+              }}
+            >
+              <Box
+                sx={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                }}
+              >
+                <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                  {formData.featured ? (
+                    <StarIcon sx={{ color: "#D4A373", fontSize: 28 }} />
+                  ) : (
+                    <StarBorderIcon sx={{ color: "#9E9E9E", fontSize: 28 }} />
+                  )}
+                  <Box>
+                    <Typography
+                      variant="subtitle1"
+                      sx={{
+                        fontWeight: 600,
+                        color: formData.featured ? "#D4A373" : "text.primary",
+                      }}
+                    >
+                      Featured Room
+                    </Typography>
+                    <Typography variant="caption" color="text.secondary">
+                      {formData.featured
+                        ? "This room will be highlighted in listings"
+                        : "Enable to highlight this room in listings"}
+                    </Typography>
+                  </Box>
+                </Box>
+
+                <FormControlLabel
+                  control={
+                    <Switch
+                      checked={formData.featured}
+                      onChange={(e) =>
+                        setFormData({ ...formData, featured: e.target.checked })
+                      }
+                      sx={{
+                        "& .MuiSwitch-switchBase.Mui-checked": {
+                          color: "#D4A373",
+                          "&:hover": {
+                            backgroundColor: "rgba(212, 163, 115, 0.08)",
+                          },
+                        },
+                        "& .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track":
+                          {
+                            backgroundColor: "#D4A373",
+                          },
+                      }}
+                    />
+                  }
+                  label=""
+                  sx={{ m: 0 }}
+                />
+              </Box>
+
+              {/* Featured Badge Preview */}
+              {formData.featured && (
+                <Box
+                  sx={{ mt: 2, display: "flex", alignItems: "center", gap: 1 }}
+                >
+                  <Typography variant="caption" color="text.secondary">
+                    Badge Preview:
+                  </Typography>
+                  <Chip
+                    icon={<StarIcon sx={{ fontSize: 16 }} />}
+                    label="Featured"
+                    size="small"
+                    sx={{
+                      bgcolor: "#D4A373",
+                      color: "white",
+                      fontWeight: 600,
+                      "& .MuiChip-icon": {
+                        color: "white",
+                      },
+                    }}
+                  />
+                </Box>
+              )}
+            </Paper>
+
             <TextField
               fullWidth
               label="Title"
@@ -329,6 +452,12 @@ const EditRoomModal = ({ open, onClose, room, onConfirm }: EditModelProps) => {
                 onChange={(e) =>
                   setFormData({ ...formData, newServiceItem: e.target.value })
                 }
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    e.preventDefault();
+                    addServiceItem();
+                  }
+                }}
                 slotProps={{
                   input: {
                     sx: {
@@ -355,15 +484,17 @@ const EditRoomModal = ({ open, onClose, room, onConfirm }: EditModelProps) => {
                   sx={{
                     color: "primary.main",
                     bgcolor: "primary.contrastText",
-                    border: "1px solid primary.main",
+                    border: "1px solid",
+                    borderColor: "primary.main",
                   }}
                 />
               ))}
             </Box>
 
             {/* CHIPS -------------------------------------------------------- */}
+            <Typography sx={{ mb: 1 }}>Chips</Typography>
 
-            <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1, mb: 3 }}>
+            <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1, mb: 2 }}>
               {formData.chips.map((c, i) => (
                 <Chip
                   key={i}
@@ -378,39 +509,8 @@ const EditRoomModal = ({ open, onClose, room, onConfirm }: EditModelProps) => {
                 />
               ))}
             </Box>
-            {/* CHIP SUGGESTIONS */}
-            {formData.newChip.label && (
-              <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1, mb: 1 }}>
-                {formData.chips
-                  .filter((c) =>
-                    (c as any).label
-                      .toLowerCase()
-                      .includes(formData.newChip.label.toLowerCase())
-                  )
-                  .map((c, i) => (
-                    <Chip
-                      key={i}
-                      label={(c as any).label}
-                      onClick={() =>
-                        setFormData({
-                          ...formData,
-                          newChip: {
-                            ...formData.newChip,
-                            label: (c as any).label,
-                          },
-                        })
-                      }
-                      sx={{
-                        bgcolor: "primary.main",
-                        color: "primary.contrastText",
-                        cursor: "pointer",
-                      }}
-                    />
-                  ))}
-              </Box>
-            )}
 
-            <Box sx={{ display: "flex", gap: 1, mb: 1 }}>
+            <Box sx={{ display: "flex", gap: 1, mb: 3 }}>
               <TextField
                 fullWidth
                 label="Chip Label"
@@ -454,7 +554,6 @@ const EditRoomModal = ({ open, onClose, room, onConfirm }: EditModelProps) => {
                 }
                 getOptionLabel={(option) => option.label}
                 renderOption={(props, option) => {
-                  // remove the `key` property before spreading
                   const { key, ...rest } = props;
                   return (
                     <Box key={key} component="li" {...rest}>
@@ -472,17 +571,10 @@ const EditRoomModal = ({ open, onClose, room, onConfirm }: EditModelProps) => {
                     }}
                   />
                 )}
-                sx={{
-                  mb: 2,
-                }}
               />
 
               <IconButton
-                onClick={() => {
-                  console.log("before add", formData.chips);
-                  addChip();
-                  console.log("after add", formData.chips);
-                }}
+                onClick={addChip}
                 sx={{ color: "primary.main", width: 50, height: 50 }}
               >
                 <AddIcon />
@@ -493,19 +585,37 @@ const EditRoomModal = ({ open, onClose, room, onConfirm }: EditModelProps) => {
             <TextField
               fullWidth
               label="Price"
+              type="text"
               value={formData.price}
-              onChange={(e) =>
-                setFormData({ ...formData, price: e.target.value })
-              }
+              onChange={handlePriceChange}
+              placeholder="Enter price"
               sx={{ mb: 2 }}
               slotProps={{
                 input: {
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <Typography
+                        sx={{
+                          color: "primary.main",
+                          fontWeight: 600,
+                          fontSize: "0.95rem",
+                        }}
+                      >
+                        PKR
+                      </Typography>
+                    </InputAdornment>
+                  ),
                   sx: {
                     color: "text.primary",
                     "&::placeholder": { color: "text.secondary" },
                   },
                 },
               }}
+              helperText={
+                formData.price
+                  ? `Formatted: PKR ${formatPriceDisplay(formData.price)}`
+                  : "Enter price in Pakistani Rupees"
+              }
             />
 
             {/* DURATION ------------------------------------------------------ */}
@@ -513,6 +623,7 @@ const EditRoomModal = ({ open, onClose, room, onConfirm }: EditModelProps) => {
               fullWidth
               label="Duration"
               value={formData.duration}
+              placeholder="e.g., per month, per night"
               onChange={(e) =>
                 setFormData({ ...formData, duration: e.target.value })
               }
@@ -534,11 +645,22 @@ const EditRoomModal = ({ open, onClose, room, onConfirm }: EditModelProps) => {
               type="number"
               value={formData.capacity ?? ""}
               onChange={(e) =>
-                setFormData({ ...formData, capacity: Number(e.target.value) })
+                setFormData({
+                  ...formData,
+                  capacity: e.target.value ? Number(e.target.value) : null,
+                })
               }
               sx={{ mb: 2 }}
               slotProps={{
                 input: {
+                  inputProps: { min: 1 },
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <Typography variant="body2" color="text.secondary">
+                        persons
+                      </Typography>
+                    </InputAdornment>
+                  ),
                   sx: {
                     color: "text.primary",
                     "&::placeholder": { color: "text.secondary" },
@@ -552,6 +674,7 @@ const EditRoomModal = ({ open, onClose, room, onConfirm }: EditModelProps) => {
               fullWidth
               label="Size"
               value={formData.size}
+              placeholder="e.g., 250 sq ft"
               onChange={(e) =>
                 setFormData({ ...formData, size: e.target.value })
               }
@@ -567,7 +690,6 @@ const EditRoomModal = ({ open, onClose, room, onConfirm }: EditModelProps) => {
             />
 
             {/* AVAILABILITY -------------------------------------------------- */}
-
             <Autocomplete
               disablePortal
               options={availability}
@@ -581,10 +703,27 @@ const EditRoomModal = ({ open, onClose, room, onConfirm }: EditModelProps) => {
               }
               getOptionLabel={(option) => option.label}
               renderOption={(props, option) => {
-                // remove the `key` property before spreading
                 const { key, ...rest } = props;
                 return (
-                  <Box key={key} component="li" {...rest}>
+                  <Box
+                    key={key}
+                    component="li"
+                    {...rest}
+                    sx={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: 1,
+                    }}
+                  >
+                    <Box
+                      sx={{
+                        width: 10,
+                        height: 10,
+                        borderRadius: "50%",
+                        bgcolor:
+                          option.value === "Available" ? "#4CAF50" : "#F44336",
+                      }}
+                    />
                     <Typography variant="body2">{option.label}</Typography>
                   </Box>
                 );
@@ -601,10 +740,9 @@ const EditRoomModal = ({ open, onClose, room, onConfirm }: EditModelProps) => {
                   }}
                 />
               )}
-              sx={{
-                my: 2,
-              }}
+              sx={{ my: 2 }}
             />
+
             {/* RATING -------------------------------------------------------- */}
             <TextField
               fullWidth
@@ -612,11 +750,22 @@ const EditRoomModal = ({ open, onClose, room, onConfirm }: EditModelProps) => {
               type="number"
               value={formData.rating ?? ""}
               onChange={(e) =>
-                setFormData({ ...formData, rating: Number(e.target.value) })
+                setFormData({
+                  ...formData,
+                  rating: e.target.value ? Number(e.target.value) : null,
+                })
               }
               sx={{ mb: 2 }}
               slotProps={{
                 input: {
+                  inputProps: { min: 0, max: 5, step: 0.1 },
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <Typography variant="body2" color="text.secondary">
+                        / 5
+                      </Typography>
+                    </InputAdornment>
+                  ),
                   sx: {
                     color: "text.primary",
                     "&::placeholder": { color: "text.secondary" },
@@ -632,11 +781,22 @@ const EditRoomModal = ({ open, onClose, room, onConfirm }: EditModelProps) => {
               type="number"
               value={formData.reviews ?? ""}
               onChange={(e) =>
-                setFormData({ ...formData, reviews: Number(e.target.value) })
+                setFormData({
+                  ...formData,
+                  reviews: e.target.value ? Number(e.target.value) : null,
+                })
               }
               sx={{ mb: 2 }}
               slotProps={{
                 input: {
+                  inputProps: { min: 0 },
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <Typography variant="body2" color="text.secondary">
+                        reviews
+                      </Typography>
+                    </InputAdornment>
+                  ),
                   sx: {
                     color: "text.primary",
                     "&::placeholder": { color: "text.secondary" },
@@ -669,7 +829,7 @@ const EditRoomModal = ({ open, onClose, room, onConfirm }: EditModelProps) => {
             {/* AMENITIES ----------------------------------------------------- */}
             <Typography sx={{ mb: 1 }}>Amenities</Typography>
 
-            <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1, mb: 3 }}>
+            <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1, mb: 2 }}>
               {formData.amenities.map((a, i) => (
                 <Chip
                   key={i}
@@ -685,6 +845,7 @@ const EditRoomModal = ({ open, onClose, room, onConfirm }: EditModelProps) => {
 
             <Box sx={{ display: "flex", gap: 1, mb: 1 }}>
               <TextField
+                fullWidth
                 label="Amenity Label"
                 value={formData.newAmenity}
                 onChange={(e) =>
@@ -693,6 +854,12 @@ const EditRoomModal = ({ open, onClose, room, onConfirm }: EditModelProps) => {
                     newAmenity: e.target.value,
                   })
                 }
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    e.preventDefault();
+                    addAmenity();
+                  }
+                }}
                 slotProps={{
                   input: {
                     sx: {
@@ -710,11 +877,63 @@ const EditRoomModal = ({ open, onClose, room, onConfirm }: EditModelProps) => {
                 <AddIcon />
               </IconButton>
             </Box>
+
+            {/* Common Amenity Suggestions */}
+            <Box sx={{ mb: 3 }}>
+              <Typography
+                variant="caption"
+                color="text.secondary"
+                sx={{ mb: 1 }}
+              >
+                Quick Add:
+              </Typography>
+              <Box
+                sx={{ display: "flex", flexWrap: "wrap", gap: 0.5, mt: 0.5 }}
+              >
+                {[
+                  "Wi-Fi",
+                  "AC",
+                  "TV",
+                  "Refrigerator",
+                  "Attached Bath",
+                  "Parking",
+                  "Security",
+                  "Laundry",
+                  "Kitchen",
+                  "Geyser",
+                ]
+                  .filter((a) => !formData.amenities.includes(a))
+                  .slice(0, 5)
+                  .map((amenity) => (
+                    <Chip
+                      key={amenity}
+                      label={amenity}
+                      size="small"
+                      onClick={() =>
+                        setFormData({
+                          ...formData,
+                          amenities: [...formData.amenities, amenity],
+                        })
+                      }
+                      sx={{
+                        cursor: "pointer",
+                        bgcolor: "transparent",
+                        border: "1px dashed",
+                        borderColor: "primary.main",
+                        color: "primary.main",
+                        "&:hover": {
+                          bgcolor: "rgba(123, 46, 46, 0.1)",
+                        },
+                      }}
+                    />
+                  ))}
+              </Box>
+            </Box>
           </Box>
 
           {/* RIGHT COLUMN ---------------------------------------------------- */}
           <Box sx={{ width: { xs: "100%", lg: 300 } }}>
-            <Typography variant="h6" sx={{ color: "#fff", mb: 2 }}>
+            <Typography variant="h6" sx={{ color: "text.primary", mb: 2 }}>
               Featured Image
             </Typography>
 
@@ -733,7 +952,7 @@ const EditRoomModal = ({ open, onClose, room, onConfirm }: EditModelProps) => {
                     sx={{
                       position: "relative",
                       width: "100%",
-                      height: 220, // now fill actually has something to fill
+                      height: 220,
                       borderRadius: "8px",
                       overflow: "hidden",
                       mb: 2,
@@ -745,6 +964,26 @@ const EditRoomModal = ({ open, onClose, room, onConfirm }: EditModelProps) => {
                       fill
                       style={{ objectFit: "cover" }}
                     />
+
+                    {/* Featured overlay badge */}
+                    {formData.featured && (
+                      <Chip
+                        icon={<StarIcon sx={{ fontSize: 14 }} />}
+                        label="Featured"
+                        size="small"
+                        sx={{
+                          position: "absolute",
+                          top: 8,
+                          right: 8,
+                          bgcolor: "#D4A373",
+                          color: "white",
+                          fontWeight: 600,
+                          "& .MuiChip-icon": {
+                            color: "white",
+                          },
+                        }}
+                      />
+                    )}
                   </Box>
 
                   <Button
@@ -774,7 +1013,7 @@ const EditRoomModal = ({ open, onClose, room, onConfirm }: EditModelProps) => {
                 </>
               ) : (
                 <>
-                  <Typography sx={{ color: "#fff", mb: 1 }}>
+                  <Typography sx={{ color: "text.secondary", mb: 1 }}>
                     No image selected
                   </Typography>
 
@@ -798,7 +1037,7 @@ const EditRoomModal = ({ open, onClose, room, onConfirm }: EditModelProps) => {
 
             <Alert
               severity="info"
-              sx={{ background: "#1e1e1e", color: "#fff" }}
+              sx={{ background: "#1e1e1e", color: "#fff", mb: 2 }}
             >
               Recommended size 1200x630
               <br />
@@ -806,11 +1045,43 @@ const EditRoomModal = ({ open, onClose, room, onConfirm }: EditModelProps) => {
               <br />
               Max 5MB
             </Alert>
+
+            {/* Price Summary Card */}
+            {formData.price && (
+              <Paper
+                elevation={0}
+                sx={{
+                  p: 2,
+                  borderRadius: 2,
+                  bgcolor: "rgba(123, 46, 46, 0.05)",
+                  border: "1px solid rgba(123, 46, 46, 0.2)",
+                }}
+              >
+                <Typography variant="caption" color="text.secondary">
+                  Price Preview
+                </Typography>
+                <Typography
+                  variant="h5"
+                  sx={{
+                    color: "primary.main",
+                    fontWeight: 700,
+                    mt: 0.5,
+                  }}
+                >
+                  PKR {formatPriceDisplay(formData.price)}
+                </Typography>
+                {formData.duration && (
+                  <Typography variant="body2" color="text.secondary">
+                    {formData.duration}
+                  </Typography>
+                )}
+              </Paper>
+            )}
           </Box>
         </Box>
       </DialogContent>
 
-      <DialogActions>
+      <DialogActions sx={{ p: 2, gap: 1 }}>
         <Button
           onClick={onClose}
           variant="outlined"
@@ -819,7 +1090,6 @@ const EditRoomModal = ({ open, onClose, room, onConfirm }: EditModelProps) => {
             color: "primary.contrastText",
             border: "2px solid #7B2E2E",
             borderRadius: 0.5,
-            mb: 2,
             py: "10px",
             px: "15px",
             width: 200,
@@ -845,7 +1115,6 @@ const EditRoomModal = ({ open, onClose, room, onConfirm }: EditModelProps) => {
             color: "primary.contrastText",
             border: "2px solid #7B2E2E",
             borderRadius: 0.5,
-            mb: 2,
             py: "10px",
             px: "15px",
             width: 200,

@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use server";
 import { auth } from "@/auth";
-import { prisma } from "@/lib/prisma";
+import prisma from "@/lib/prisma";
 import { utapi } from "@/utils/uploadthing";
 import type { PostStatus } from "@prisma/client";
 import { revalidatePath } from "next/cache";
@@ -133,8 +133,8 @@ export async function CreateBlog(formData: FormData) {
     if (imageFile && imageFile.size > 0) {
       try {
         const uploadRes = await utapi.uploadFiles(imageFile);
-        if (uploadRes?.data?.url) {
-          imageUrl = uploadRes.data.url;
+        if (uploadRes?.data?.ufsUrl) {
+          imageUrl = uploadRes.data.ufsUrl;
         }
       } catch (error) {
         console.error("Image upload error:", error);
@@ -300,8 +300,8 @@ export async function UpdateBlog(formData: FormData) {
         // }
 
         const uploadRes = await utapi.uploadFiles(imageFile);
-        if (uploadRes?.data?.url) {
-          imageUrl = uploadRes.data.url;
+        if (uploadRes?.data?.ufsUrl) {
+          imageUrl = uploadRes.data.ufsUrl;
         }
       } catch (error) {
         console.error("Image upload error:", error);
