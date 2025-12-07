@@ -171,9 +171,9 @@ export async function getRoomById(roomId: string) {
   }
 }
 
-export async function UpdateRoom(formData: FormData) {
+export async function UpdateRoom(roomID: string, formData: FormData) {
   try {
-    const id = formData.get("id") as string;
+    const id = roomID;
 
     if (!id) {
       return { success: false, message: "Room ID is required" };
