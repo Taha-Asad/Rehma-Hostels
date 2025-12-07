@@ -7,7 +7,7 @@ const Theme = (mode) =>
     palette: {
       mode,
       primary: { main: "#7B2E2E", contrastText: "#ffffff" },
-      secondary: { main: "#519071", contrastText: "#ffffff" },
+      secondary: { main: "#D4A373", contrastText: "#ffffff" },
       background:
         mode === "light"
           ? { default: "#fafafa", paper: "#ffffff" }

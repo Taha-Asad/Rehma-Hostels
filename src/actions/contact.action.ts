@@ -403,6 +403,9 @@ export async function contactForm(
 
 export async function getAllForms() {
   try {
+    // Check if DB is reachable before querying
+    await prisma.$queryRaw`SELECT 1`;
+
     const contacts = await prisma.contact.findMany({
       select: {
         id: true,
@@ -414,11 +417,18 @@ export async function getAllForms() {
         status: true,
         createdAt: true,
       },
+      orderBy: { createdAt: "desc" },
     });
+
     return { success: true, data: contacts };
   } catch (error) {
-    console.error("Error in getting all form function:", error);
-    return { success: false, message: "Error In getting all Contact Form" };
+    console.error("Error in getAllForms:", error);
+
+    return {
+      success: false,
+      data: [],
+      message: "Database unavailable. Please try again.",
+    };
   }
 }
 
@@ -430,7 +440,7 @@ export async function UpdateContactStatus(contactID: string, status: string) {
         status: status as ContactStatus, // ✔️ fixed
       },
     });
-
+    revalidatePath("/admin/contacts");
     return { success: true, data: updatedContact };
   } catch (error) {
     console.error("Error updating contact status:", error);

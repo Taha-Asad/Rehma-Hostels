@@ -40,6 +40,7 @@ interface DataTableProps<T extends { id: string }> {
   onView?: (id: string) => void;
   onEdit?: (id: string) => void;
   onDelete?: (id: string) => void;
+  onReply?: (id: string) => void;
 }
 
 export default function DataTable<T extends { id: string }>({
@@ -49,6 +50,7 @@ export default function DataTable<T extends { id: string }>({
   onView,
   onEdit,
   onDelete,
+  onReply,
 }: DataTableProps<T>) {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [selectedRow, setSelectedRow] = useState<T | null>(null);
@@ -70,6 +72,9 @@ export default function DataTable<T extends { id: string }>({
     console.log("Action triggered:", type, id); // debugging
 
     switch (type) {
+      case "reply":
+        onReply?.(id);
+        break;
       case "view":
         onView?.(id);
         break;

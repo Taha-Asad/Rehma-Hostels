@@ -11,11 +11,17 @@ const transporter = nodemailer.createTransport({
   },
 });
 
-export async function sendMail(to: string, subject: string, html: string) {
+export async function sendMail(
+  to: string,
+  subject: string,
+  html: string,
+  text?: string
+) {
   await transporter.sendMail({
     from: `"REHMA Hostel" <${process.env.EMAIL_USER}>`,
     to,
     subject,
     html,
+    text,
   });
 }

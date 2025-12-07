@@ -14,18 +14,34 @@ import logoDark from "../../../public/Images/Logo.jpg";
 
 import { sidebarLinks } from "./maps/sidebarLinks";
 import Link from "next/link";
-import { Settings, UserRoundPen } from "lucide-react";
-import { ExpandMore } from "@mui/icons-material";
+import { UserRoundPen } from "lucide-react";
+import { ExpandMore, Logout } from "@mui/icons-material";
+import toast from "react-hot-toast";
+import { useRouter } from "next/navigation";
+import { signOut } from "next-auth/react";
 
-function Sidebar() {
+interface SidebarProps {
+  id: string | null;
+}
+
+function Sidebar({ id }: SidebarProps) {
   const theme = useTheme();
 
+  const router = useRouter();
   const text = theme.palette.text.primary;
   const bg = theme.palette.background.paper;
   const hoverBg = theme.palette.action.hover;
   const primary = theme.palette.primary.main;
   const isDark = theme.palette.mode === "dark";
-
+  const handleLogOut = async () => {
+    try {
+      await signOut({ redirect: false }); // optional: prevent auto redirect
+      toast.success("Logged out successfully");
+      router.push("/"); // redirect manually
+    } catch (error) {
+      toast.error(`Could not logout ${error}`);
+    }
+  };
   return (
     <Stack
       direction="column"
@@ -62,7 +78,7 @@ function Sidebar() {
         <Box
           sx={{
             px: 3.5,
-            maxHeight: 400,
+            maxHeight: 350,
             overflowY: "auto",
             py: 1.5,
             pr: 1,
@@ -299,15 +315,18 @@ function Sidebar() {
         }}
       >
         {[
-          { icon: <UserRoundPen />, title: "Profile" },
-          { icon: <Settings />, title: "Settings" },
-        ].map((items, index) => (
-          <Link
-            href={`/admin/${items.title.toLowerCase()}`}
-            key={index}
-            style={{ textDecoration: "none", width: "100%", display: "block" }}
-          >
+          {
+            icon: <UserRoundPen />,
+            title: "Profile",
+            url: `/admin/profile/${id}/`,
+          },
+          { icon: <Logout />, title: "Logout", action: handleLogOut },
+          // { icon: <Settings />, title: "Settings" },
+        ].map((item, index) =>
+          item.action ? (
             <Box
+              key={index}
+              onClick={item.action}
               sx={{
                 display: "flex",
                 alignItems: "center",
@@ -343,12 +362,63 @@ function Sidebar() {
                   transition: "color 0.25s ease",
                 }}
               >
-                {items.icon}
-              </Box>
-              {items.title}
+                {item.icon}
+              </Box>{" "}
+              {item.title}
             </Box>
-          </Link>
-        ))}
+          ) : (
+            <Link
+              key={index}
+              href={item.url}
+              style={{
+                textDecoration: "none",
+                width: "100%",
+                display: "block",
+              }}
+            >
+              <Box
+                sx={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 1.5,
+                  py: 1.3,
+                  px: 2,
+                  borderRadius: "8px",
+                  transition: "all 0.25s ease",
+                  color: text,
+                  cursor: "pointer",
+                  "&:hover": {
+                    backgroundColor: hoverBg,
+                    color: primary,
+                    transform: "translateX(4px)",
+                  },
+
+                  "&:hover .sidebar-icon": { color: primary },
+
+                  "&:active": {
+                    transform: "scale(0.97)",
+                    backgroundColor: primary,
+                    color: theme.palette.background.paper,
+                  },
+                  "&:active .sidebar-icon": {
+                    color: theme.palette.background.paper,
+                  },
+                }}
+              >
+                <Box
+                  className="sidebar-icon"
+                  sx={{
+                    color: "inherit",
+                    transition: "color 0.25s ease",
+                  }}
+                >
+                  {item.icon}
+                </Box>{" "}
+                {item.title}
+              </Box>
+            </Link>
+          )
+        )}
       </Box>
     </Stack>
   );

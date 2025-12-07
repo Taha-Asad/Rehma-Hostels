@@ -22,7 +22,7 @@ interface ContactProps {
 }
 function Contact({ contacts }: { contacts: ContactProps[] }) {
   const columns = [
-    { label: "ID", key: "CNT-ID", type: "text" },
+    { label: "CNT - ID", key: "id", type: "text" },
     { label: "Name", key: "name", type: "text" },
     { label: "Email", key: "email", type: "text" },
     { label: "phone", key: "phone", type: "text" },
@@ -43,7 +43,6 @@ function Contact({ contacts }: { contacts: ContactProps[] }) {
         columns={columns as any}
         rows={contacts}
         actions={[
-          { label: "Reply", action: "reply" },
           { label: "View", action: "view" },
           { label: "Edit", action: "edit" },
           { label: "Delete", action: "delete" },

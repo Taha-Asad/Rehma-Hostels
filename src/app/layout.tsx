@@ -1,3 +1,4 @@
+// app/layout.tsx
 import { Poppins, Inter } from "next/font/google";
 import "./globals.css";
 import { AppRouterCacheProvider } from "@mui/material-nextjs/v13-appRouter";
@@ -5,10 +6,11 @@ import ClientThemeProvider from "@/components/ClientThemeProvider";
 import { Toaster } from "react-hot-toast";
 import { SessionProvider } from "next-auth/react";
 import { Metadata } from "next";
-// import { auth } from "@/auth";
-// import Navbar from "@/components/Navbar/Navbar";
-// import { Footer } from "@/components/Footer/Footer";
-// import { redirect } from "next/navigation";
+import { auth } from "@/auth";
+import Navbar from "@/components/Navbar/Navbar";
+import { Footer } from "@/components/Footer/Footer";
+import Script from "next/script";
+
 const poppins = Poppins({
   subsets: ["latin"],
   weight: ["400", "500", "600", "700"],
@@ -20,6 +22,7 @@ const inter = Inter({
   weight: ["400", "500", "600"],
   display: "swap",
 });
+
 export const metadata: Metadata = {
   title: "Rehma Hostels - Affordable Rooms for Rent in Lahore",
   description:
@@ -32,26 +35,17 @@ export const metadata: Metadata = {
     type: "website",
   },
 };
+
 export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  // let session = null;
+  const session = await auth();
+  const role = session?.user?.role;
 
-  // try {
-  //   session = await auth();
-  // } catch (err) {
-  //   console.error("Auth failed:", err);
-  // }
-
-  // const role = session?.user?.role;
-  // const showNavbarFooter = role !== "ADMIN";
-
-  // if (role === "ADMIN") {
-  //   // Only redirect if session exists
-  //   return redirect("/admin");
-  // }
+  // Middleware handles redirects - just show/hide navbar
+  const showNavbarFooter = role !== "ADMIN";
 
   return (
     <html
@@ -60,14 +54,27 @@ export default async function RootLayout({
       className={`${poppins.className} ${inter.className}`}
     >
       <body suppressHydrationWarning>
+        <Script
+          src="https://www.googletagmanager.com/gtag/js?id=G-KJ1VXBVXH9"
+          strategy="afterInteractive"
+        />
+
+        <Script id="gtag-init" strategy="afterInteractive">
+          {`
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-KJ1VXBVXH9')
+          `}
+        </Script>
         <SessionProvider>
           <AppRouterCacheProvider>
             <ClientThemeProvider>
-              {/* {showNavbarFooter && <Navbar />} */}
+              {showNavbarFooter && <Navbar />}
               {children}
-              {/* {showNavbarFooter && <Footer />} */}
+              {showNavbarFooter && <Footer />}
             </ClientThemeProvider>
-
             <Toaster />
           </AppRouterCacheProvider>
         </SessionProvider>

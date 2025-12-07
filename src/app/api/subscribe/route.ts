@@ -5,6 +5,12 @@ import { NextResponse } from "next/server";
 import { sendMail } from "@/lib/mailer";
 import { prisma } from "@/lib/prisma";
 
+const generateSubID = () => {
+  const prefix = "SUB-";
+  const numberGenerator = Math.floor(100000 + Math.random() * 900000);
+  return prefix + numberGenerator;
+};
+
 export async function POST(req: Request) {
   try {
     const data = await req.formData(); // sending FormData from client
@@ -25,10 +31,13 @@ export async function POST(req: Request) {
         { status: 409 }
       );
     }
+    const subID = generateSubID();
 
     // Save subscription
     const name = email.split("@")[0];
-    const sub = await prisma.subscription.create({ data: { email, name } });
+    const sub = await prisma.subscription.create({
+      data: { id: subID, email, name },
+    });
 
     // Send emails
     const formattedDate = new Date(sub.createdAt).toLocaleString("en-PK", {

@@ -153,3 +153,10 @@ enum NotificationType {
   SUBSCRIPTION
   CONTACT
 }
+
+model EmailRecipient {
+  id        String   @id @default(cuid())
+  email     String
+  name      String? // optional, admin can enter it
+  createdAt DateTime @default(now())
+}

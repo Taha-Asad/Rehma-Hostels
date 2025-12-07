@@ -3,6 +3,7 @@ import ThemeProvider from "@/adminTheme/ThemeProvider";
 import Navbar from "@/components/admin/Navbar";
 import Sidebar from "@/components/admin/Sidebar";
 import { Box } from "@mui/material";
+import { notFound } from "next/navigation";
 import React, { ReactNode } from "react";
 
 interface AdminLayoutProps {
@@ -12,6 +13,10 @@ interface AdminLayoutProps {
 export default async function AdminLayout({ children }: AdminLayoutProps) {
   const res = await getAdmin();
   const admin = res.success ? res.data : null;
+
+  if (!admin) {
+    return notFound(); // prevent accessing someone else's profile
+  }
 
   return (
     <ThemeProvider>
@@ -30,7 +35,7 @@ export default async function AdminLayout({ children }: AdminLayoutProps) {
             zIndex: 15,
           }}
         >
-          <Sidebar />
+          <Sidebar id={admin.id} />
         </Box>
 
         <Box

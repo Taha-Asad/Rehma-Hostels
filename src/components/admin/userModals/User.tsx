@@ -2,11 +2,11 @@
 "use client";
 
 import { useState } from "react";
-import DataTable from "./DataTable";
-import ViewUserModal from "./userModals/ViewUserModal";
-import EditUserModal from "./userModals/EditUserModal";
-import DeleteUserModal from "./userModals/DeleteUserModal";
 import { deleteUser, UpdateUserAdmin } from "@/actions/user.action";
+import DataTable from "../DataTable";
+import ViewUserModal from "./ViewUserModal";
+import EditUserModal from "./EditUserModal";
+import DeleteUserModal from "./DeleteUserModal";
 
 interface User {
   id: string;
