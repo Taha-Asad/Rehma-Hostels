@@ -788,30 +788,30 @@ const News = () => {
                         >
                           Close
                         </Button>
-                        <Button
-                          variant="contained"
-                          component={Link}
-                          href={`/news/${selectedArticle.id}`}
-                          endIcon={<OpenInNew />}
-                          sx={{
-                            bgcolor: "#7B2E2E",
-                            color: "white",
-                            border: "2px solid #7B2E2E",
-                            borderRadius: 0.5,
-                            py: "10px",
-                            px: "15px",
-                            width: 200,
-                            fontWeight: 600,
-                            boxShadow: "5px 5px 10px rgba(123, 46, 46, 0.2)",
-                            transition: "all 0.3s",
-                            "&:hover": {
-                              bgcolor: "white",
-                              color: "#7B2E2E",
-                            },
-                          }}
-                        >
-                          View Full Article
-                        </Button>
+                        <Link href={`/news/${selectedArticle.id}`} passHref>
+                          <Button
+                            variant="contained"
+                            endIcon={<OpenInNew />}
+                            sx={{
+                              bgcolor: "#7B2E2E",
+                              color: "white",
+                              border: "2px solid #7B2E2E",
+                              borderRadius: 0.5,
+                              py: "10px",
+                              px: "15px",
+                              width: 200,
+                              fontWeight: 600,
+                              boxShadow: "5px 5px 10px rgba(123, 46, 46, 0.2)",
+                              transition: "all 0.3s",
+                              "&:hover": {
+                                bgcolor: "white",
+                                color: "#7B2E2E",
+                              },
+                            }}
+                          >
+                            View Full Article
+                          </Button>
+                        </Link>
                       </Box>
                     </DialogContent>
                   </Box>

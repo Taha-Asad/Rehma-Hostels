@@ -396,7 +396,7 @@ function Rooms({ rooms }: { rooms: Room[] }) {
                           fontFamily="Inter"
                           fontWeight={700}
                         >
-                          {items.price}
+                          PKR {items.price}
                         </Typography>
                         <Typography
                           variant="body2"

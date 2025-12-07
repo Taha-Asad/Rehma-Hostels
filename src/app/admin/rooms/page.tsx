@@ -280,7 +280,7 @@ export default async function Page() {
                           fontFamily="Inter"
                           fontWeight={700}
                         >
-                          {room.price}
+                          PKR {room.price}
                         </Typography>
                         <Typography
                           variant="body2"
