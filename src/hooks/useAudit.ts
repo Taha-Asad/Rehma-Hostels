@@ -8,11 +8,11 @@ import { runCustomAudit } from "@/actions/dashboard/audit.action";
 export const useAudit = () => {
   const [data, setData] = useState<AuditData | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const [isPending, startTransition] = useTransition();
+  const [isPending] = useTransition();
 
   const runAudit = async (url: string) => {
-    startTransition(async () => {
-      setError(null);
+    setError(null);
+    try {
       const result = await runCustomAudit(url);
 
       if (result.success) {
@@ -20,7 +20,9 @@ export const useAudit = () => {
       } else {
         setError(result.error || "Audit failed");
       }
-    });
+    } catch (err) {
+      setError("Audit failed: " + (err as Error).message);
+    }
   };
 
   return {
