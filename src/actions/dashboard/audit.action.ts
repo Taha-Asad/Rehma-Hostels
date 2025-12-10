@@ -2,12 +2,8 @@
 
 import { AuditData } from "../../../types/analytics";
 
-const PROXY_API = "https://www.rehmahostels.com/api"; // <- use your actual proxy URL
+const PROXY_API = "https://your-vercel-deployment.vercel.app/api"; // <- use your actual proxy URL
 
-export async function safeScore(value: number | null | undefined) {
-  if (typeof value !== "number") return 0;
-  return Math.round(value * 100);
-}
 export async function getAuditData(url?: string): Promise<{
   success: boolean;
   data?: AuditData;
@@ -27,6 +23,10 @@ export async function getAuditData(url?: string): Promise<{
 
     // Build proxy URL with query params
     const apiUrl = new URL(PROXY_API);
+    export const safeScore = (value: number | null | undefined) => {
+       if (typeof value !== "number") return 0;
+       return Math.round(value * 100);
+     };
     apiUrl.searchParams.set("url", url);
     apiUrl.searchParams.set("strategy", "mobile");
     apiUrl.searchParams.append("category", "performance");
