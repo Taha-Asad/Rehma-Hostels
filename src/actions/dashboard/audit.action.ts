@@ -1,85 +1,80 @@
-// app/actions/audit.ts
 "use server";
 
 import { AuditData } from "../../../types/analytics";
 
-const PAGESPEED_API_KEY = process.env.PAGESPEED_API_KEY;
-const SITE_URL = process.env.SITE_URL;
+const PROXY_API = "https://www.rehmahostels.com/api"; // <- use your actual proxy URL
 
-interface LighthouseAudit {
-  numericValue?: number;
-  displayValue?: string;
+export async function safeScore(value: number | null | undefined) {
+  if (typeof value !== "number") return 0;
+  return Math.round(value * 100);
 }
-
-interface LighthouseCategory {
-  score: number;
-}
-
-interface PageSpeedResponse {
-  lighthouseResult: {
-    categories: {
-      performance: LighthouseCategory;
-      accessibility: LighthouseCategory;
-      "best-practices": LighthouseCategory;
-      seo: LighthouseCategory;
-    };
-    audits: {
-      "first-contentful-paint": LighthouseAudit;
-      "largest-contentful-paint": LighthouseAudit;
-      "cumulative-layout-shift": LighthouseAudit;
-      "total-blocking-time": LighthouseAudit;
-    };
-  };
-}
-
 export async function getAuditData(url?: string): Promise<{
   success: boolean;
   data?: AuditData;
   error?: string;
 }> {
   try {
-    const targetUrl = url || SITE_URL;
-
-    if (!targetUrl) {
-      throw new Error("No URL provided for audit");
+    if (!url) {
+      return { success: false, error: "No URL provided for audit" };
     }
 
-    const apiUrl = new URL(
-      "https://www.googleapis.com/pagespeedonline/v5/runPagespeed"
-    );
-    apiUrl.searchParams.set("url", targetUrl);
-    apiUrl.searchParams.set("key", PAGESPEED_API_KEY || "");
-    apiUrl.searchParams.set("category", "performance");
+    // Validate URL
+    try {
+      new URL(url);
+    } catch {
+      return { success: false, error: "Invalid URL provided" };
+    }
+
+    // Build proxy URL with query params
+    const apiUrl = new URL(PROXY_API);
+    apiUrl.searchParams.set("url", url);
+    apiUrl.searchParams.set("strategy", "mobile");
+    apiUrl.searchParams.append("category", "performance");
     apiUrl.searchParams.append("category", "accessibility");
     apiUrl.searchParams.append("category", "best-practices");
     apiUrl.searchParams.append("category", "seo");
-    apiUrl.searchParams.set("strategy", "mobile");
+
+    console.log("Fetching PageSpeed data via proxy for:", url);
 
     const response = await fetch(apiUrl.toString(), {
-      next: { revalidate: 3600 }, // Cache for 1 hour
+      next: { revalidate: 3600 }, // cache for 1 hour
     });
 
     if (!response.ok) {
-      throw new Error(`PageSpeed API error: ${response.statusText}`);
+      const errorText = await response.text();
+      console.error("Proxy PageSpeed error:", response.status, errorText);
+      return {
+        success: false,
+        error: `Proxy PageSpeed error: ${response.status}`,
+      };
     }
 
-    const result: PageSpeedResponse = await response.json();
+    const result = await response.json();
+
+    if (!result.lighthouseResult) {
+      return { success: false, error: "Invalid PageSpeed response" };
+    }
+
     const { categories, audits } = result.lighthouseResult;
 
+    // Convert score to 0–100 scale safely
+
     const data: AuditData = {
-      performance: Math.round(categories.performance.score * 100),
-      accessibility: Math.round(categories.accessibility.score * 100),
-      bestPractices: Math.round(categories["best-practices"].score * 100),
-      seo: Math.round(categories.seo.score * 100),
-      fcp: audits["first-contentful-paint"].displayValue || "N/A",
-      lcp: audits["largest-contentful-paint"].displayValue || "N/A",
-      cls:
-        Math.round(
-          (audits["cumulative-layout-shift"].numericValue || 0) * 1000
-        ) / 1000,
-      tbt: audits["total-blocking-time"].displayValue || "N/A",
+      performance: safeScore(categories?.performance?.score),
+      accessibility: safeScore(categories?.accessibility?.score),
+      bestPractices: safeScore(categories?.["best-practices"]?.score),
+      seo: safeScore(categories?.seo?.score),
+
+      fcp: audits?.["first-contentful-paint"]?.displayValue ?? "N/A",
+      lcp: audits?.["largest-contentful-paint"]?.displayValue ?? "N/A",
+      cls: Number.isFinite(audits?.["cumulative-layout-shift"]?.numericValue)
+        ? Math.round(audits["cumulative-layout-shift"].numericValue * 1000) /
+          1000
+        : 0,
+      tbt: audits?.["total-blocking-time"]?.displayValue ?? "N/A",
     };
 
+    console.log("✔ PageSpeed data fetched successfully via proxy");
     return { success: true, data };
   } catch (error) {
     console.error("Audit error:", error);
@@ -90,17 +85,7 @@ export async function getAuditData(url?: string): Promise<{
   }
 }
 
-export async function runCustomAudit(url: string): Promise<{
-  success: boolean;
-  data?: AuditData;
-  error?: string;
-}> {
-  // Validate URL
-  try {
-    new URL(url);
-  } catch {
-    return { success: false, error: "Invalid URL provided" };
-  }
-
+// Helper function for client hook
+export async function runCustomAudit(url: string) {
   return getAuditData(url);
 }

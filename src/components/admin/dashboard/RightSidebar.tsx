@@ -85,38 +85,6 @@ export default function RightSidebar() {
         display: "flex",
         flexDirection: "column",
         m: 2,
-        "&::-webkit-scrollbar": {
-          width: "6px",
-        },
-        "&::-webkit-scrollbar-thumb": {
-          backgroundColor: "rgba(123,46,46,0.5)",
-          borderRadius: "4px",
-        },
-        "&::-webkit-scrollbar-thumb:hover": {
-          backgroundColor: "rgba(123,46,46,0.8)",
-        },
-        "&::before": {
-          content: '""',
-          position: "sticky",
-          top: 0,
-          left: 0,
-          right: 0,
-          height: 12,
-          background:
-            "linear-gradient(to bottom, rgba(246,244,244,1), rgba(246,244,244,0))",
-          zIndex: 1,
-        },
-        "&::after": {
-          content: '""',
-          position: "sticky",
-          bottom: 0,
-          left: 0,
-          right: 0,
-          height: 12,
-          background:
-            "linear-gradient(to top, rgba(246,244,244,1), rgba(246,244,244,0))",
-          zIndex: 1,
-        },
       }}
     >
       {/* Header */}
@@ -169,7 +137,45 @@ export default function RightSidebar() {
       </Tabs>
 
       {/* Content */}
-      <Box sx={{ flex: 1, overflow: "auto", p: 2 }}>
+      <Box
+        sx={{
+          flex: 1,
+          overflow: "auto",
+          p: 2,
+          "&::-webkit-scrollbar": {
+            width: "6px",
+          },
+          "&::-webkit-scrollbar-thumb": {
+            backgroundColor: "rgba(123,46,46,0.5)",
+            borderRadius: "4px",
+          },
+          "&::-webkit-scrollbar-thumb:hover": {
+            backgroundColor: "rgba(123,46,46,0.8)",
+          },
+          "&::before": {
+            content: '""',
+            position: "sticky",
+            top: 0,
+            left: 0,
+            right: 0,
+            height: 12,
+            background:
+              "linear-gradient(to bottom, rgba(246,244,244,1), rgba(246,244,244,0))",
+            zIndex: 1,
+          },
+          "&::after": {
+            content: '""',
+            position: "sticky",
+            bottom: 0,
+            left: 0,
+            right: 0,
+            height: 12,
+            background:
+              "linear-gradient(to top, rgba(246,244,244,1), rgba(246,244,244,0))",
+            zIndex: 1,
+          },
+        }}
+      >
         {error && (
           <Alert severity="error" sx={{ mb: 2 }}>
             {error}

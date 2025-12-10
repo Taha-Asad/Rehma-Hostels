@@ -226,7 +226,7 @@ function Location() {
                             variant="body1"
                             fontWeight={"bold"}
                           >
-                            9:00 AM - 7:00 PM
+                            9:00 AM - 9:00 PM
                           </Typography>
                           <Typography
                             color="#505A63"

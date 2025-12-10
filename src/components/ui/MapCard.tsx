@@ -98,7 +98,7 @@ export default function MapCard() {
               variant="subtitle1"
               sx={{ color: "white", fontWeight: "bold" }}
             >
-              Relax Inn Hotel
+              Rehma Professional Hostels & Apartment
             </Typography>
             <Typography
               variant="body2"

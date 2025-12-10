@@ -1,6 +1,7 @@
 // app/components/RightSidebar/AuditScore.tsx
 "use client";
 
+import { safeScore } from "@/actions/dashboard/audit.action";
 import {
   Box,
   Typography,
@@ -29,6 +30,8 @@ export default function AuditScore({
     return "#ef4444"; // red
   };
 
+  console.log(score);
+
   const getLabel = (score: number) => {
     if (score >= 90) return "Good";
     if (score >= 50) return "Needs Improvement";
@@ -47,7 +50,7 @@ export default function AuditScore({
     );
   }
 
-  const displayScore = score ?? 0;
+  const displayScore = safeScore(score);
 
   return (
     <Tooltip title={`${label}: ${getLabel(displayScore)}`} placement="left">

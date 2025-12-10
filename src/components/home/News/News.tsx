@@ -788,7 +788,7 @@ const News = () => {
                         >
                           Close
                         </Button>
-                        <Link href={`/news/${selectedArticle.id}`} passHref>
+                        <Link href={`/news/${selectedArticle.id}`}>
                           <Button
                             variant="contained"
                             endIcon={<OpenInNew />}

@@ -50,7 +50,7 @@ export default function TopPages({ pages, loading = false }: TopPagesProps) {
     <List dense disablePadding>
       {pages.map((page, index) => (
         <ListItem
-          key={page.path}
+          key={`${page.path}-${index}`}
           disablePadding
           sx={{
             py: 1,
