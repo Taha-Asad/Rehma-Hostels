@@ -23,7 +23,7 @@ export async function getAuditData(url?: string): Promise<{
 
     // Build proxy URL with query params
     const apiUrl = new URL(PROXY_API);
-    export const safeScore = (value: number | null | undefined) => {
+    const safeScore = (value: number | null | undefined) => {
        if (typeof value !== "number") return 0;
        return Math.round(value * 100);
      };

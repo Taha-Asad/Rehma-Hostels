@@ -104,7 +104,7 @@ export default function MapCard() {
               variant="body2"
               sx={{ color: "rgba(255,255,255,0.85)" }}
             >
-              Near MM Alam Road, Lahore
+              4/1 Davis Road, Lahore{" "}
             </Typography>
           </Box>
         </Box>
@@ -117,7 +117,7 @@ export default function MapCard() {
           sx={{ p: 3, bgcolor: "rgba(217,212,209,0.2)", height: "20px" }}
         ></Box>
         <Button
-          href="https://www.google.com/maps/dir/?api=1&destination=Relax+Inn+Hotel,+Lahore"
+          href="https://maps.app.goo.gl/TEvGsEvny16Tn5gx9"
           target="_blank"
           rel="noopener noreferrer"
           variant="contained"
