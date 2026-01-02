@@ -22,6 +22,9 @@ const nextConfig: NextConfig = {
       "@mui/icons-material",
       "framer-motion",
     ],
+    serverActions: {
+      bodySizeLimit: "15mb",
+    },
   },
   compiler:
     process.env.NODE_ENV === "production" ? { removeConsole: true } : {},

@@ -51,10 +51,10 @@ export const RenderContent = ({ content }: { content: ContentBlock[] }) => {
               <Typography
                 key={i}
                 variant={
-                  block.level === 1 ? "h4" : block.level === 2 ? "h5" : "h6"
+                  block.level === 1 ? "h2" : block.level === 2 ? "h3" : "h4"
                 }
                 sx={{
-                  color: "primary.contrastText",
+                  color: "#7B2E2E",
                   mt: 3,
                   mb: 1.5,
                   fontWeight: 600,

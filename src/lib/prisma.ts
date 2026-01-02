@@ -7,7 +7,7 @@ import { Pool, PoolConfig } from "pg";
 const poolConfig: PoolConfig = {
   connectionString: process.env.DATABASE_URL,
   max: 10, // Maximum number of connections
-  idleTimeoutMillis: 30000, // Close idle connections after 30 seconds
+  idleTimeoutMillis: 300000, // Close idle connections after 30 seconds
   connectionTimeoutMillis: 10000, // Return error after 10 seconds if connection not established
   allowExitOnIdle: true, // Allow process to exit if pool is idle
 };
