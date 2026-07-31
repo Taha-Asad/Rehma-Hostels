@@ -190,7 +190,7 @@ export const AudienceInsights: React.FC<AudienceInsightsProps> = ({
                   <YAxis hide />
                   <Tooltip
                     labelFormatter={(h) => `${h}:00 - ${h}:59`}
-                    formatter={(val: number) => [val, "Activity"]}
+                    formatter={(val) => [val, "Activity"]}
                   />
                   <Bar dataKey="activity" fill={color} radius={[4, 4, 0, 0]} />
                 </BarChart>

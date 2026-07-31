@@ -68,6 +68,12 @@ export default async function RootLayout({
   gtag('config', 'G-KJ1VXBVXH9')
           `}
         </Script>
+
+        <Script
+          src="https://cdn.zanderio.ai/widget/loader.js"
+          data-id="wdg_G6dASpCVzUXoGxycCagUeIXv"
+          strategy="afterInteractive"
+        />
         <SessionProvider>
           <AppRouterCacheProvider>
             <ClientThemeProvider>

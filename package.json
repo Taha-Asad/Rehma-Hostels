@@ -29,7 +29,7 @@
     "@prisma/adapter-neon": "^7.1.0",
     "@prisma/adapter-pg": "^7.0.0",
     "@prisma/adapter-ppg": "^7.0.0",
-    "@prisma/client": "^7.1.0",
+    "@prisma/client": "^7.9.1",
     "@prisma/config": "^7.0.0",
     "@prisma/extension-accelerate": "^3.0.1",
     "@uploadthing/react": "^7.3.3",
@@ -43,7 +43,7 @@
     "lucide-react": "^0.546.0",
     "next": "^15.5.7",
     "next-auth": "^5.0.0-beta.30",
-    "nodemailer": "^7.0.10",
+    "nodemailer": "^9.0.3",
     "pg": "^8.16.3",
     "react": "19.1.0",
     "react-chartjs-2": "^5.3.1",
@@ -62,16 +62,37 @@
     "@tailwindcss/postcss": "^4",
     "@types/jsdom": "^27.0.0",
     "@types/node": "^20.19.25",
-    "@types/nodemailer": "^7.0.3",
+    "@types/nodemailer": "^8.0.1",
     "@types/pg": "^8.15.6",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "@types/ws": "^8.18.1",
     "eslint": "^9",
     "eslint-config-next": "15.5.5",
-    "prisma": "^7.1.0",
+    "prisma": "^7.9.1",
     "tailwindcss": "^4",
     "tsx": "^4.20.6",
     "typescript": "^5.9.3"
+  },
+  "overrides": {
+    "brace-expansion": "^5.0.8",
+    "postcss": "^8.5.18",
+    "sharp": "^0.35.0",
+    "effect": "^3.20.0",
+    "@auth/core": {
+      "nodemailer": "9.0.3"
+    },
+    "next-auth": {
+      "nodemailer": "9.0.3"
+    }
+  },
+  "allowScripts": {
+    "@prisma/engines@7.9.1": true,
+    "prisma@7.9.1": true,
+    "esbuild@0.28.1": true,
+    "sharp@0.34.5": true,
+    "msgpackr-extract@3.0.4": true,
+    "protobufjs@7.6.5": true,
+    "unrs-resolver@1.12.2": true
   }
 }
