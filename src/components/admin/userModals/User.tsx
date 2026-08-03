@@ -2,11 +2,14 @@
 "use client";
 
 import { useState } from "react";
-import { deleteUser, UpdateUserAdmin } from "@/actions/user.action";
+import { useRouter } from "next/navigation";
+import { deleteUser, UpdateUserAdmin, CreateUser } from "@/actions/user.action";
+import { Button, Box } from "@mui/material";
 import DataTable from "../DataTable";
 import ViewUserModal from "./ViewUserModal";
 import EditUserModal from "./EditUserModal";
 import DeleteUserModal from "./DeleteUserModal";
+import AddUserModal from "./AddUserModal";
 
 interface User {
   id: string;
@@ -19,7 +22,9 @@ interface User {
 }
 
 export default function UsersPage({ users }: { users: User[] }) {
+  const router = useRouter();
   const [selected, setSelected] = useState<User | null>(null);
+  const [addOpen, setAddOpen] = useState(false);
   const [viewOpen, setViewOpen] = useState(false);
   const [editModal, setEditModal] = useState({
     open: false,
@@ -37,6 +42,21 @@ export default function UsersPage({ users }: { users: User[] }) {
 
   return (
     <>
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "flex-end",
+          mb: 2,
+        }}
+      >
+        <Button
+          variant="contained"
+          onClick={() => setAddOpen(true)}
+        >
+          Add User
+        </Button>
+      </Box>
+
       <DataTable<User>
         columns={columns as any}
         rows={users}
@@ -60,6 +80,22 @@ export default function UsersPage({ users }: { users: User[] }) {
         onDelete={(id) => {
           setSelected(users.find((u) => u.id === id)!);
           setDeleteOpen(true);
+        }}
+      />
+
+      <AddUserModal
+        open={addOpen}
+        onClose={() => setAddOpen(false)}
+        onSubmit={async (data) => {
+          const res = await CreateUser(
+            data.name,
+            data.email,
+            data.phone,
+            data.password,
+            data.confirmPassword
+          );
+          if (res.success) router.refresh();
+          return res;
         }}
       />
 
