@@ -129,24 +129,6 @@ export async function CreateUser(
 
 export async function loginUser(email: string, password: string) {
   try {
-    const adminEmail = process.env.ADMIN_EMAIL;
-    const adminPassword = process.env.ADMIN_PASSWORD;
-
-    if (email === adminEmail) {
-      if (password !== adminPassword) {
-        return {
-          success: false,
-          message: "Wrong admin password",
-        };
-      }
-
-      return {
-        success: true,
-        message: "Admin login successful",
-        isAdmin: true,
-      };
-    }
-
     const user = await prisma.user.findUnique({
       where: { email },
     });
